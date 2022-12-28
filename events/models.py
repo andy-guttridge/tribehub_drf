@@ -1,5 +1,5 @@
 from django.db import models
-# from django.contrib.postgres.fields import ArrayField
+from django.contrib.postgres.fields import ArrayField
 from django.contrib.auth.models import User
 
 from tribes.models import Tribe
@@ -21,8 +21,15 @@ class Event(models.Model):
         max_length=3
     )
     subject = models.CharField(max_length=25)
+
     category = models.CharField(
         choices=EventCategories.choices,
         default='NON',
         max_length=3)
-    # accepted = ArrayField(base_field=models.IntegerField)
+
+    # How to properly define a field within an array field from
+    # https://stackoverflow.com/questions/41180829/arrayfield-missing-1-required-positional-argument
+    accepted = ArrayField(
+        base_field=models.IntegerField(null=True, blank=True),
+        blank=True
+    )
