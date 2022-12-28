@@ -22,6 +22,14 @@ TribeHub is designed to be a virtual equivalent to the typical wall planner a fa
 ## Frameworks, libraries and dependencies
 **Need to provide rationale for choices**
 
+### Cloudinary Storage
+
+### dj-all-auth
+
+### dj-rest-auth
+
+### djangorestframework-simplejwt
+
 ## Testing
 
 ### Manual testing
