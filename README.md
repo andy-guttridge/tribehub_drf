@@ -48,4 +48,8 @@ TribeHub is designed to be a virtual equivalent to the typical wall planner a fa
 
 ## Credits
 
+### Code
+
+- How to define fully define a field within an array field from [Stack Overflow](https://stackoverflow.com/questions/41180829/arrayfield-missing-1-required-positional-argument)
+
 
