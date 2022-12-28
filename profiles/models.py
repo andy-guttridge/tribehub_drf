@@ -12,5 +12,8 @@ class Profile(models.Model):
         'image',
         default='../placeholder_profile_xnpcwj.webp'
     )
-    tribe = models.ForeignKey(Tribe, on_delete=models.CASCADE)
+    tribe = models.ForeignKey(
+        Tribe, on_delete=models.CASCADE,
+        related_name='profile'
+    )
     is_admin = models.BooleanField(default=False)
