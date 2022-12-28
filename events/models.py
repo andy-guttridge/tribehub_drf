@@ -17,10 +17,12 @@ class Event(models.Model):
     duration = models.DurationField
     repeat = models.CharField(
         choices=event_values.EventRepeatVals.choices,
+        default='NON',
         max_length=3
     )
     subject = models.CharField(max_length=25)
     category = models.CharField(
         choices=event_values.EventCategories.choices,
+        default='NON',
         max_length=3)
     accepted = ArrayField(base_field=models.IntegerField)

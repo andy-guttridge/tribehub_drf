@@ -91,6 +91,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'profiles',
     'tribes',
+    'contacts',
+    'events',
+    'notifications',
 ]
 
 MIDDLEWARE = [
