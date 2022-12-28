@@ -30,6 +30,8 @@ TribeHub is designed to be a virtual equivalent to the typical wall planner a fa
 
 ### djangorestframework-simplejwt
 
+### dj-database-url
+
 ## Testing
 
 ### Manual testing
