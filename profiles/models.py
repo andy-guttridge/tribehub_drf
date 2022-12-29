@@ -14,6 +14,6 @@ class Profile(models.Model):
     )
     tribe = models.ForeignKey(
         Tribe, on_delete=models.CASCADE,
-        related_name='profile'
+        related_name='profile',
     )
     is_admin = models.BooleanField(default=False)
