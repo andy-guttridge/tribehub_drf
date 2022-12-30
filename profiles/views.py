@@ -99,12 +99,15 @@ class UserAccount(APIView):
 class DeleteUser(APIView):
     """
     Makes user inactive, deletes associated profile, and
-    deletes the tribe if they are the tribe admin.
+    deletes the tribe if they are the tribe admin. Action can
+    only be performed by user on their own account or by the tribe admin
+    for other user accounts.
     """
     permission_classes = [IsAuthenticated]
 
     def delete(self, request, pk):
-        print("The pk received is: ", pk)
+        # Retrieve users and profiles from the DB, both for
+        # the user making the request and user to be deleted.
         user = request.user
         profile = Profile.objects.filter(
             user=user
@@ -115,13 +118,15 @@ class DeleteUser(APIView):
         profile_to_del = Profile.objects.filter(
             user=pk
         ).first()
-        print(user_to_del, profile_to_del)
-        print(profile.is_admin)
-        print(user)
+
         if user_to_del is None or profile_to_del is None:
             raise Http404
 
-        if user == user_to_del or (profile.is_admin and profile.tribe == profile_to_del.tribe) is True:
+        # Make requested account inactive only if the user is requesting the
+        # action on their own account or the user is the tribe admin.
+        if user == user_to_del or (
+            profile.is_admin and profile.tribe == profile_to_del.tribe
+        ) is True:
             user_to_del.is_active = False
             try:
                 user_to_del.save()
@@ -130,8 +135,13 @@ class DeleteUser(APIView):
                     str(e),
                     status=status.HTTP_500_INTERNAL_SERVER_ERROR
                 )
+
+            # Delete the tribe itself if this is a family admin requesting
+            # deletion of their own account.
             if profile_to_del.is_admin is True and profile == profile_to_del:
-                profiles_queryset = Profile.objects.filter(tribe=profile_to_del.tribe)
+                profiles_queryset = (
+                    Profile.objects.filter(tribe=profile_to_del.tribe)
+                )
                 try:
                     for profile in profiles_queryset:
                         profile.user.is_active = False
@@ -142,12 +152,15 @@ class DeleteUser(APIView):
                         status=status.HTTP_500_INTERNAL_SERVER_ERROR
                     )
                 profile.tribe.delete()
+
+            # Delete requested profile and return success code.
             profile_to_del.delete()
             return Response(
                 {'deleted': 'The user account has been successfully deleted.'},
                 status=status.HTTP_200_OK
             )
 
+        # If the user got this far, they don't have permission.
         return Response(
             {"detail": "You are not allowed to perform this action."},
             status=status.HTTP_403_FORBIDDEN
