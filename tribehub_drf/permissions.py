@@ -1,4 +1,6 @@
+from rest_framework import status
 from rest_framework.permissions import BasePermission, SAFE_METHODS
+from rest_framework.response import Response
 from django.contrib.auth.models import User
 from profiles.models import Profile
 
@@ -37,9 +39,14 @@ class IsThisTribeAdminOrOwner(BasePermission):
     """
     def has_object_permission(self, request, view, obj):
         user = request.user
-        profile = user.profile
-        owner = obj.user
-        if owner == user:
+        # Try...except block catches unauthenticated users who do not
+        # have a profile object.
+        try:
+            profile = user.profile
+        except AttributeError:
+            return False
+
+        if obj.user == profile.user:
             return True
 
         return (
@@ -56,7 +63,12 @@ class IsInTribeReadOnly(BasePermission):
     foreign key field.
     """
     def has_object_permission(self, request, view, obj):
-        profile = request.user.profile
+        # Try...except block catches unauthenticated users who do not
+        # have a profile object.
+        try:
+            profile = request.user.profile
+        except AttributeError:
+            return False
         if request.method in SAFE_METHODS:
             return obj.tribe == profile.tribe
         return False
