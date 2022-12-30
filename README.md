@@ -51,5 +51,5 @@ TribeHub is designed to be a virtual equivalent to the typical wall planner a fa
 ### Code
 
 - How to define fully define a field within an array field from [Stack Overflow](https://stackoverflow.com/questions/41180829/arrayfield-missing-1-required-positional-argument)
-- Code to validate images in `profiles/serializers.py` is from the Code Institute Django Rest Framework walkthrough project.
+- Technique to limit the size of image uploads to cloudinary adapted from this [Cloudinary](https://support.cloudinary.com/hc/en-us/community/posts/360009752479-How-to-resize-before-uploading-pictures-in-Django) support article
 
