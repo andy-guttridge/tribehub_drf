@@ -10,7 +10,7 @@ from profiles.models import Profile
 from .serializers import NewTribeSerializer, NewUserSerializer
 
 
-class RegisterNewTribe(APIView):
+class TribeAccount(APIView):
     """
     Creates new user with family admin status, an associated user profile
     and a new Tribe.
@@ -51,7 +51,7 @@ class RegisterNewTribe(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class RegisterNewUser(APIView):
+class UserAccount(APIView):
     """
     Creates new user and an associated user profile, and associates
     their profile with that of the tribe admin who is requesting the
