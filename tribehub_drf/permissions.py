@@ -46,3 +46,14 @@ class IsThisTribeAdminOrOwner(BasePermission):
             profile.is_admin is True and
             obj.tribe == profile.tribe
             )
+
+
+class IsInTribeReadOnly(BasePermission):
+    """
+    Custom permission to determine if user is a member of the relevant tribe
+    with which the object is associated. If so, grant them read only access.
+    Object being checked must have a tribe foreign key field.
+    """
+    def has_object_permission(self, request, view, obj):
+        profile = request.user.profile
+        return obj.tribe == profile.tribe
