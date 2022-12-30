@@ -45,7 +45,10 @@ class TribeAccount(APIView):
                     status=status.HTTP_500_INTERNAL_SERVER_ERROR
                 )
             return Response(
-                serializer.validated_data,
+                {
+                    'username': serializer.validated_data['username'],
+                    'tribename': serializer.validated_data['tribename']
+                },
                 status=status.HTTP_201_CREATED
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -90,7 +93,9 @@ class UserAccount(APIView):
                     status=status.HTTP_500_INTERNAL_SERVER_ERROR
                 )
             return Response(
-                serializer.validated_data,
+                {
+                    'username': serializer.validated_data['username'],
+                },
                 status=status.HTTP_201_CREATED
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
