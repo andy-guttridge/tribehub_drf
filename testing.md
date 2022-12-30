@@ -78,25 +78,25 @@ Should result in 400 error with detailed error message ('Tribe names cannot exce
 register_new_user/ POST
 ```
 {
-    "username":"family1",
+    "username":"family1a",
     "password":"password1",
     "password2":"password1"
 }
 ```
 
-If logged in as *chief1* (a user with family_admin status), should result in creation of a new user 'family1', a new user profile linked to 'family1' *without family_admin status* and linked to the same tribe as chief1 - PASS
+If logged in as *chief1* (a user with family_admin status), should result in creation of a new user 'family1a', a new user profile linked to 'family1a' *without family_admin status* and linked to the same tribe as chief1 - PASS
 
 ### Test 8
 
 ```
 {
-    "username":"family2",
+    "username":"family1b",
     "password":"password1",
     "password2":"password1"
 }
 ```
 
-If logged in as *family1* (a user without family_admin status), should result in HTTP 403 Forbidden error - PASS
+If logged in as *family1a* (a user without family_admin status), should result in HTTP 403 Forbidden error - PASS
 
 ### Test 9
 ```
