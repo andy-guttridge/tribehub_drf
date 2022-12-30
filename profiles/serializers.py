@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from .models import Profile
 
 
 class NewTribeSerializer(serializers.BaseSerializer):
@@ -102,3 +103,24 @@ class NewUserSerializer(serializers.BaseSerializer):
             'username': instance.username,
             'password': instance.password
         }
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    """
+    Serializer for user profiles
+    """
+    user = serializers.ReadOnlyField(source='user.pk')
+    username = serializers.ReadOnlyField(source='user.username')
+    tribe = serializers.ReadOnlyField(source='tribe.pk')
+    is_admin = serializers.ReadOnlyField()
+
+    class Meta:
+        model = Profile
+        fields = [
+            'user',
+            'username',
+            'display_name',
+            'image',
+            'tribe',
+            'is_admin'
+        ]

@@ -11,8 +11,15 @@ class Profile(models.Model):
         related_name='profile',
     )
     display_name = models.CharField(max_length=50)
+    # Technique to limit size of image when uploaded is from
+    # https://support.cloudinary.com/hc/en-us/community/posts/360009752479-How-to-resize-before-uploading-pictures-in-Django
     image = CloudinaryField(
         'image',
+        transformation={
+            'crop': 'limit',
+            'width': 800,
+            'height': 800
+        },
         default='../placeholder_profile_xnpcwj.webp'
     )
     tribe = models.ForeignKey(

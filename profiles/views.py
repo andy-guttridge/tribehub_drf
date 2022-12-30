@@ -2,12 +2,22 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework import generics
 from django.contrib.auth.models import User
 from django.http import Http404
-from tribehub_drf.permissions import IsTribeAdmin
+from tribehub_drf.permissions import (
+    IsTribeAdmin,
+    IsThisTribeAdmin,
+    IsThisTribeAdminOrOwner,
+    IsInTribeReadOnly
+)
 from tribes.models import Tribe
 from profiles.models import Profile
-from .serializers import NewTribeSerializer, NewUserSerializer
+from .serializers import (
+    NewTribeSerializer,
+    NewUserSerializer,
+    ProfileSerializer
+)
 
 
 class TribeAccount(APIView):
@@ -170,3 +180,26 @@ class DeleteUser(APIView):
             {"detail": "You are not allowed to perform this action."},
             status=status.HTTP_403_FORBIDDEN
         )
+
+
+class ProfileDetail(generics.RetrieveUpdateAPIView):
+    """
+    Allows updating of profile by profile owner or tribe admin, and
+    read only access to a specific profile to members of the same tribe.
+    """
+    serializer_class = ProfileSerializer
+    permission_classes = [IsInTribeReadOnly | IsThisTribeAdminOrOwner]
+    queryset = Profile.objects.all()
+
+    def get_object(self):
+        """
+        Retrieve profile object based on user pk value, as profile and user
+        pk may not be the same.
+        """
+        queryset = self.get_queryset()
+        user_to_find = self.kwargs['pk']
+        profile = queryset.filter(user=user_to_find).first()
+        if profile is None:
+            raise Http404
+        self.check_object_permissions(self.request, profile)
+        return profile
