@@ -1,6 +1,9 @@
 ## `/accounts/tribe` POST
 
 ### Test 1
+When unauthenticated, a POST request to this endpoint with the following data should result in creation of new user 'chief1', a new user profile linked to 'chief1' *with family admin status* and a new tribe called 'Tribe1'. Should return HTTP status 201.
+
+Submitted JSON:
 ```
 {
     "username":"chief1",
@@ -10,9 +13,17 @@
 }
 ```
 
-Should result in creation of new user 'chief1', a new user profile linked to 'chief1' *with family admin status* and a new tribe called 'Tribe1'. Should return HTTP status 201 - PASS
+Result: PASS
+
+<p align="center">
+    <img src="readme_media/testing/account1.png" width=800>
+</p>
+
 
 ### Test 2
+When unauthenticated, a POST request to this endpoint with the following data should result in an HTTP 400 error with detailed error message ('Usernames cannot exceed 150 characters').
+
+Submitted JSON:
 ```
 {
     "username":"wpjpluihyszpffsmgrfyouhjgqainqqqlwlffbafdxvdrjbqzokkmuhuyrbotjhmktvgnpbestastfkeutvltyagpbyuapkeuwqgkczbzzzzqzsffaexaojgvjsmcimbjsiyscvrkrgzdtzizdblvpvlvcwqrjlg",
@@ -22,9 +33,16 @@ Should result in creation of new user 'chief1', a new user profile linked to 'ch
 }
 ```
 
-Should result in 400 error with detailed error message ('Usernames cannot exceed 150 characters') - PASS
+Result: PASS
+
+<p align="center">
+    <img src="readme_media/testing/account2.png" width=800>
+</p>
 
 ### Test 3
+When unauthenticated, a POST request to this endpoint with the following data should result in 400 error with detailed error message ('A username is required').
+
+Submitted JSON:
 ```
 {
     "username":"",
@@ -33,10 +51,16 @@ Should result in 400 error with detailed error message ('Usernames cannot exceed
     "tribename":"Tribe1"
 }
 ```
+Result: PASS
 
-Should result in 400 error with detailed error message ('A username is required') - PASS
+<p align="center">
+    <img src="readme_media/testing/account3.png" width=800>
+</p>
 
 ### Test 4
+When unauthenticated, a POST request to this endpoint with the following data should result in 400 error with detailed error message ('Both password fields must contain the same value.') 
+
+Submitted JSON:
 ```
 {
     "username":"chief2",
@@ -45,10 +69,16 @@ Should result in 400 error with detailed error message ('A username is required'
     "tribename":"Tribe1"
 }
 ```
+Result: PASS
 
-Should result in 400 error with detailed error message ('Both password fields must contain the same value.') - PASS
+<p align="center">
+    <img src="readme_media/testing/account4.png" width=800>
+</p>
 
 ### Test 5
+When unauthenticated, a POST request to this endpoint with the following data should result in 400 error with detailed error message ('A tribename must be entered.')
+
+Submitted JSON:
 ```
 {
     "username":"chief2",
@@ -58,9 +88,18 @@ Should result in 400 error with detailed error message ('Both password fields mu
 }
 ```
 
-Should result in 400 error with detailed error message ('A tribename must be entered.') - PASS
+Result:PASS
+
+<p align="center">
+    <img src="readme_media/testing/account5.png" width=800>
+</p>
+
+
 
 ### Test 6
+When unauthenticated, a POST request to this endpoint with the following data should result in 400 error with detailed error message ('Tribe names cannot exceed 50 characters.')
+
+Submitted JSON:
 ```
 {
     "username":"chief2",
@@ -70,12 +109,18 @@ Should result in 400 error with detailed error message ('A tribename must be ent
 }
 ```
 
-Should result in 400 error with detailed error message ('Tribe names cannot exceed 50 characters.') - PASS
+Result:PASS
+
+<p align="center">
+    <img src="readme_media/testing/account6.png" width=800>
+</p>
 
 ## `/accounts/user/` POST
 
 ### Test 7
-register_new_user/ POST
+When logged in as *chief1* (a user with family_admin status), submitted the following data via this endpoint should result in creation of a new user 'family1a', a new user profile linked to 'family1a' *without family_admin status* and linked to the same tribe as chief1.
+
+Submitted JSON:
 ```
 {
     "username":"family1a",
@@ -83,11 +128,16 @@ register_new_user/ POST
     "password2":"password1"
 }
 ```
+Result:PASS
 
-If logged in as *chief1* (a user with family_admin status), should result in creation of a new user 'family1a', a new user profile linked to 'family1a' *without family_admin status* and linked to the same tribe as chief1 - PASS
+<p align="center">
+    <img src="readme_media/testing/account7.png" width=800>
+</p>
 
 ### Test 8
+When logged in as *family1a* (a user without family_admin status), attempting to use this endpoint should result in an HTTP 403 Forbidden error.
 
+Submitted JSON:
 ```
 {
     "username":"family1b",
@@ -96,9 +146,14 @@ If logged in as *chief1* (a user with family_admin status), should result in cre
 }
 ```
 
-If logged in as *family1a* (a user without family_admin status), should result in HTTP 403 Forbidden error - PASS
+Result:PASS
+
+<p align="center">
+    <img src="readme_media/testing/account8.png" width=800>
+</p>
 
 ### Test 9
+When logged in as *chief1* (a user with family_admin status), submitting the following data via this endpoint should result in 400 error with detailed error message ('Usernames cannot exceed 150 characters')
 ```
 {
     "username":"wpjpluihyszpffsmgrfyouhjgqainqqqlwlffbafdxvdrjbqzokkmuhuyrbotjhmktvgnpbestastfkeutvltyagpbyuapkeuwqgkczbzzzzqzsffaexaojgvjsmcimbjsiyscvrkrgzdtzizdblvpvlvcwqrjlg",
@@ -107,9 +162,14 @@ If logged in as *family1a* (a user without family_admin status), should result i
 }
 ```
 
-If logged in as *chief1* (a user with family_admin status), should result in 400 error with detailed error message ('Usernames cannot exceed 150 characters') - PASS
+Result: PASS
+
+<p align="center">
+    <img src="readme_media/testing/account9.png" width=800>
+</p>
 
 ### Test 10
+When logged in as *chief1* (a user with family_admin status), submitting the following data via this endpoint should result in 400 error with detailed error message ('A username is required').
 ```
 {
     "username":"",
@@ -118,9 +178,14 @@ If logged in as *chief1* (a user with family_admin status), should result in 400
 }
 ```
 
-If logged in as *chief1* (a user with family_admin status), should result in 400 error with detailed error message ('A username is required') - PASS
+Result: PASS
+
+<p align="center">
+    <img src="readme_media/testing/account10.png" width=800>
+</p>
 
 ### Test 11
+When logged in as *chief1* (a user with family_admin status), submitting the following data via this endpoint should result in 400 error with detailed error message ('Both password fields must contain the same value.')
 ```
 {
     "username":"family1",
@@ -129,27 +194,69 @@ If logged in as *chief1* (a user with family_admin status), should result in 400
 }
 ```
 
-Should result in 400 error with detailed error message ('Both password fields must contain the same value.') - PASS
+Result: PASS
+
+<p align="center">
+    <img src="readme_media/testing/account11.png" width=800>
+</p>
 
 ## `/accounts/user/<id:int>` DELETE
 ### Test 12
 
-Passing in the id of an existing user who is a member of the same tribe while logged in as the family admin user should make the user account inactive and delete the user profile, returning a HTTP 200 code with a message of 'The user account has been successfully deleted.' - PASS
+Passing in the id of an existing user who is a member of the same tribe to this endpoint while logged in as the family admin user (*chief1*) should make the user account inactive and delete the user profile, returning a HTTP 200 code with a message of 'The user account has been successfully deleted.'
+
+Result: PASS
+
+<p align="center">
+    <img src="readme_media/testing/account12.png" width=800>
+</p>
+
+The user profile was seen to have been deleted and the user status set to inactive in the Django admin panel.
+
 
 ### Test 13
 
-Passing in the id of an existing user who is NOT a member of the same tribe while logged in as the family admin user of a different tribe should return a HTTP 403 error with an error message of 'You are not allowed to perform this action' - PASS
+Passing in the id of an existing user who is NOT a member of the same tribe while logged in as the family admin user of a different tribe should return a HTTP 403 error with an error message of 'You are not allowed to perform this action'. A user id of 13 corresponding to user *family2c*  was used for this test, while logged in as *chief1* (has family admin status).
+
+Result: PASS
+
+<p align="center">
+    <img src="readme_media/testing/account13.png" width=800>
+</p>
+
 
 ### Test 14
 
-Passing in the id of an existing user who is a member of the same tribe while logged in as a member of the same tribe who is NOT the family admin user should return a HTTP 403 error with an error message of 'You are not allowed to perform this action' - PASS
+Passing in the id of an existing user who is a member of the same tribe to this endpoint while logged in as a member of the same tribe who is NOT the family admin user should return a HTTP 403 error with an error message of 'You are not allowed to perform this action'. A user id of 13 corresponding to user *family2c*  was used for this test, while logged in as *family2d*.
+
+Result: PASS
+
+<p align="center">
+    <img src="readme_media/testing/account14.png" width=800>
+</p>
 
 ### Test 15
-Passing in the user's own id while logged in should make the user account inactive and delete the user profile, returning a HTTP 200 code with a message of 'The user account has been successfully deleted.' - PASS
+Passing in the user's own id while logged in should make the user account inactive and delete the user profile, returning a HTTP 200 code with a message of 'The user account has been successfully deleted.' A user id of 14 correspondeing to user *family2d* was used for this test, while also logged in as that user.
+
+Result: PASS
+
+<p align="center">
+    <img src="readme_media/testing/account15.png" width=800>
+</p>
 
 ### Test 16
 
-Passing in the user's own id while logged in as a family admin user should make the user account inactive, delete the user profile, delete the tribe and all the user profiles associated with the tribe, and make all the user accounts associated with the tribe inactive. It should return a HTTP 200 code with a message of 'The user account has been successfully deleted.' - PASS
+Passing in the user's own id to this endpoint while logged in as a family admin user should make the user account inactive, delete the user profile, delete the tribe and all the user profiles associated with the tribe, and make all the user accounts associated with the tribe inactive. It should return a HTTP 200 code with a message of 'The user account has been successfully deleted.' 
+This test was performed with a user id of 25 corresponding to user *chief1*, while also logged in as that user.
+
+Result: PASS
+
+<p align="center">
+    <img src="readme_media/testing/account16.png" width=800>
+</p>
+
+The user profiles for both *chief1* and *family1a* were seen to have been made inactive in the Django admin panel. The profiles for both users and the tribe to which they both belonged (*Tribe1*)
+were confirmed to have been deleted.
 
 ## `/tribe` GET
 ### Test 17
