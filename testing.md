@@ -1,4 +1,4 @@
-## register_new_tribe/ POST
+## accounts/tribe POST
 
 ### Test 1
 ```
@@ -72,7 +72,7 @@ Should result in 400 error with detailed error message ('A tribename must be ent
 
 Should result in 400 error with detailed error message ('Tribe names cannot exceed 50 characters.') - PASS
 
-## register_new_user/ POST
+## accounts/user/ POST
 
 ### Test 7
 register_new_user/ POST
@@ -131,7 +131,7 @@ If logged in as *chief1* (a user with family_admin status), should result in 400
 
 Should result in 400 error with detailed error message ('Both password fields must contain the same value.') - PASS
 
-## register_new_user/<id:int> DELETE
+## accounts/user/<id:int> DELETE
 ### Test 12
 
 Passing in the id of an existing user who is a member of the same tribe while logged in as the family admin user should make the user account inactive and delete the user profile, returning a HTTP 200 code with a message of 'The user account has been successfully deleted.' - PASS
