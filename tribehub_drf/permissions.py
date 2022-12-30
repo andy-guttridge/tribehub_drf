@@ -1,4 +1,4 @@
-from rest_framework.permissions import BasePermission
+from rest_framework.permissions import BasePermission, SAFE_METHODS
 from django.contrib.auth.models import User
 from profiles.models import Profile
 
@@ -43,17 +43,20 @@ class IsThisTribeAdminOrOwner(BasePermission):
             return True
 
         return (
-            profile.is_admin is True and
-            obj.tribe == profile.tribe
+            (profile.is_admin is True) and
+            (obj.tribe == profile.tribe)
             )
 
 
 class IsInTribeReadOnly(BasePermission):
     """
     Custom permission to determine if user is a member of the relevant tribe
-    with which the object is associated. If so, grant them read only access.
-    Object being checked must have a tribe foreign key field.
+    with which the object is associated and if the method is a SAFEMETHOD.
+    If so, grant them access. Object being checked must have a tribe
+    foreign key field.
     """
     def has_object_permission(self, request, view, obj):
         profile = request.user.profile
-        return obj.tribe == profile.tribe
+        if request.method in SAFE_METHODS:
+            return obj.tribe == profile.tribe
+        return False
