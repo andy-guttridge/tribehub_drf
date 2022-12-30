@@ -53,7 +53,6 @@ class NewTribeSerializer(serializers.BaseSerializer):
         """
         return {
             'username': instance.username,
-            'password': instance.password,
             'tribename': instance.tribename,
         }
 
@@ -100,5 +99,4 @@ class NewUserSerializer(serializers.BaseSerializer):
         """
         return {
             'username': instance.username,
-            'password': instance.password
         }
