@@ -92,6 +92,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'recurrence',
+    'django_filters',
     'profiles',
     'tribes',
     'contacts',
