@@ -7,7 +7,6 @@ from django.contrib.auth.models import User
 from django.http import Http404
 from tribehub_drf.permissions import (
     IsTribeAdmin,
-    IsThisTribeAdmin,
     IsThisTribeAdminOrOwner,
     IsInTribeReadOnly
 )
