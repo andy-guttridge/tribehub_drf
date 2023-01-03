@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
 from django.contrib.auth.models import User
+from recurrence.fields import RecurrenceField
 
 from tribes.models import Tribe
 from .event_values import EventCategories, EventRepeatVals
@@ -15,11 +16,12 @@ class Event(models.Model):
     to = models.ManyToManyField(User, related_name='event')
     start = models.DateTimeField
     duration = models.DurationField
-    repeat = models.CharField(
+    recurrence_type = models.CharField(
         choices=EventRepeatVals.choices,
         default='NON',
         max_length=3
     )
+    recurrences = RecurrenceField(default=None)
     subject = models.CharField(max_length=25)
 
     category = models.CharField(
