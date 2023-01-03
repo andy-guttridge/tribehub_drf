@@ -14,7 +14,8 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
+from django.views.i18n import JavaScriptCatalog
 from .views import root_route
 
 urlpatterns = [
@@ -24,4 +25,15 @@ urlpatterns = [
     path('dj-rest-auth/', include('dj_rest_auth.urls')),
     path('', include('profiles.urls')),
     path('', include('tribes.urls')),
+    path('', include('events.urls')),
+]
+
+# Config code for recurrence field from
+# https://django-recurrence.readthedocs.io/en/latest/installation.html#install
+js_info_dict = {
+    'packages': ('recurrence', ),
+}
+
+urlpatterns += [
+    re_path(r'^jsi18n/$', JavaScriptCatalog.as_view(), js_info_dict),
 ]

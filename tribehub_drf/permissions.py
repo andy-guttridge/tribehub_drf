@@ -72,3 +72,20 @@ class IsInTribeReadOnly(BasePermission):
         if request.method in SAFE_METHODS:
             return obj.tribe == profile.tribe
         return False
+
+
+class IsInTribe(BasePermission):
+    """
+    Custom permission to determine if user is a member of the relevant tribe
+    with which the object is associated.
+    If so, grant them access. Object being checked must have a tribe
+    foreign key field.
+    """
+    def has_object_permission(self, request, view, obj):
+        # Try...except block catches unauthenticated users who do not
+        # have a profile object.
+        try:
+            profile = request.user.profile
+        except AttributeError:
+            return False
+        return obj.tribe == profile.tribe
