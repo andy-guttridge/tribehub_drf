@@ -16,7 +16,7 @@ class EventAdmin(admin.ModelAdmin):
         'recurrence_type',
         'subject',
         'category',
-        'accepted',
+        # 'accepted',
     )
 
     def get_to(self, obj):
@@ -27,6 +27,6 @@ class EventAdmin(admin.ModelAdmin):
         # adapted from
         # https://stackoverflow.com/questions/18108521/many-to-many-in-list-display-django
         string = ''
-        for user in obj.profile.all():
-            string += str(profile.user)
+        for user in obj.to.all():
+            string += str(f'{user.username}, ')
         return string
