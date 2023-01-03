@@ -40,6 +40,8 @@ This is a pre-requisite for django-recurrence
 
 ### django-recurrence
 
+### django-filter
+
 ## Testing
 
 ### Manual testing
