@@ -34,6 +34,12 @@ TribeHub is designed to be a virtual equivalent to the typical wall planner a fa
 
 ### psychopg2
 
+### python-dateutil
+
+This is a pre-requisite for django-recurrence
+
+### django-recurrence
+
 ## Testing
 
 ### Manual testing
@@ -52,6 +58,6 @@ TribeHub is designed to be a virtual equivalent to the typical wall planner a fa
 
 ### Code
 
-- How to define fully define a field within an array field from [Stack Overflow](https://stackoverflow.com/questions/41180829/arrayfield-missing-1-required-positional-argument)
+- How to fully define a field within an array field from [Stack Overflow](https://stackoverflow.com/questions/41180829/arrayfield-missing-1-required-positional-argument)
 - Technique to limit the size of image uploads to cloudinary adapted from this [Cloudinary](https://support.cloudinary.com/hc/en-us/community/posts/360009752479-How-to-resize-before-uploading-pictures-in-Django) support article
 
