@@ -55,5 +55,5 @@ class EventSerializer(serializers.ModelSerializer):
             'recurrence_type',
             'subject',
             'category',
-            # 'accepted',
+            'accepted',
         ]
