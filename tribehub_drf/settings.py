@@ -73,6 +73,11 @@ JWT_AUTH_COOKIE = 'my-app-auth'
 # Name refresh token
 JWT_AUTH_REFRESH_COOKIE = 'my-refresh token'
 
+# Specify custom user details serializer
+REST_AUTH_SERIALIZERS = {
+    'USER_DETAILS_SERIALIZER': 'tribehub_drf.serializers.CurrentUserSerializer'
+}
+
 # Application definition
 
 INSTALLED_APPS = [
