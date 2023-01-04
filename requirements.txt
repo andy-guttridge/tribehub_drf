@@ -10,9 +10,12 @@ dj-rest-auth==2.2.5
 Django==4.1.4
 django-allauth==0.50.0
 django-cloudinary-storage==0.3.0
+django-cors-headers==3.13.0
+django-filter==22.1
 django-recurrence==1.11.1
 djangorestframework==3.14.0
 djangorestframework-simplejwt==5.2.2
+gunicorn==20.1.0
 idna==3.4
 oauthlib==3.2.2
 psycopg2-binary==2.9.3

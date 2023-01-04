@@ -30,7 +30,7 @@ class EventList(generics.ListCreateAPIView):
     to_date URL arguments.
     """
     serializer_class = EventSerializer
-    permission_classes = [IsInTribe]
+    permission_classes = [IsInTribe, IsAuthenticated]
     filter_backends = [
         DjangoFilterBackend,
         filters.SearchFilter
@@ -45,7 +45,13 @@ class EventList(generics.ListCreateAPIView):
         to the user's own tribe.
         """
         user = self.request.user
-        events_queryset = Event.objects.filter(tribe=user.profile.tribe.pk)
+        try:
+            events_queryset = Event.objects.filter(tribe=user.profile.tribe.pk)
+        except Exception as e:
+            return Response(
+                str(e),
+                status=status.HTTP_404_NOT_FOUND
+            )
         return events_queryset
 
     def list(self, request, *args, **kwargs):
