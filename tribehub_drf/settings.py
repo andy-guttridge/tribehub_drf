@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 import os
-import re
+import dj_database_url
 
 if os.path.exists('env.py'):
     import env
@@ -32,7 +32,8 @@ DEBUG = 'DEV' in os.environ
 
 ALLOWED_HOSTS = [
     os.environ.get('ALLOWED_HOST'),
-    '127.0.0.1'
+    '127.0.0.1',
+    'tribehub-drf.herokuapp.com',
 ]
 
 CLOUDINARY_STORAGE = {
@@ -72,6 +73,7 @@ JWT_AUTH_SECURE = True
 JWT_AUTH_COOKIE = 'my-app-auth'
 # Name refresh token
 JWT_AUTH_REFRESH_COOKIE = 'my-refresh token'
+JWT_AUTH_SAMESITE = 'None'
 
 # Specify custom user details serializer
 REST_AUTH_SERIALIZERS = {
@@ -98,6 +100,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'recurrence',
     'django_filters',
+    'corsheaders',
     'profiles',
     'tribes',
     'contacts',
@@ -106,6 +109,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -114,6 +118,15 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+if 'CLIENT_ORIGIN' in os.environ:
+    CORS_ALLOWED_ORIGINS = [
+        os.environ.get('CLIENT_ORIGIN')
+    ]
+else:
+    CORS_ALLOWED_ORIGINS = ['https://localhost:8000']
+
+CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = 'tribehub_drf.urls'
 
@@ -140,17 +153,23 @@ SITE_ID = 1
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-if 'DEV' in os.environ:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
-else:
-    DATABASES = {
+# if 'DEV' in os.environ:
+#     DATABASES = {
+#         'default': {
+#             'ENGINE': 'django.db.backends.sqlite3',
+#             'NAME': BASE_DIR / 'db.sqlite3',
+#         }
+#     }
+# else:
+#     DATABASES = {
+#         'default': dj_database_url.parse(os.environ.get("DATABASE_URL"))
+#     }
+#     print("Connected to external database.")
+
+DATABASES = {
         'default': dj_database_url.parse(os.environ.get("DATABASE_URL"))
     }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
