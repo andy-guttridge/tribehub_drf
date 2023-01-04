@@ -38,16 +38,17 @@ def make_events(request, event, from_date, to_date):
         # Create event for each recurrence and append to array
         for recurrence in recurrences:
             recurrence_event = {
-                "user": {
-                    "user_id": request.user.id,
-                    "display_name": request.user.profile.display_name
+                'id': event.id,
+                'user': {
+                    'user_id': request.user.id,
+                    'display_name': request.user.profile.display_name
                 },
-                "tribe": {
-                    "tribe_id": event.tribe.id,
-                    "tribe_name": event.tribe.name
+                'tribe': {
+                    'tribe_id': event.tribe.id,
+                    'tribe_name': event.tribe.name
                 },
-                "to": to_users,
-                "start": datetime.isoformat(recurrence),
+                'to': to_users,
+                'start': datetime.isoformat(recurrence),
                 'duration': event.duration,
                 'recurrence_type': 'REC',
                 'recurrences': None,

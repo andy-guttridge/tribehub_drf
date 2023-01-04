@@ -24,6 +24,7 @@ class EventSerializer(serializers.ModelSerializer):
     """
     Serializer for events
     """
+    id = serializers.ReadOnlyField()
     user = serializers.SerializerMethodField()
     tribe = serializers.SerializerMethodField()
     to = ToUserSerializer(many=True)
@@ -47,6 +48,7 @@ class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         fields = [
+            'id',
             'user',
             'tribe',
             'to',
