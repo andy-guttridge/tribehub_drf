@@ -10,6 +10,7 @@ class EventRepeatVals(models.TextChoices):
     '''
     NONE = 'NON', _('None')
     IS_RECURRENCE = 'REC', _('Is Recurrence')
+    DAILY = 'DAI', _('Daily')
     WEEKLY = 'WEK', _('Weekly')
     TWO_WEEKLY = 'TWK', _('Two weekly')
     MONTHLY = 'MON', _('Monthly')
