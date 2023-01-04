@@ -14,14 +14,15 @@ def make_events(request, event, from_date, to_date):
     # Default values for from_date and to_date if not specified
     from_date = datetime.now().isoformat() if from_date is None else from_date
     to_date = (
-        (datetime.fromisoformat(from_date) + relativedelta(months=2)).isoformat()
+        (datetime.fromisoformat(from_date)
+            + relativedelta(months=2)).isoformat()
         if to_date is None else to_date
     )
 
     recurrence_events = []
 
-    # If the event has recurrences, iterate through these for the specified range,
-    # and create events.
+    # If the event has recurrences, iterate through these for the specified
+    # range, and create events.
     if event.recurrences:
         recurrences = event.recurrences.between(
                     datetime.fromisoformat(from_date),
@@ -35,7 +36,7 @@ def make_events(request, event, from_date, to_date):
         to_user_serializer = ToUserSerializer(event_to_users, many=True)
         to_users = to_user_serializer.data
 
-        # Create event for each recurrence and append to array
+        # Create event for each recurrence and append to list
         for recurrence in recurrences:
             recurrence_event = {
                 'id': event.id,
