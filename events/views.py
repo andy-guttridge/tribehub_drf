@@ -1,11 +1,11 @@
-from rest_framework import status
+from rest_framework import status, filters
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import generics, permissions
 from django.contrib.auth.models import User
 from django.http import Http404
-from django_filters import rest_framework as filters
+from django_filters.rest_framework import DjangoFilterBackend
 from datetime import datetime
 import dateutil.parser
 from tribehub_drf.permissions import (
@@ -31,9 +31,13 @@ class EventList(generics.ListCreateAPIView):
     """
     serializer_class = EventSerializer
     permission_classes = [IsInTribe]
-    filter_backends = [filters.DjangoFilterBackend]
+    filter_backends = [
+        DjangoFilterBackend,
+        filters.SearchFilter
+    ]
     filterset_class = EventFilter
     filterset_fields = ['start']
+    search_fields = ['subject']
 
     def get_queryset(self):
         """
@@ -54,7 +58,20 @@ class EventList(generics.ListCreateAPIView):
 
         # Get unfiltered events in order to find any events before the
         # specified time range filter that might have recurrences.
-        unfiltered_events = Event.objects.filter(tribe=user.profile.tribe.pk)
+        events = Event.objects.filter(tribe=user.profile.tribe.pk)
+
+        # Apply search, category and user filters to unfiltered_events,
+        # as we need to filter events that fall outside of the specified
+        # time range that might have recurrences.
+        subject_search = request.query_params.get('search')
+        if subject_search is not None:
+            events = events.filter(subject__icontains=subject_search)
+        to = request.query_params.get('to')
+        if to is not None and to.isdigit():
+            events = events.filter(to__in=[to])
+        category_filter = request.query_params.get('category')
+        if category_filter is not None:
+            events = events.filter(category=category_filter)
 
         # Get from_date and to_date kwargs from URL arguments so these
         # can be used to limit any recurrences.
@@ -65,7 +82,7 @@ class EventList(generics.ListCreateAPIView):
 
         # Find recurrences within specified date range for all events and
         # append to response data.
-        for event in unfiltered_events:
+        for event in events:
             recurrence_events = make_events(request, event, from_date, to_date)
             response.data['results'].extend(recurrence_events)
             response.data['count'] = (
