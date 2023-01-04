@@ -9,6 +9,7 @@ class EventRepeatVals(models.TextChoices):
     of calendar events.
     '''
     NONE = 'NON', _('None')
+    IS_RECURRENCE = 'REC', _('Is Recurrence')
     WEEKLY = 'WEK', _('Weekly')
     TWO_WEEKLY = 'TWK', _('Two weekly')
     MONTHLY = 'MON', _('Monthly')
