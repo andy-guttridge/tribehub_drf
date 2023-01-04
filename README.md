@@ -42,6 +42,8 @@ This is a pre-requisite for django-recurrence
 
 ### django-filter
 
+### django-cors-headers
+
 ## Testing
 
 ### Manual testing
