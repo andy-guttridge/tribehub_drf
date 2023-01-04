@@ -58,6 +58,8 @@ class EventList(generics.ListCreateAPIView):
 
         # Get from_date and to_date kwargs from URL arguments so these
         # can be used to limit any recurrences.
+        # How to access URL parameters as kwargs from
+        # https://stackoverflow.com/questions/51042871/how-to-access-url-kwargs-in-generic-api-views-listcreateapiview-to-be-more-spec
         from_date = request.query_params.get('from_date')
         to_date = request.query_params.get('to_date')
 
