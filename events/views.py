@@ -64,6 +64,8 @@ class EventList(generics.ListCreateAPIView):
         # as we need to filter events that fall outside of the specified
         # time range that might have recurrences.
         subject_search = request.query_params.get('search')
+        # How to search on many to many fields from
+        # https://stackoverflow.com/questions/4507893/django-filter-many-to-many-with-contains
         if subject_search is not None:
             events = events.filter(subject__icontains=subject_search)
         to = request.query_params.get('to')
