@@ -2,9 +2,9 @@ from rest_framework import status, filters
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework import generics, permissions
+from rest_framework import generics, serializers
 from django.contrib.auth.models import User
-from django.http import Http404
+from django.http import Http404, HttpResponseBadRequest
 from django_filters.rest_framework import DjangoFilterBackend
 from datetime import datetime
 import dateutil.parser
@@ -18,7 +18,7 @@ from tribehub_drf.permissions import (
 from tribes.models import Tribe
 from profiles.models import Profile
 from .models import Event
-from .serializers import EventSerializer, ToUserSerializer
+from .serializers import EventSerializer, NewEventSerializer
 from .filters import EventFilter
 from .utils import make_events
 
@@ -29,7 +29,6 @@ class EventList(generics.ListCreateAPIView):
     for the tribe. Optionally filter by date range specified by from_date and
     to_date URL arguments.
     """
-    serializer_class = EventSerializer
     permission_classes = [IsInTribe, IsAuthenticated]
     filter_backends = [
         DjangoFilterBackend,
@@ -53,6 +52,20 @@ class EventList(generics.ListCreateAPIView):
                 status=status.HTTP_404_NOT_FOUND
             )
         return events_queryset
+
+    def get_serializer_class(self):
+        """
+        Return appropriate serializer depending on HTTP method.
+        """
+        # Technique to override method to select appropriate serializer from
+        # https://stackoverflow.com/questions/22616973/django-rest-framework-use-different-serializers-in-the-same-modelviewset
+        if self.request.method == 'POST':
+            print('Returning NewEventSerializer!')
+            print(self.request.user)
+            return NewEventSerializer
+        else:
+            print('Returning EventSerializer')
+            return EventSerializer
 
     def list(self, request, *args, **kwargs):
         """
@@ -97,3 +110,27 @@ class EventList(generics.ListCreateAPIView):
                 response.data['count'] + len(recurrence_events)
             )
         return response
+
+    def perform_create(self, serializer):
+        """
+        Override create method to add user and tribe to new Event object.
+        Also check if users invited to the event are part of the same tribe,
+        and raise validation error if not.
+        """
+        for to_user_str in self.request.data.get('to'):
+            try:
+                to_user = User.objects.filter(id=int(to_user_str)).first()
+            except TypeError as e:
+                raise HttpResponseBadRequest
+            if to_user.profile.tribe != self.request.user.profile.tribe:
+                print(to_user.profile.tribe, self.request.user.profile.tribe)
+                raise serializers.ValidationError(
+                    {
+                        'to': 'Users who are not part of this tribe cannot '
+                        'be invited.'
+                    }
+                )
+        serializer.save(
+            user=self.request.user,
+            tribe=self.request.user.profile.tribe
+        )

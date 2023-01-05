@@ -1,11 +1,17 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
+from django.http import HttpResponseBadRequest
 
 from profiles.models import Profile
 from .models import Event
 
 
 class ToUserSerializer(serializers.ModelSerializer):
+    """
+    Serializer to turn user data into the correct format for
+    deserialization of events, and when JSON event data is created
+    programatically to represent repeat events for list and detail views.
+    """
     user_id = serializers.ReadOnlyField(source='id')
     display_name = serializers.SerializerMethodField()
 
@@ -22,12 +28,13 @@ class ToUserSerializer(serializers.ModelSerializer):
 
 class EventSerializer(serializers.ModelSerializer):
     """
-    Serializer for events
+    Serializer for deserializing existing events.
     """
     id = serializers.ReadOnlyField()
     user = serializers.SerializerMethodField()
     tribe = serializers.SerializerMethodField()
     to = ToUserSerializer(many=True)
+    accepted = serializers.ReadOnlyField()
 
     def get_user(self, obj):
         return (
@@ -58,4 +65,20 @@ class EventSerializer(serializers.ModelSerializer):
             'subject',
             'category',
             'accepted',
+        ]
+
+
+class NewEventSerializer(serializers.ModelSerializer):
+    """
+    Serializer used for create and update of events.
+    """
+    class Meta:
+        model = Event
+        fields = [
+            'to',
+            'start',
+            'duration',
+            'recurrence_type',
+            'subject',
+            'category',
         ]
