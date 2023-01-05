@@ -18,7 +18,7 @@ from tribehub_drf.permissions import (
 from tribes.models import Tribe
 from profiles.models import Profile
 from .models import Event
-from .serializers import EventSerializer, NewEventSerializer
+from .serializers import EventSerializer, NewOrUpdateEventSerializer
 from .filters import EventFilter
 from .utils import make_events
 
@@ -60,11 +60,8 @@ class EventList(generics.ListCreateAPIView):
         # Technique to override method to select appropriate serializer from
         # https://stackoverflow.com/questions/22616973/django-rest-framework-use-different-serializers-in-the-same-modelviewset
         if self.request.method == 'POST':
-            print('Returning NewEventSerializer!')
-            print(self.request.user)
-            return NewEventSerializer
+            return NewOrUpdateEventSerializer
         else:
-            print('Returning EventSerializer')
             return EventSerializer
 
     def list(self, request, *args, **kwargs):
@@ -134,3 +131,60 @@ class EventList(generics.ListCreateAPIView):
             user=self.request.user,
             tribe=self.request.user.profile.tribe
         )
+
+
+class EventDetail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Event detail view providing GET, PUT and DELETE functionality
+    for events.
+    """
+    permission_classes = [
+        IsThisTribeAdminOrOwner | IsInTribeReadOnly,
+        IsAuthenticated
+    ]
+
+    def get_queryset(self):
+        """
+        Override get_queryset method to limit events to those attached
+        to the user's own tribe.
+        """
+        user = self.request.user
+        try:
+            events_queryset = Event.objects.filter(tribe=user.profile.tribe.pk)
+        except Exception as e:
+            return Response(
+                str(e),
+                status=status.HTTP_404_NOT_FOUND
+            )
+        return events_queryset
+
+    def get_serializer_class(self):
+        """
+        Return appropriate serializer depending on HTTP method.
+        """
+        # Technique to override method to select appropriate serializer from
+        # https://stackoverflow.com/questions/22616973/django-rest-framework-use-different-serializers-in-the-same-modelviewset
+        if self.request.method == 'GET':
+            return EventSerializer
+        else:
+            return NewOrUpdateEventSerializer
+
+    def perform_update(self, serializer):
+        """
+        Check if users invited to the event are part of the same tribe,
+        and raise validation error if not.
+        """
+        for to_user_str in self.request.data.get('to'):
+            try:
+                to_user = User.objects.filter(id=int(to_user_str)).first()
+            except TypeError as e:
+                raise HttpResponseBadRequest
+            if to_user.profile.tribe != self.request.user.profile.tribe:
+                print(to_user.profile.tribe, self.request.user.profile.tribe)
+                raise serializers.ValidationError(
+                    {
+                        'to': 'Users who are not part of this tribe cannot '
+                        'be invited.'
+                    }
+                )
+            serializer.save()
