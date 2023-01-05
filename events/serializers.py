@@ -68,7 +68,7 @@ class EventSerializer(serializers.ModelSerializer):
         ]
 
 
-class NewEventSerializer(serializers.ModelSerializer):
+class NewOrUpdateEventSerializer(serializers.ModelSerializer):
     """
     Serializer used for create and update of events.
     """
