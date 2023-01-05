@@ -18,7 +18,11 @@ from tribehub_drf.permissions import (
 from tribes.models import Tribe
 from profiles.models import Profile
 from .models import Event
-from .serializers import EventSerializer, NewOrUpdateEventSerializer
+from .serializers import (
+    EventSerializer,
+    NewOrUpdateEventSerializer,
+    EventResponseSerializer
+)
 from .filters import EventFilter
 from .utils import make_events
 
@@ -188,3 +192,69 @@ class EventDetail(generics.RetrieveUpdateDestroyAPIView):
                     }
                 )
             serializer.save()
+
+
+class EventResponse(APIView):
+    """
+    Handle user response to event invitation. Accepts data in the form:
+    {"event_response":"accept" or "decline"}
+    """
+    permission_classes = [IsAuthenticated, IsInTribe]
+
+    def post(self, request, pk):
+        """
+        Post method to handle user posting accept or decline response.
+        """
+        serializer = EventResponseSerializer(data=request.data)
+        if serializer.is_valid():
+            # Get user response from serializer and user making the request
+            user_response = serializer.validated_data.get('event_response')
+            user = request.user
+
+            # Retrieve the appropriate event from the DB
+            try:
+                event = Event.objects.filter(id=pk).first()
+            except Exception as e:
+                return Response(
+                    str(e),
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
+
+            # Check user is authenticated and a member of the relevant tribe,
+            # then check if user is invited to the event
+            self.check_object_permissions(request, event)
+            if not event.to.filter(pk=user.pk).exists():
+                return Response(
+                    'Users who are not invited to this event cannot respond.',
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            # Handle accept or decline in the DB and return appropriate
+            # responses
+            if user_response == 'accept':
+                try:
+                    event.accepted.add(user)
+                    return Response(
+                        {'success': 'The invitation has been accepted.'},
+                        status=status.HTTP_200_OK
+                    )
+                except Exception as e:
+                    return Response(
+                        str(e),
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                    )
+            else:
+                try:
+                    event.accepted.remove(user)
+                    return Response(
+                        {'success': 'The invitation has been declined.'},
+                        status=status.HTTP_200_OK
+                    )
+                except Exception as e:
+                    return Response(
+                        str(e),
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                    )
+
+        # If we got to here, we must have received a bad request.
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

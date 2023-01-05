@@ -10,7 +10,7 @@ class UserSerializer(serializers.ModelSerializer):
     """
     Serializer to turn user data into the correct format for
     deserialization of events, and when JSON event data is created
-    programatically to represent repeat events for list and detail views.
+    programatically to represent repeat events for list view.
     """
     user_id = serializers.ReadOnlyField(source='id')
     display_name = serializers.SerializerMethodField()
@@ -82,3 +82,25 @@ class NewOrUpdateEventSerializer(serializers.ModelSerializer):
             'subject',
             'category',
         ]
+
+
+class EventResponseSerializer(serializers.BaseSerializer):
+    """
+    Serialize and validate incoming user responses to event invitations.
+    """
+    def to_internal_value(self, data):
+        event_response = data.get('event_response')
+        if not event_response:
+            raise serializers.ValidationError(
+                {'event_response': 'An event response is required.'}
+            )
+        if (
+            (event_response != 'accept') and
+            (event_response != 'decline')
+        ):
+            raise serializers.ValidationError(
+                {'event_response': 'Value must equal accept or decline.'}
+            )
+        return {
+            'event_response': event_response
+        }
