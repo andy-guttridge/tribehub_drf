@@ -56,7 +56,7 @@ REST_FRAMEWORK = {
         'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
     'DATETIME_FORMAT': 'iso-8601',
-    'DATETIME_INPUT_FORMATS': 'iso-8601'
+    'DATETIME_INPUT_FORMATS': ['iso-8601']
 }
 
 # Ensure we don't return any HTML if we are running in production
