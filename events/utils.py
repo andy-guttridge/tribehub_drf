@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
-from .serializers import ToUserSerializer
+from .serializers import UserSerializer
 
 
 def make_events(request, event, from_date, to_date):
@@ -33,7 +33,7 @@ def make_events(request, event, from_date, to_date):
         # Find which users are invited to this event and use ToUserSerializer
         # to convert to serialized user instances.
         event_to_users = list(User.objects.filter(event=event).all())
-        to_user_serializer = ToUserSerializer(event_to_users, many=True)
+        to_user_serializer = UserSerializer(event_to_users, many=True)
         to_users = to_user_serializer.data
 
         # Create event for each recurrence and append to list

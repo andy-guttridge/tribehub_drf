@@ -32,11 +32,7 @@ class Event(models.Model):
 
     # How to properly define a field within an array field from
     # https://stackoverflow.com/questions/41180829/arrayfield-missing-1-required-positional-argument
-    accepted = ArrayField(
-        base_field=models.IntegerField(null=True, blank=True),
-        null=True,
-        blank=True
-    )
+    accepted = models.ManyToManyField(User, related_name='event_accepted')
 
     def save(self, *args, **kwargs):
         """

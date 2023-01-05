@@ -6,7 +6,7 @@ from profiles.models import Profile
 from .models import Event
 
 
-class ToUserSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     """
     Serializer to turn user data into the correct format for
     deserialization of events, and when JSON event data is created
@@ -33,8 +33,8 @@ class EventSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField()
     user = serializers.SerializerMethodField()
     tribe = serializers.SerializerMethodField()
-    to = ToUserSerializer(many=True)
-    accepted = serializers.ReadOnlyField()
+    to = UserSerializer(many=True)
+    accepted = UserSerializer(many=True)
 
     def get_user(self, obj):
         return (
