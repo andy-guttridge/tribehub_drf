@@ -1,3 +1,13 @@
+# TribeHub API Manual Testing
+
+## Methodology
+
+A series of manual tests were devised for each endpoint. The test data set includes a number of users grouped into families. Users with tribe administrative rights are called `chief1`, `chief2`, `chief3`, and each of these users is associated with a different tribe. Corresponding family members were created with numbers in the user names to signify which tribe they belong to, e.g. `family1a`, `family1b` are part of `chief1`'s tribe, `family2a`, `family2b` are part of `chief2`'s tribe, etc.
+
+Tests were performed using the Django Rest Framework HTML interface running on a test server. Each endpoint has a heading below, with the corresponding tests and results.
+
+**To add detail about performing the same tests on the deployed API via the React front-end**.
+
 ## `/accounts/tribe` POST
 
 ### Test 1
