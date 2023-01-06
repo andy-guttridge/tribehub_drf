@@ -24,6 +24,7 @@ class EventCategories(models.TextChoices):
     family calendar.
     '''
     NONE = 'NON', _('None')
+    CLUB = 'CLU', _('Club')
     EDUCATION = 'EDU', _('Education')
     MEDICAL = 'MED', _('Medical')
     MUSIC = 'MUS', _('Music')
