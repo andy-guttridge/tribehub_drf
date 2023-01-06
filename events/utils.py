@@ -41,8 +41,8 @@ def make_events(request, event, from_date, to_date):
             recurrence_event = {
                 'id': event.id,
                 'user': {
-                    'user_id': request.user.id,
-                    'display_name': request.user.profile.display_name
+                    'user_id': event.user.id,
+                    'display_name': event.user.profile.display_name
                 },
                 'tribe': {
                     'tribe_id': event.tribe.id,

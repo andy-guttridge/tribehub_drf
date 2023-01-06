@@ -14,7 +14,12 @@ class Event(models.Model):
         related_name='event_user'
     )
     tribe = models.ForeignKey(Tribe, on_delete=models.CASCADE)
-    to = models.ManyToManyField(User, related_name='event')
+    to = models.ManyToManyField(
+        User,
+        related_name='event',
+        null=True,
+        blank=True
+    )
     start = models.DateTimeField(editable=True)
     duration = models.DurationField(editable=True)
     recurrence_type = models.CharField(
