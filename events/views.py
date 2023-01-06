@@ -31,7 +31,8 @@ class EventList(generics.ListCreateAPIView):
     """
     List all events for the authenticated user's tribe and create new event
     for the tribe. Optionally filter by date range specified by from_date and
-    to_date URL arguments.
+    to_date URL arguments, filter by user using user argument, filter by
+    category using category argument and search using search argument.
     """
     permission_classes = [IsInTribe, IsAuthenticated]
     filter_backends = [
