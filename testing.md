@@ -23,7 +23,7 @@ Submitted JSON:
 }
 ```
 
-Result: PASS
+**Result: PASS**
 
 <p align="center">
     <img src="readme_media/testing/account1.png" width=800>
@@ -43,7 +43,7 @@ Submitted JSON:
 }
 ```
 
-Result: PASS
+**Result: PASS**
 
 <p align="center">
     <img src="readme_media/testing/account2.png" width=800>
@@ -61,7 +61,7 @@ Submitted JSON:
     "tribename":"Tribe1"
 }
 ```
-Result: PASS
+**Result: PASS**
 
 <p align="center">
     <img src="readme_media/testing/account3.png" width=800>
@@ -79,7 +79,7 @@ Submitted JSON:
     "tribename":"Tribe1"
 }
 ```
-Result: PASS
+**Result: PASS**
 
 <p align="center">
     <img src="readme_media/testing/account4.png" width=800>
@@ -98,7 +98,7 @@ Submitted JSON:
 }
 ```
 
-Result:PASS
+**Result: PASS**
 
 <p align="center">
     <img src="readme_media/testing/account5.png" width=800>
@@ -119,7 +119,7 @@ Submitted JSON:
 }
 ```
 
-Result:PASS
+**Result: PASS**
 
 <p align="center">
     <img src="readme_media/testing/account6.png" width=800>
@@ -138,7 +138,7 @@ Submitted JSON:
     "password2":"password1"
 }
 ```
-Result:PASS
+**Result: PASS**
 
 <p align="center">
     <img src="readme_media/testing/account7.png" width=800>
@@ -156,7 +156,7 @@ Submitted JSON:
 }
 ```
 
-Result:PASS
+**Result: PASS**
 
 <p align="center">
     <img src="readme_media/testing/account8.png" width=800>
@@ -172,7 +172,7 @@ When logged in as *chief1* (a user with family_admin status), submitting the fol
 }
 ```
 
-Result: PASS
+**Result: PASS**
 
 <p align="center">
     <img src="readme_media/testing/account9.png" width=800>
@@ -188,7 +188,7 @@ When logged in as *chief1* (a user with family_admin status), submitting the fol
 }
 ```
 
-Result: PASS
+**Result: PASS**
 
 <p align="center">
     <img src="readme_media/testing/account10.png" width=800>
@@ -204,7 +204,7 @@ When logged in as *chief1* (a user with family_admin status), submitting the fol
 }
 ```
 
-Result: PASS
+**Result: PASS**
 
 <p align="center">
     <img src="readme_media/testing/account11.png" width=800>
@@ -215,7 +215,7 @@ Result: PASS
 
 Passing in the id of an existing user who is a member of the same tribe to this endpoint while logged in as the family admin user (*chief1*) should make the user account inactive and delete the user profile, returning a HTTP 200 code with a message of 'The user account has been successfully deleted.'
 
-Result: PASS
+**Result: PASS**
 
 <p align="center">
     <img src="readme_media/testing/account12.png" width=800>
@@ -223,12 +223,11 @@ Result: PASS
 
 The user profile was seen to have been deleted and the user status set to inactive in the Django admin panel.
 
-
 ### Test 13
 
 Passing in the id of an existing user who is NOT a member of the same tribe while logged in as the family admin user of a different tribe should return a HTTP 403 error with an error message of 'You are not allowed to perform this action'. A user id of 10 corresponding to user *family2c*  was used for this test, while logged in as *chief1* (has family admin status).
 
-Result: PASS
+**Result: PASS**
 
 <p align="center">
     <img src="readme_media/testing/account13.png" width=800>
@@ -239,16 +238,16 @@ Result: PASS
 
 Passing in the id of an existing user who is a member of the same tribe to this endpoint while logged in as a member of the same tribe who is NOT the family admin user should return a HTTP 403 error with an error message of 'You are not allowed to perform this action'. A user id of 10 corresponding to user *family2c*  was used for this test, while logged in as *family2d*.
 
-Result: PASS
+**Result: PASS**
 
 <p align="center">
     <img src="readme_media/testing/account14.png" width=800>
 </p>
 
 ### Test 15
-Passing in the user's own id while logged in should make the user account inactive and delete the user profile, returning a HTTP 200 code with a message of 'The user account has been successfully deleted.' A user id of 11 correspondeing to user *family2d* was used for this test, while also logged in as that user.
+Passing in the user's own id while logged in should make the user account inactive and delete the user profile, returning a HTTP 200 code with a message of 'The user account has been successfully deleted.' A user id of 18 correspondeing to user *family3d* was used for this test, while also logged in as that user.
 
-Result: PASS
+**Result: PASS**
 
 <p align="center">
     <img src="readme_media/testing/account15.png" width=800>
@@ -257,21 +256,22 @@ Result: PASS
 ### Test 16
 
 Passing in the user's own id to this endpoint while logged in as a family admin user should make the user account inactive, delete the user profile, delete the tribe and all the user profiles associated with the tribe, and make all the user accounts associated with the tribe inactive. It should return a HTTP 200 code with a message of 'The user account has been successfully deleted.' 
-This test was performed with a user id of 2 corresponding to user *chief1*, while also logged in as that user.
+This test was performed with a user id of 14 corresponding to user *chief3*, while also logged in as that user.
 
-Result: PASS
+**Result: PASS**
 
 <p align="center">
     <img src="readme_media/testing/account16.png" width=800>
 </p>
 
-The user profiles for both *chief1* and *family1a* were seen to have been made inactive in the Django admin panel. The profiles for both users and the tribe to which they both belonged (*Tribe1*)
-were confirmed to have been deleted.
+The user profiles for *chief3*, *family3a*, *family3b*, *family3c* and *family3d* were seen to have been made inactive in the Django admin panel. The profiles for both users and the tribe to which they both belonged (*Tribe3*) were confirmed to have been deleted.
 
 ## `/tribe` GET
 ### Test 17
 
-When not authenticated, the endpoint should return a 403 error - PASS
+When not authenticated, the endpoint should return a 403 error.
+
+**Result: PASS**
 
 <p align="center">
     <img src="readme_media/testing/tribe1.png" width=800>
@@ -279,9 +279,9 @@ When not authenticated, the endpoint should return a 403 error - PASS
 
 ### Test 18
 
-When authenticated as user *chief2*, a serialized JSON object and HTTP code 200 should be returned. The JSON object should contain the name of the tribe and an arrary of dictionaries containing the `user_id` and `display_name` values for other members of the tribe to which *chief2* belongs (*family2a*, *family2b*, *family2c*, *family2d*) - PASS
+When authenticated as user *chief2*, a serialized JSON object and HTTP code 200 should be returned. The JSON object should contain the name of the tribe and an arrary of dictionaries containing the `user_id` and `display_name` values for other members of the tribe to which *chief2* belongs (*family2a*, *family2b*, *family2c*, *family2d*).
 
-**Redo image**
+**Result: PASS**
 
 <p align="center">
     <img src="readme_media/testing/tribe2.png" width=800>
@@ -289,78 +289,80 @@ When authenticated as user *chief2*, a serialized JSON object and HTTP code 200 
 
 ### Test 19
 
-When authenticated as user *family2b*, the same JSON object and HTTP code 200 should be returned as for test 18, since *family2b* is a member of the same tribe as *chief2* - PASS
+When authenticated as user *family2b*, the same JSON object and HTTP code 200 should be returned as for test 18, since *family2b* is a member of the same tribe as *chief2*.
+
+**Result: PASS**
 
 <p align="center">
     <img src="readme_media/testing/tribe3.png" width=800>
 </p>
 
-**Redo image**
-
 ### Test 20
 
-When authenticated as user *chief3*, a serialized JSON object and HTTP code 200 should be returned. The JSON object should contain the name of the tribe and an arrary of dictionaries containing the `user_id` and `display_name` values for other members of the tribe to which *chief3* belongs (*chief3*, *family3a*, *family3b*, *family2c*) - PASS
+When authenticated as user *chief1*, a serialized JSON object and HTTP code 200 should be returned. The JSON object should contain the name of the tribe and an arrary of dictionaries containing the `user_id` and `display_name` values for other members of the tribe to which *chief1* belongs (*chief1*, *family1a*, *family1b*, *family1c*, *family1d*).
+
+**Result: PASS**
 
 <p align="center">
     <img src="readme_media/testing/tribe4.png" width=800>
 </p>
 
-**Redo image**
-
 ### Test 21
 
-When authenticated as user *family3b*, the same JSON object and HTTP code 200 should be returned as for test 20, since *family3b* is a member of the same tribe as *chief3b* - PASS
+When authenticated as user *family1b*, the same JSON object and HTTP code 200 should be returned as for test 20, since *family1b* is a member of the same tribe as *chief1*.
+
+**Result: PASS**
 
 <p align="center">
     <img src="readme_media/testing/tribe5.png" width=800>
 </p>
 
-**Redo image**
-
 ## `/profile/<id:int>` GET
 ### Test 22
 
-When authenticated as user *chief2* (has family admin permission), a GET request with the user id 9 should return a JSON object containing `user`, `username`, `display_name`, `image`, `tribe` and `is_admin` values for user *family2b*, since *chief2* and *family2b* are in the same tribe - PASS
+When authenticated as user *chief2* (has family admin permission), a GET request with the user id 9 should return a JSON object containing `user`, `username`, `display_name`, `image`, `tribe` and `is_admin` values for user *family2b*, since *chief2* and *family2b* are in the same tribe.
+
+**Result: PASS**
 
 <p align="center">
     <img src="readme_media/testing/profile1.png" width=800>
 </p>
 
-**Redo image**
-
 ### Test 23
 
-When authenticated as user *chief2* (has family admin permission), a GET request with the user id 15 (corresponding to user *family3a*) should return an HTTP 403 forbidden error, since *chief2* and *family3a* are in different tribes- PASS
+When authenticated as user *chief2* (has family admin permission), a GET request with the user id 3 (corresponding to user *family1a*) should return an HTTP 403 forbidden error, since *chief2* and *family1a* are in different tribes.
+
+**Result: PASS**
 
 <p align="center">
     <img src="readme_media/testing/profile2.png" width=800>
 </p>
 
-**Redo image**
-
 ### Test 24
 
-When authenticated as user *family3a* (does not have family admin permission), a GET request with the user id 14 should return a JSON object containing `user`, `username`, `display_name`, `image`, `tribe` and `is_admin` values for user *chief3*, since *family3a* and *chief3* are in the same tribe - PASS
+When authenticated as user *family2a* (does not have family admin permission), a GET request with the user id 7 should return a JSON object containing `user`, `username`, `display_name`, `image`, `tribe` and `is_admin` values for user *chief2*, since *family2a* and *chief2* are in the same tribe.
+
+**Result: PASS**
 
 <p align="center">
     <img src="readme_media/testing/profile3.png" width=800>
 </p>
 
-**Redo image**
-
 ### Test 25
 
-When authenticated as user *family3a* (does not have family admin permission), a GET request with the user id 7 (corresponding to user *chief2*) should return an HTTP 403 forbidden error, since *chief2* and *family3a* are in different tribes - PASS
+When authenticated as user *family1a* (does not have family admin permission), a GET request with the user id 7 (corresponding to user *chief2*) should return an HTTP 403 forbidden error, since *chief2* and *family1a* are in different tribes.
+
+**Result: PASS**
 
 <p align="center">
     <img src="readme_media/testing/profile4.png" width=800>
 </p>
 
-**Redo image**
-
 ### Test 26
 
-When not authenticated, a GET request with the user id 12 (corresponding to user *family2b*) should return an HTTP 403 forbidden error - PASS
+When not authenticated, a GET request with the user id 9 (corresponding to user *family2b*) should return an HTTP 403 forbidden error.
+
+**Result: PASS**
 
 <p align="center">
     <img src="readme_media/testing/profile5.png" width=800>
@@ -377,16 +379,15 @@ Submitted JSON:
     "username": "family2b_test_change",
     "display_name": "family2b_test_change",
     "image": "test_change",
-    "tribe": 7,
+    "tribe": 99,
     "is_admin": true
 }
 ```
-Result: PASS
+**Result: PASS**
+
 <p align="center">
     <img src="readme_media/testing/profile6.png" width=800>
 </p>
-
-**Redo image**
 
 ### Test 28
 When authenticated as user *family2c* (does not have family admin permission -  but should be  able to change own profile), a PUT request made with the following JSON should result in the `display_name` field for user *family2c* being changed in the database to *family2c_test_change* and the image url being saved as `test_change`. Changes to other fields should not be saved, as they are read-only.
@@ -403,9 +404,8 @@ Submitted JSON:
 }
 ```
 
-**Redo image**
+**Result: PASS**
 
-Result: PASS
 <p align="center">
     <img src="readme_media/testing/profile7.png" width=800>
 </p>
@@ -425,47 +425,49 @@ Submitted JSON:
 }
 ```
 
-Result: PASS
+**Result: PASS**
 <p align="center">
     <img src="readme_media/testing/profile8.png" width=800>
 </p>
 
 ### Test 30
-When authenticated as user *chief2* (has family admin permission, but should not be able to change the profile of someone in a different tribe), a PUT request made with the following JSON (user id corresponding to user *family3b*) should result in an HTTP 403 forbidden error.
+When authenticated as user *chief2* (has family admin permission, but should not be able to change the profile of someone in a different tribe), a PUT request made with the following JSON (user id corresponding to user *family1d*) should result in an HTTP 403 forbidden error.
 
 Submitted JSON:
 ```
 {
-    "user": 16,
-    "username": "family3b_test_change_again",
-    "display_name": "family3b_test_change_again",
+    "user": 6,
+    "username": "family1d_test_change_again",
+    "display_name": "family1d_test_change_again",
     "image": "test_change_again",
     "tribe": 99,
     "is_admin": true
 }
 ```
 
-Result: PASS
+**Result: PASS**
+
 <p align="center">
     <img src="readme_media/testing/profile9.png" width=800>
 </p>
 
 ### Test 31
-When authenticated as user *family2b* (does not have family admin permission, and should not be able to change the profile of someone in a different tribe), a PUT request made with the following JSON (user id corresponding to user *family3b*) should result in an HTTP 403 forbidden error.
+When authenticated as user *family2b* (does not have family admin permission, and should not be able to change the profile of someone in a different tribe), a PUT request made with the following JSON (user id corresponding to user *family1d*) should result in an HTTP 403 forbidden error.
 
 Submitted JSON:
 ```
 {
-    "user": 16,
-    "username": "family3b_test_change_again",
-    "display_name": "family3b_test_change_again",
+    "user": 6,
+    "username": "family1d_test_change_again",
+    "display_name": "family1d_test_change_again",
     "image": "test_change_again",
     "tribe": 99,
     "is_admin": true
 }
 ```
 
-Result: PASS
+**Result: PASS**
+
 <p align="center">
     <img src="readme_media/testing/profile10.png" width=800>
 </p>
@@ -475,6 +477,12 @@ Result: PASS
 ### Test 31
 
 When not authenticated, it should not be possible to access this endpoint via a POST request. This is confirmed by the API interface not offering a POST option for a non-authenticated user.
+
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/event1.png" width=800>
+</p>
 
 ### Test 32
 
@@ -492,6 +500,12 @@ Submitted JSON:
 }
 ```
 
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/event2.png" width=800>
+</p>
+
 ### Test 33
 
 When authenticated as user *family1a* (does not have family admin permission), a POST request with the following JSON (invitations sent to ids corresponding to users *chief1* and *family1b*) should result in the creation of a new event, with the event linked to *family1a's* user id (3),  and tribe id (1).
@@ -508,6 +522,12 @@ Submitted JSON:
 }
 ```
 
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/event3.png" width=800>
+</p>
+
 ### Test 34
 
 When authenticated as user *chief1* (has family admin permission), a POST request with the following JSON (invitation sent to id corresponding to user *family2a*) should result in a HTTP 400 error with the message 'Users who are not part of this tribe cannot be invited.'
@@ -523,6 +543,12 @@ Submitted JSON:
     "category": "MED"
 }
 ```
+
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/event4.png" width=800>
+</p>
 
 ### Test 35
 
@@ -541,9 +567,15 @@ Submitted JSON:
 }
 ```
 
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/event5.png" width=800>
+</p>
+
 ### Test 36
 
-**NOT YET IMPLEMENTED**
+### **NOT YET IMPLEMENTED**
 
 When authenticated as user *chief1*, a request with the following JSON data should result in the creation of two new notification objects in the database, one for each invited user.
 
@@ -560,19 +592,46 @@ Submitted JSON:
 }
 ```
 
+**NOT YET IMPLEMENTED**
+
 ## `events/` GET
 
 ### Test 37
 
 When authenticated as user *chief1*, all events only for the user's tribe from today and for the next two months should be returned. These should include programatically generated recurrences for repeat events (in this case, weekly recurrences for 'Violin lesson' and monthly recurrences for 'Chess club'). No events for other tribes should be returned.
 
+**Result: PASS**
+
+*Not every item in the list is pictured due to the number of items, but the beginning, middle and end are captured. This also applies to the other tests involving recurring events below.*
+
+<p align="center">
+    <img src="readme_media/testing/event6a.png" width=400>
+    <img src="readme_media/testing/event6b.png" width=400>
+    <img src="readme_media/testing/event6c.png" width=400>
+</p>
+
 ### Test 38
 
 When authenticated as user *family1c*, an identical set of events should be returned as for test 37, since *family1c* is a member of the same tribe as *chief1*.
 
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/event7a.png" width=400>
+    <img src="readme_media/testing/event7b.png" width=400>
+    <img src="readme_media/testing/event7c.png" width=400>
+</p>
+
 ### Test 39
 
-When authenticated as user *family1c*, all events only for the user's tribe from today and for the next two months should be returned (including recurrences). In this case, this should be fortnightly recurrences for 'Play rehearsals'. No events for other tribes should be returned.
+When authenticated as user *family2c*, all events only for the user's tribe from today and for the next two months should be returned (including recurrences). In this case, this should be fortnightly recurrences for 'Play rehearsals'. No events for other tribes should be returned.
+
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/event8a.png" width=400>
+    <img src="readme_media/testing/event8b.png" width=400>
+</p>
 
 ### Test 40
 
@@ -580,11 +639,27 @@ Use URL: `events/?from_date=2023-12-15T00:00:00`
 
 When authenticated as user *family1c*, all events for the tribe for two months from 15 December 2023 should be returned. For the test data set, these should only be programatically generated recurrences, since there are no actual events in the database after January 2023.
 
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/event9a.png" width=400>
+    <img src="readme_media/testing/event9b.png" width=400>
+    <img src="readme_media/testing/event9c.png" width=400>
+</p>
+
 ### Test 41
 
 Use URL `events/?to_date=2023-03-15T00:00:00`
 
 When authenticated as user *family1c*, all events for the tribe from today up to 15 March 2023 should be returned.
+
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/event10a.png" width=400>
+    <img src="readme_media/testing/event10b.png" width=400>
+    <img src="readme_media/testing/event10c.png" width=400>
+</p>
 
 ### Test 42
 
@@ -592,11 +667,26 @@ Use URL `events/?from_date=2023-03-15T00:00:00&to_date=2023-07-15T00:00:00`
 
 When authenticated as user *family1c*, all events for the tribe from 15 March 2023 up to 15 July should be returned.
 
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/event11a.png" width=400>
+    <img src="readme_media/testing/event11b.png" width=400>
+    <img src="readme_media/testing/event11c.png" width=400>
+</p>
+
 ### Test 43
 
 Use URL `events/?category=MUS`
 
 When authenticated as user *family1c*, all events for the tribe with a category of `MUS` (for Music) for two months from today should be returned.
+
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/event12a.png" width=400>
+    <img src="readme_media/testing/event12b.png" width=400>
+</p>
 
 ### Test 44
 
@@ -604,11 +694,26 @@ Use URL `events/?from_date=2023-03-15T00:00:00&to_date=2023-07-15T00:00:00&categ
 
 When authenticated as user *family1c*, all events for the tribe with a category of 'MUS' (for Music) between 15 March 2023 and 15 July 2023 should be returned.
 
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/event13a.png" width=400>
+    <img src="readme_media/testing/event13b.png" width=400>
+    <img src="readme_media/testing/event13c.png" width=400>
+</p>
+
 ### Test 45
 
 Use URL `events/?to=2`
 
 When authenticated as user *family1c*, all events to which `chief1` (user id 2) is invited for two months from today should be returned.
+
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/event14a.png" width=400>
+    <img src="readme_media/testing/event14b.png" width=400>
+</p>
 
 ### Test 46
 
@@ -616,11 +721,26 @@ Use URL `events/?from_date=2023-03-15T00:00:00&to_date=2023-07-15T00:00:00&to=2`
 
 When authenticated as user *family1c*, all events to which `chief1` (user id 2) is invited between 15 March 2023 and 15 July 2023 should be returned.
 
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/event15a.png" width=400>
+    <img src="readme_media/testing/event15b.png" width=400>
+</p>
+
 ### Test 47
 
 Use URL `events/?search=Chess+club`
 
 When authenticated as user *family1c*, all events with `Chess club` in the subject for the tribe for two months from today should be returned.
+
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/event16a.png" width=400>
+    <img src="readme_media/testing/event16b.png" width=400>
+    <img src="readme_media/testing/event16c.png" width=400>
+</p>
 
 ### Test 48
 
@@ -628,11 +748,24 @@ Use URL `events/?from_date=2023-03-15T00:00:00&to_date=2023-07-15T00:00:00&searc
 
 When authenticated as user *family1c*, all events with `Chess club` in the subject for the tribe between 15 March 2023 and 15 July 2023 should be returned.
 
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/event17a.png" width=400>
+    <img src="readme_media/testing/event17b.png" width=400>
+</p>
+
 ### Test 49
 
 Use URL `events/?from_date=xxx&to_date=zzz`
 
 When authenticated as user *family1c*, the above URL should result in a HTTP 400 error with a message of 'Enter a valid date/time' for both the `from_date` and `to_date` fields.
+
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/event18.png" width=800>
+</p>
 
 ### Test 50
 
@@ -640,35 +773,55 @@ Use URL `events/?category=xxx`
 
 When authenticated as user *family1c*, the above URL should result in a HTTP 400 error with a message of 'Select a valid choice. xxx is not one of the available choices'.
 
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/event19.png" width=800>
+</p>
+
 ## `events/<id:int>/` GET
 
 ### Test 51
 
-**Remember event id in URL!**
-Use URL `events/xx`
+Use URL `events/54`
 
 When not authenticated, the above URL should result in a HTTP 403 error.
 
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/event20.png" width=800>
+</p>
+
 ### Test 52
 
-**Remember event id in URL!**
-Use URL `events/xx`
+Use URL `events/53`
 
 When authenticated as user *family1b*, the above URL should return the 'Violin lesson' event.
 
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/event21.png" width=800>
+</p>
+
 ### Test 53
 
-**Remember event id in URL!**
-Use URL `events/xx`
+Use URL `events/53`
 
-When authenticated as user *chief2*, the above URL should result in a HTTP 403 error, as this user is not a member of the same tribe as the user who created the event.
+When authenticated as user *chief2*, the above URL should result in a HTTP 404 error, as this user is not a member of the same tribe as the user who created the event.
+
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/event22.png" width=800>
+</p>
 
 ## `events/<id:int>/` PUT
 
 ### Test 54
 
-**Remember event id in URL!**
-Use URL `events/xx`
+Use URL `events/53`
 
 When authenticated as user *chief1*, the above URL with the following JSON data should result in corresponding changes to the event. Note a user has been added to the invitation, the date changed, the duration extended, the recurrence type changed from weekly to fortnightly, the subject amended and the category changed to education.
 
@@ -679,14 +832,19 @@ Submitted JSON:
     "start": "2023-01-20T10:00:00",
     "duration": "120.0",
     "recurrence_type": "TWK",
-    "subject": "Violin lesson - test change",
+    "subject": "Violin lesson - change",
     "category": "EDU"
 }
 
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/event23.png" width=800>
+</p>
+
 ### Test 55
 
-**Remember event id in URL!**
-Use URL `events/xx`
+Use URL `events/53`
 
 When authenticated as user *chief1*, the above URL with the following JSON data should result in a HTTP 400 error with a message of 'Users who are not part of this tribe cannot be invited'.
 
@@ -701,10 +859,15 @@ Submitted JSON:
     "category": "EDU"
 }
 
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/event24.png" width=800>
+</p>
+
 ### Test 56
 
-**Remember event id in URL!**
-Use URL `events/xx`
+Use URL `events/53`
 
 When authenticated as user *family1a*, the above URL with the following JSON data should result in a HTTP 403 error, as although the user is a member of the tribe, they did not create this event and are not a tribe administrator.
 
@@ -719,10 +882,15 @@ Submitted JSON:
     "category": "EDU"
 }
 
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/event25.png" width=800>
+</p>
+
 ### Test 58
 
-**Remember event id in URL!**
-Use URL `events/xx`
+Use URL `events/54`
 
 When authenticated as user *family1a*, the above URL with the following JSON data should result in corresponding changes to the event, as this user was the creator.
 
@@ -735,14 +903,18 @@ Submitted JSON:
     "duration": "60.0",
     "recurrence_type": "WEK",
     "subject": "Chess club - test change",
-    "category": "LEI"
+    "category": "CLU"
 }
 ```
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/event26.png" width=800>
+</p>
 
 ### Test 59
 
-**Remember event id in URL!**
-Use URL `events/xx`
+Use URL `events/54`
 
 When authenticated as user *chief1*, the above URL with the following JSON data should result in corresponding changes to the event, because although this user did not create the event, they have tribe admin status.
 
@@ -754,15 +926,20 @@ Submitted JSON:
     "start": "2023-01-15T10:00:00",
     "duration": "30.0",
     "recurrence_type": "TWK",
-    "subject": "Chess club - test change again!",
+    "subject": "Chess club - more change",
     "category": "EDU"
 }
 ```
 
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/event27.png" width=800>
+</p>
+
 ### Test 60
 
-**Remember event id in URL!**
-Use URL `events/xx`
+Use URL `events/54`
 
 When authenticated as user *chief1*, the above URL with the following JSON data should result in a HTTP 400 error, with appropriate validation error messages for each field.
 
@@ -779,35 +956,63 @@ Submitted JSON:
 }
 ```
 
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/event28.png" width=800>
+</p>
+
 ## `events/<id:int>/` DELETE
 
 ### Test 61
 
-**Remember event id in URL!**
-Use URL `events/xx`
+Use URL `events/54`
 
-When authenticated as user *chief2* (has tribe admin permissions), this URL should result in a HTTP 403 error, as this user is not part of the same tribe as *family1a* who created the event.
+When authenticated as user *chief2* (has tribe admin permissions), this URL should result in a HTTP 404 error, as this user is not part of the same tribe as *family1a* who created the event.
+
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/event29.png" width=800>
+</p>
 
 ### Test 62
 
-**Remember event id in URL!**
-Use URL `events/xx`
+Use URL `events/54`
 
 When authenticated as user *family1b* (does not have tribe admin permissions), this URL should result in a HTTP 403 error, as this user was not the creator of the event, although they are a member of the same tribe as the creator.
 
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/event30.png" width=800>
+</p>
+
 ### Test 67
 
-**Remember event id in URL!**
-Use URL `events/xx`
+Use URL `events/54`
 
 When authenticated as user *family1a* (does not have tribe admin permissions),this URL should result in the deletion of the event, as this user was the creator.
+
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/event31.png" width=800>
+</p>
 
 ### Test 68
 
 **Remember event id in URL!**
-Use URL `events/xx`
+Use URL `events/56`
 
-When authenticated as user *chief1* (has tribe admin permissions),this URL should result in the deletion of the event, as this user is the tribe admin, although did not create it (the event from test 67 was re-created for this test).
+When authenticated as user *chief1* (has tribe admin permissions),this URL should result in the deletion of the event, as this user is the tribe admin, although did not create it (another event was created for this test with *family1a* as owner).
+
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/event32.png" width=800>
+</p>
+
 
 ## `events/response/<id:int>` PUT
 
