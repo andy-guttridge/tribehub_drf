@@ -17,7 +17,6 @@ class Event(models.Model):
     to = models.ManyToManyField(
         User,
         related_name='event',
-        null=True,
         blank=True
     )
     start = models.DateTimeField(editable=True)
