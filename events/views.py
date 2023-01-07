@@ -1,5 +1,6 @@
 from rest_framework import status, filters
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.exceptions import PermissionDenied, NotAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import generics, serializers
@@ -221,6 +222,11 @@ class EventResponse(APIView):
 
             try:
                 self.check_object_permissions(request, event)
+            except (PermissionDenied, NotAuthenticated) as e:
+                return Response(
+                    str(e),
+                    status=status.HTTP_401_UNAUTHORIZED
+                )
             except Exception as e:
                 return Response(
                     str(e),
