@@ -1002,7 +1002,6 @@ When authenticated as user *family1a* (does not have tribe admin permissions),th
 
 ### Test 68
 
-**Remember event id in URL!**
 Use URL `events/56`
 
 When authenticated as user *chief1* (has tribe admin permissions),this URL should result in the deletion of the event, as this user is the tribe admin, although did not create it (another event was created for this test with *family1a* as owner).
@@ -1013,44 +1012,61 @@ When authenticated as user *chief1* (has tribe admin permissions),this URL shoul
     <img src="readme_media/testing/event32.png" width=800>
 </p>
 
-
 ## `events/response/<id:int>` PUT
 
 ### Test 69
 
-**Remember event id in URL!**
-Use URL `events/response/xx`
+Use URL `events/response/53`
 
 When unauthenticated, the above URL should result in a HTTP 403 error.
 
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/event33.png" width=800>
+</p>
+
 ### Test 70
 
-**Remember event id in URL!**
-Use URL `events/response/xx`
+Use URL `events/response/53`
 
-When authenticated as user *family1a* (user id 3), a PUT request with the following JSON should result in this user being added to the `accepted` field of the event.
+When authenticated as user *family1a* (user id 3), a PUT request with the following JSON should result in an HTTP 200 status with a success message and this user being added to the `accepted` field of the event. 
 
 Submitted JSON:
+
 ```
 {"event_response": "accept"}
 ```
 
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/event34a.png" width=800>
+    <img src="readme_media/testing/event34b.png" width=800>
+</p>
+
 ### Test 71
 
-**Remember event id in URL!**
-Use URL `events/response/xx`
+Use URL `events/response/53`
 
-When authenticated as user *family1a* (user id 3), a PUT request with the following JSON should result in this user being removed from the `accepted` field of the event.
+When authenticated as user *family1a* (user id 3), a PUT request with the following JSON should result in a HTTP 200 status with a success message and this user being removed from the `accepted` field of the event.
 
 Submitted JSON:
 ```
 {"event_response": "decline"}
 ```
 
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/event35a.png" width=800>
+    <img src="readme_media/testing/event35b.png" width=800>
+</p>
+
+
 ### Test 72
 
-**Remember event id in URL!**
-Use URL `events/response/xx`
+Use URL `events/response/53`
 
 When authenticated as user *family1a* (user id 3), a PUT request with the following JSON should result in a HTTP 400 error, with an error message of 'Value must equal accept or decline'.
 
@@ -1059,10 +1075,15 @@ Submitted JSON:
 {"event_response": "maybe"}
 ```
 
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/event36.png" width=800>
+</p>
+
 ### Test 73
 
-**Remember event id in URL!**
-Use URL `events/response/xx`
+Use URL `events/response/53`
 
 When authenticated as user *family1a* (user id 3), a PUT request with the following JSON should result in a HTTP 400 error, with an error message of 'An event response is required'.
 
@@ -1071,9 +1092,15 @@ Submitted JSON:
 {"event_response": ""}
 ```
 
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/event37.png" width=800>
+</p>
+
 ### Test 74
 
-Use URL `events/response/xx`
+Use URL `events/response/53`
 
 When authenticated as user *family1c* (user id 5), a PUT request with the following JSON should result in a HTTP 400 error, with an error message of 'Users who are not invited to this event cannot respond.'.
 
@@ -1082,9 +1109,15 @@ Submitted JSON:
 {"event_response": "accept"}
 ```
 
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/event38.png" width=800>
+</p>
+
 ### Test 75
 
-Use URL `events/response/xx`
+Use URL `events/response/53`
 
 When authenticated as user *family2a* (user id 8), a PUT request with the following JSON should result in a HTTP 400 error, with an error message of 'Users who are not invited to this event cannot respond.'.
 
@@ -1092,3 +1125,9 @@ Submitted JSON:
 ```
 {"event_response": "accept"}
 ```
+
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/event39.png" width=800>
+</p>
