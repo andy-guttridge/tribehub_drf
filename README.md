@@ -56,6 +56,7 @@ This is a pre-requisite for django-recurrence
 
 - During testing, it became apparent that a user could not create a calendar event with no other members of the tribe invited (i.e. events only for themselves), because the `to` field on the `Event` model defaulted to not allowing null values. This was fixed by adding `null=True` and `blank=True` arguments to the model.
 - Testing also revealed that the programatically generated events returned as repeat occurences included the currently authenticated user rather than the user who created the event as the owner. This was fixed by changing two variables in `events/utils.py`.
+- Testing demonstrated that sending using an id for a non-existent event object for the `events/response/<id>` endpoint resulted in an uncaught exception. Try...except blocks were added to  the EventResponse class in `events/views.py` to ensure any references to non-existent events are handled gracefully alongside permission related errors, and that appropriate HTTP status codes are returned for each class of error.
 
 ### Unresolved bugs
 
