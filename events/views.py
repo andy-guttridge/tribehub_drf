@@ -213,17 +213,20 @@ class EventResponse(APIView):
             user = request.user
 
             # Retrieve the appropriate event from the DB
+            event = Event.objects.filter(id=pk).first()
+
+            # Check user is authenticated and a member of the relevant tribe,
+            # then check if user is invited to the event.
+            # Make sure to catch any references to events that don't exist.
+
             try:
-                event = Event.objects.filter(id=pk).first()
+                self.check_object_permissions(request, event)
             except Exception as e:
                 return Response(
                     str(e),
-                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                    status=status.HTTP_404_NOT_FOUND
                 )
 
-            # Check user is authenticated and a member of the relevant tribe,
-            # then check if user is invited to the event
-            self.check_object_permissions(request, event)
             if not event.to.filter(pk=user.pk).exists():
                 return Response(
                     'Users who are not invited to this event cannot respond.',
