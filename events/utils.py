@@ -70,6 +70,6 @@ def make_event_notifications(event):
             subject=event.subject,
             message=f'Invitation from {event.user.profile.display_name}',
             type='INV',
-            event=sdfd
+            event=event
         )
         notification.save()
