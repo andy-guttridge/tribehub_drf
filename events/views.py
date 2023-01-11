@@ -5,8 +5,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import generics, serializers
 from django.contrib.auth.models import User
-from django.http import Http404, HttpResponseBadRequest
+from django.http import HttpResponseBadRequest, HttpResponseServerError
 from django_filters.rest_framework import DjangoFilterBackend
+from django.db import DatabaseError
 from datetime import datetime
 import dateutil.parser
 from tribehub_drf.permissions import (
@@ -25,7 +26,7 @@ from .serializers import (
     EventResponseSerializer
 )
 from .filters import EventFilter
-from .utils import make_events
+from .utils import make_events, make_event_notifications
 
 
 class EventList(generics.ListCreateAPIView):
@@ -133,10 +134,16 @@ class EventList(generics.ListCreateAPIView):
                         'be invited.'
                     }
                 )
-        serializer.save(
+        event = serializer.save(
             user=self.request.user,
             tribe=self.request.user.profile.tribe
         )
+        try:
+            make_event_notifications(event)
+        except Exception as e:
+            raise DatabaseError(
+                'An error occurred creating an event notification'
+            )
 
 
 class EventDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -193,7 +200,8 @@ class EventDetail(generics.RetrieveUpdateDestroyAPIView):
                         'be invited.'
                     }
                 )
-            serializer.save()
+            
+            event = serializer.save()
 
 
 class EventResponse(APIView):
