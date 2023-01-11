@@ -55,6 +55,24 @@ class IsThisTribeAdminOrOwner(BasePermission):
             )
 
 
+class IsOwner(BasePermission):
+    """
+    Custom permission to determine if the user is the owner
+    of the object received. The object being checked must have
+    a user field.
+    """
+    def has_object_permission(self, request, view, obj):
+        user = request.user
+        # Try...except block catches unauthenticated users who do not
+        # have a profile object.
+        try:
+            profile = user.profile
+        except AttributeError:
+            return False
+
+        return obj.user == profile.user
+
+
 class IsInTribeReadOnly(BasePermission):
     """
     Custom permission to determine if user is a member of the relevant tribe
