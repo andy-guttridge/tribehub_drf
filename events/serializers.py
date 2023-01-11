@@ -1,8 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from django.http import HttpResponseBadRequest
 
-from profiles.models import Profile
 from .models import Event
 
 
