@@ -26,6 +26,7 @@ urlpatterns = [
     path('', include('profiles.urls')),
     path('', include('tribes.urls')),
     path('', include('events.urls')),
+    path('', include('notifications.urls')),
 ]
 
 # Config code for recurrence field from
