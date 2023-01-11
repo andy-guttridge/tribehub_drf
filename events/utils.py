@@ -1,6 +1,8 @@
 from django.contrib.auth.models import User
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
+
+from notifications.models import Notification
 from .serializers import UserSerializer
 
 
@@ -59,3 +61,15 @@ def make_events(request, event, from_date, to_date):
             recurrence_events.append(recurrence_event)
 
     return recurrence_events
+
+
+def make_event_notifications(event):
+    for to_user in event.to.all():
+        notification = Notification.objects.create(
+            to_user=to_user,
+            subject=event.subject,
+            message=f'Invitation from {event.user.profile.display_name}',
+            type='INV',
+            event=sdfd
+        )
+        notification.save()
