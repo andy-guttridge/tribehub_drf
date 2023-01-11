@@ -16,7 +16,6 @@ class EventAdmin(admin.ModelAdmin):
         'recurrence_type',
         'subject',
         'category',
-        # 'accepted',
     )
 
     def get_to(self, obj):
