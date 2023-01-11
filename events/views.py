@@ -121,23 +121,27 @@ class EventList(generics.ListCreateAPIView):
         Also check if users invited to the event are part of the same tribe,
         and raise validation error if not.
         """
+        # Iterate through user ids received in POST request, and check each
+        # one is a member of the event creator's tribe and raise validation
+        # error if we find someone who is not in the tribe.
         for to_user_str in self.request.data.get('to'):
             try:
                 to_user = User.objects.filter(id=int(to_user_str)).first()
             except TypeError as e:
                 raise HttpResponseBadRequest
             if to_user.profile.tribe != self.request.user.profile.tribe:
-                print(to_user.profile.tribe, self.request.user.profile.tribe)
                 raise serializers.ValidationError(
                     {
                         'to': 'Users who are not part of this tribe cannot '
                         'be invited.'
                     }
                 )
+        # Create the event
         event = serializer.save(
             user=self.request.user,
             tribe=self.request.user.profile.tribe
         )
+        # Create notifications for each user invited
         try:
             make_event_notifications(event)
         except Exception as e:
@@ -187,21 +191,41 @@ class EventDetail(generics.RetrieveUpdateDestroyAPIView):
         Check if users invited to the event are part of the same tribe,
         and raise validation error if not.
         """
+        # new_users will contain ids of any users who have just been
+        # invited to this existing event.
+        new_users = []
+        # Check all users invited are part of the event creator's tribe
         for to_user_str in self.request.data.get('to'):
             try:
                 to_user = User.objects.filter(id=int(to_user_str)).first()
             except TypeError as e:
                 raise HttpResponseBadRequest
             if to_user.profile.tribe != self.request.user.profile.tribe:
-                print(to_user.profile.tribe, self.request.user.profile.tribe)
                 raise serializers.ValidationError(
                     {
                         'to': 'Users who are not part of this tribe cannot '
                         'be invited.'
                     }
                 )
-            
-            event = serializer.save()
+            # If user was not already invited to this event,
+            # add them to new_users list
+            if to_user not in list(
+                User.objects.filter(event=self.get_object().id).all()
+            ):
+                new_users.append(to_user)
+
+        # Create event and create notifications for all invited users
+        event = serializer.save()
+        try:
+            make_event_notifications(
+                event,
+                is_new_event=False,
+                new_users=new_users
+            )
+        except Exception as e:
+            raise DatabaseError(
+                'An error occurred creating an event notification'
+            )
 
 
 class EventResponse(APIView):
