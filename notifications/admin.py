@@ -8,7 +8,7 @@ class NotificationAdmin(admin.ModelAdmin):
     Specify fields to be accesible in admin panel for Profile model
     """
     list_display = (
-        'to_user',
+        'user',
         'date_created',
         'subject',
         'message',

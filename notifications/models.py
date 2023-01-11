@@ -6,7 +6,7 @@ from .notification_values import NotificationTypes
 
 
 class Notification(models.Model):
-    to_user = models.ForeignKey(
+    user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name='notification'

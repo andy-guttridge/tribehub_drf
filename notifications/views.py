@@ -20,5 +20,22 @@ class NotificationsList(generics.ListAPIView):
         the current user's
         """
         user = self.request.user
-        notifications_queryset = Notification.objects.filter(to_user=user)
+        notifications_queryset = Notification.objects.filter(user=user)
+        return notifications_queryset
+
+
+class NotificationDestroy(generics.DestroyAPIView):
+    """
+    Delete the specified notification. Only the owner
+    of the notification can perform this action.
+    """
+    permission_classes = [IsAuthenticated, IsOwner]
+
+    def get_queryset(self):
+        """
+        Override get_queryset method to limit notifications only to
+        the current user's
+        """
+        user = self.request.user
+        notifications_queryset = Notification.objects.filter(user=user)
         return notifications_queryset

@@ -83,7 +83,7 @@ def make_event_notifications(event, is_new_event=True, new_users=None):
                 'has made a change to this event.'
             )
         notification = Notification.objects.create(
-            to_user=to_user,
+            user=to_user,
             subject=event.subject,
             message=message,
             type='INV',
