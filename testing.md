@@ -2,7 +2,9 @@
 
 ## Methodology
 
-A series of manual tests were devised for each endpoint. The test data set includes a number of users grouped into families. Users with tribe administrative rights are called `chief1`, `chief2`, `chief3`, and each of these users is associated with a different tribe. Corresponding family members were created with numbers in the user names to signify which tribe they belong to, e.g. `family1a`, `family1b` are part of `chief1`'s tribe, `family2a`, `family2b` are part of `chief2`'s tribe, etc.
+A series of manual tests were devised for each endpoint. The test data set included a number of users grouped into families. Users with tribe administrative rights are called `chief1`, `chief2`, `chief3`, and each of these users is associated with a different tribe. Corresponding family members were created with numbers in the user names to signify which tribe they belong to, e.g. `family1a`, `family1b` are part of `chief1`'s tribe, `family2a`, `family2b` are part of `chief2`'s tribe, etc.
+
+Please note that object id numbers used in the test may vary in the screenshots and in the current state of the database, because some of the tests involved permanent deletion of objects, with similar objects subsequently recreated to continue testing.
 
 Tests were performed using the Django Rest Framework HTML interface running on a test server. Each endpoint has a heading below, with the corresponding tests and results.
 
@@ -596,6 +598,8 @@ Submitted JSON:
 
 ## `events/` GET
 
+*Please note that the most useful combinations of search and filter parameters were tested, however every conceivable combination may not have been tested due to time constraints. Given sufficient time, further tests would be conducted to cover every combination.*
+
 ### Test 37
 
 When authenticated as user *chief1*, all events only for the user's tribe from today and for the next two months should be returned. These should include programatically generated recurrences for repeat events (in this case, weekly recurrences for 'Violin lesson' and monthly recurrences for 'Chess club'). No events for other tribes should be returned.
@@ -624,7 +628,7 @@ When authenticated as user *family1c*, an identical set of events should be retu
 
 ### Test 39
 
-When authenticated as user *family2c*, all events only for the user's tribe from today and for the next two months should be returned (including recurrences). In this case, this should be fortnightly recurrences for 'Play rehearsals'. No events for other tribes should be returned.
+When authenticated as user *family2c*, all events only for the user's tribe from today and for the next two months should be returned (including recurrences). In this case, this should be an event called 'Play rehearsals' with fortnightly recurrences. No events for other tribes should be returned.
 
 **Result: PASS**
 
@@ -635,7 +639,7 @@ When authenticated as user *family2c*, all events only for the user's tribe from
 
 ### Test 40
 
-Use URL: `events/?from_date=2023-12-15T00:00:00`
+Used URL: `events/?from_date=2023-12-15T00:00:00`
 
 When authenticated as user *family1c*, all events for the tribe for two months from 15 December 2023 should be returned. For the test data set, these should only be programatically generated recurrences, since there are no actual events in the database after January 2023.
 
@@ -649,7 +653,7 @@ When authenticated as user *family1c*, all events for the tribe for two months f
 
 ### Test 41
 
-Use URL `events/?to_date=2023-03-15T00:00:00`
+Used URL `events/?to_date=2023-03-15T00:00:00`
 
 When authenticated as user *family1c*, all events for the tribe from today up to 15 March 2023 should be returned.
 
@@ -663,7 +667,7 @@ When authenticated as user *family1c*, all events for the tribe from today up to
 
 ### Test 42
 
-Use URL `events/?from_date=2023-03-15T00:00:00&to_date=2023-07-15T00:00:00`
+Used URL `events/?from_date=2023-03-15T00:00:00&to_date=2023-07-15T00:00:00`
 
 When authenticated as user *family1c*, all events for the tribe from 15 March 2023 up to 15 July should be returned.
 
@@ -677,7 +681,7 @@ When authenticated as user *family1c*, all events for the tribe from 15 March 20
 
 ### Test 43
 
-Use URL `events/?category=MUS`
+Used URL `events/?category=MUS`
 
 When authenticated as user *family1c*, all events for the tribe with a category of `MUS` (for Music) for two months from today should be returned.
 
@@ -686,11 +690,12 @@ When authenticated as user *family1c*, all events for the tribe with a category 
 <p align="center">
     <img src="readme_media/testing/event12a.png" width=400>
     <img src="readme_media/testing/event12b.png" width=400>
+    <img src="readme_media/testing/event12c.png" width=400>
 </p>
 
 ### Test 44
 
-Use URL `events/?from_date=2023-03-15T00:00:00&to_date=2023-07-15T00:00:00&category=MUS`
+Used URL `events/?from_date=2023-03-15T00:00:00&to_date=2023-07-15T00:00:00&category=MUS`
 
 When authenticated as user *family1c*, all events for the tribe with a category of 'MUS' (for Music) between 15 March 2023 and 15 July 2023 should be returned.
 
@@ -704,7 +709,7 @@ When authenticated as user *family1c*, all events for the tribe with a category 
 
 ### Test 45
 
-Use URL `events/?to=2`
+Used URL `events/?to=2`
 
 When authenticated as user *family1c*, all events to which `chief1` (user id 2) is invited for two months from today should be returned.
 
@@ -717,7 +722,7 @@ When authenticated as user *family1c*, all events to which `chief1` (user id 2) 
 
 ### Test 46
 
-Use URL `events/?from_date=2023-03-15T00:00:00&to_date=2023-07-15T00:00:00&to=2`
+Used URL `events/?from_date=2023-03-15T00:00:00&to_date=2023-07-15T00:00:00&to=2`
 
 When authenticated as user *family1c*, all events to which `chief1` (user id 2) is invited between 15 March 2023 and 15 July 2023 should be returned.
 
@@ -730,7 +735,7 @@ When authenticated as user *family1c*, all events to which `chief1` (user id 2) 
 
 ### Test 47
 
-Use URL `events/?search=Chess+club`
+Used URL `events/?search=Chess+club`
 
 When authenticated as user *family1c*, all events with `Chess club` in the subject for the tribe for two months from today should be returned.
 
@@ -739,12 +744,11 @@ When authenticated as user *family1c*, all events with `Chess club` in the subje
 <p align="center">
     <img src="readme_media/testing/event16a.png" width=400>
     <img src="readme_media/testing/event16b.png" width=400>
-    <img src="readme_media/testing/event16c.png" width=400>
 </p>
 
 ### Test 48
 
-Use URL `events/?from_date=2023-03-15T00:00:00&to_date=2023-07-15T00:00:00&search=Chess+club`
+Used URL `events/?from_date=2023-03-15T00:00:00&to_date=2023-07-15T00:00:00&search=Chess+club`
 
 When authenticated as user *family1c*, all events with `Chess club` in the subject for the tribe between 15 March 2023 and 15 July 2023 should be returned.
 
@@ -757,7 +761,7 @@ When authenticated as user *family1c*, all events with `Chess club` in the subje
 
 ### Test 49
 
-Use URL `events/?from_date=xxx&to_date=zzz`
+Used URL `events/?from_date=xxx&to_date=zzz`
 
 When authenticated as user *family1c*, the above URL should result in a HTTP 400 error with a message of 'Enter a valid date/time' for both the `from_date` and `to_date` fields.
 
@@ -769,7 +773,7 @@ When authenticated as user *family1c*, the above URL should result in a HTTP 400
 
 ### Test 50
 
-Use URL `events/?category=xxx`
+Used URL `events/?category=xxx`
 
 When authenticated as user *family1c*, the above URL should result in a HTTP 400 error with a message of 'Select a valid choice. xxx is not one of the available choices'.
 
@@ -783,7 +787,7 @@ When authenticated as user *family1c*, the above URL should result in a HTTP 400
 
 ### Test 51
 
-Use URL `events/54`
+Used URL `events/54`
 
 When not authenticated, the above URL should result in a HTTP 403 error.
 
@@ -795,7 +799,7 @@ When not authenticated, the above URL should result in a HTTP 403 error.
 
 ### Test 52
 
-Use URL `events/53`
+Used URL `events/53`
 
 When authenticated as user *family1b*, the above URL should return the 'Violin lesson' event.
 
@@ -807,7 +811,7 @@ When authenticated as user *family1b*, the above URL should return the 'Violin l
 
 ### Test 53
 
-Use URL `events/53`
+Used URL `events/53`
 
 When authenticated as user *chief2*, the above URL should result in a HTTP 404 error, as this user is not a member of the same tribe as the user who created the event.
 
@@ -821,7 +825,7 @@ When authenticated as user *chief2*, the above URL should result in a HTTP 404 e
 
 ### Test 54
 
-Use URL `events/53`
+Used URL `events/53`
 
 When authenticated as user *chief1*, the above URL with the following JSON data should result in corresponding changes to the event. Note a user has been added to the invitation, the date changed, the duration extended, the recurrence type changed from weekly to fortnightly, the subject amended and the category changed to education.
 
@@ -844,7 +848,7 @@ Submitted JSON:
 
 ### Test 55
 
-Use URL `events/53`
+Used URL `events/53`
 
 When authenticated as user *chief1*, the above URL with the following JSON data should result in a HTTP 400 error with a message of 'Users who are not part of this tribe cannot be invited'.
 
@@ -867,7 +871,7 @@ Submitted JSON:
 
 ### Test 56
 
-Use URL `events/53`
+Used URL `events/53`
 
 When authenticated as user *family1a*, the above URL with the following JSON data should result in a HTTP 403 error, as although the user is a member of the tribe, they did not create this event and are not a tribe administrator.
 
@@ -890,7 +894,7 @@ Submitted JSON:
 
 ### Test 58
 
-Use URL `events/54`
+Used URL `events/54`
 
 When authenticated as user *family1a*, the above URL with the following JSON data should result in corresponding changes to the event, as this user was the creator.
 
@@ -914,7 +918,7 @@ Submitted JSON:
 
 ### Test 59
 
-Use URL `events/54`
+Used URL `events/54`
 
 When authenticated as user *chief1*, the above URL with the following JSON data should result in corresponding changes to the event, because although this user did not create the event, they have tribe admin status.
 
@@ -939,7 +943,7 @@ Submitted JSON:
 
 ### Test 60
 
-Use URL `events/54`
+Used URL `events/54`
 
 When authenticated as user *chief1*, the above URL with the following JSON data should result in a HTTP 400 error, with appropriate validation error messages for each field.
 
@@ -966,7 +970,7 @@ Submitted JSON:
 
 ### Test 61
 
-Use URL `events/54`
+Used URL `events/54`
 
 When authenticated as user *chief2* (has tribe admin permissions), this URL should result in a HTTP 404 error, as this user is not part of the same tribe as *family1a* who created the event.
 
@@ -978,7 +982,7 @@ When authenticated as user *chief2* (has tribe admin permissions), this URL shou
 
 ### Test 62
 
-Use URL `events/54`
+Used URL `events/54`
 
 When authenticated as user *family1b* (does not have tribe admin permissions), this URL should result in a HTTP 403 error, as this user was not the creator of the event, although they are a member of the same tribe as the creator.
 
@@ -990,7 +994,7 @@ When authenticated as user *family1b* (does not have tribe admin permissions), t
 
 ### Test 67
 
-Use URL `events/54`
+Used URL `events/54`
 
 When authenticated as user *family1a* (does not have tribe admin permissions),this URL should result in the deletion of the event, as this user was the creator.
 
@@ -1002,7 +1006,7 @@ When authenticated as user *family1a* (does not have tribe admin permissions),th
 
 ### Test 68
 
-Use URL `events/56`
+Used URL `events/56`
 
 When authenticated as user *chief1* (has tribe admin permissions),this URL should result in the deletion of the event, as this user is the tribe admin, although did not create it (another event was created for this test with *family1a* as owner).
 
@@ -1016,7 +1020,7 @@ When authenticated as user *chief1* (has tribe admin permissions),this URL shoul
 
 ### Test 69
 
-Use URL `events/response/53`
+Used URL `events/response/53`
 
 When unauthenticated, the above URL should result in a HTTP 403 error.
 
@@ -1028,7 +1032,7 @@ When unauthenticated, the above URL should result in a HTTP 403 error.
 
 ### Test 70
 
-Use URL `events/response/53`
+Used URL `events/response/53`
 
 When authenticated as user *family1a* (user id 3), a PUT request with the following JSON should result in an HTTP 200 status with a success message and this user being added to the `accepted` field of the event. 
 
@@ -1047,7 +1051,7 @@ Submitted JSON:
 
 ### Test 71
 
-Use URL `events/response/53`
+Used URL `events/response/53`
 
 When authenticated as user *family1a* (user id 3), a PUT request with the following JSON should result in a HTTP 200 status with a success message and this user being removed from the `accepted` field of the event.
 
@@ -1066,7 +1070,7 @@ Submitted JSON:
 
 ### Test 72
 
-Use URL `events/response/53`
+Used URL `events/response/53`
 
 When authenticated as user *family1a* (user id 3), a PUT request with the following JSON should result in a HTTP 400 error, with an error message of 'Value must equal accept or decline'.
 
@@ -1083,7 +1087,7 @@ Submitted JSON:
 
 ### Test 73
 
-Use URL `events/response/53`
+Used URL `events/response/53`
 
 When authenticated as user *family1a* (user id 3), a PUT request with the following JSON should result in a HTTP 400 error, with an error message of 'An event response is required'.
 
@@ -1100,7 +1104,7 @@ Submitted JSON:
 
 ### Test 74
 
-Use URL `events/response/53`
+Used URL `events/response/53`
 
 When authenticated as user *family1c* (user id 5), a PUT request with the following JSON should result in a HTTP 400 error, with an error message of 'Users who are not invited to this event cannot respond.'.
 
@@ -1117,7 +1121,7 @@ Submitted JSON:
 
 ### Test 75
 
-Use URL `events/response/53`
+Used URL `events/response/53`
 
 When authenticated as user *family2a* (user id 8), a PUT request with the following JSON should result in a HTTP 400 error, with an error message of 'Users who are not invited to this event cannot respond.'.
 
