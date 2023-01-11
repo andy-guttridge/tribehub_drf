@@ -5,20 +5,14 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import generics, serializers
 from django.contrib.auth.models import User
-from django.http import HttpResponseBadRequest, HttpResponseServerError
+from django.http import HttpResponseBadRequest
 from django_filters.rest_framework import DjangoFilterBackend
 from django.db import DatabaseError
-from datetime import datetime
-import dateutil.parser
 from tribehub_drf.permissions import (
-    IsTribeAdmin,
-    IsThisTribeAdmin,
     IsThisTribeAdminOrOwner,
     IsInTribeReadOnly,
     IsInTribe
 )
-from tribes.models import Tribe
-from profiles.models import Profile
 from .models import Event
 from .serializers import (
     EventSerializer,
