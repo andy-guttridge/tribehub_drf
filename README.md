@@ -60,6 +60,8 @@ This is a pre-requisite for django-recurrence
 
 ### Unresolved bugs
 
+- The `perform_create` method of the `ListCreate` generic view is overriden in `contacts/views.py`. Django did not seem to respond correctly to custom permission classes when this method is overriden, meaning that unauthorised users (i.e. authenticated users without tribe admin status) were able create new contacts. It was verified that the relevant custom permission classes were being called and returning the correct values, and it remains uncertain whether this issue is due to a bug in Django Rest Framework or in this project. The issue was overcome by manually checking the status of the user, but given more time it would be good to look into this further and revert to correct use of permission classes if possible.
+
 ## Deployment
 
 ## Credits
