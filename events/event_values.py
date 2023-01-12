@@ -28,6 +28,7 @@ class EventCategories(models.TextChoices):
     EDUCATION = 'EDU', _('Education')
     MEDICAL = 'MED', _('Medical')
     MUSIC = 'MUS', _('Music')
+    OTHER = 'OTH', _('Other')
     SHOP = 'SHO', _('Shopping')
     SPORT = 'SPO', _('Sport')
     VAC = 'VAC', _('Vacation')
