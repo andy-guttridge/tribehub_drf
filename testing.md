@@ -577,15 +577,13 @@ Submitted JSON:
 
 ### Test 36
 
-### **NOT YET IMPLEMENTED**
-
-When authenticated as user *chief1*, a request with the following JSON data should result in the creation of two new notification objects in the database, one for each invited user. These should be invitations to a new event.
+When authenticated as user *chief1* (user id 2), a request with the following JSON data should result in the creation of two new notification objects in the database, one for each invited user. These should be invitations to a new event.
 
 Submitted JSON:
 
 ```
 {
-    "to": ["2", "4"],
+    "to": ["5", "4"],
     "start": "2023-01-15T10:00:00",
     "duration": "30.0",
     "recurrence_type": "MON",
@@ -594,28 +592,13 @@ Submitted JSON:
 }
 ```
 
-**NOT YET IMPLEMENTED**
+**Result: PASS**
 
-### Test 36
+A new event was created using a POST request to this endpoint, and appropriate notifications were verified to have been created using the Django admin panel.
 
-### **NOT YET IMPLEMENTED**
-
-When authenticated as user *chief1*, a request with the following JSON data should result in the creation of three new notification objects in the database. A notification of a change to an existing event should be generated for user ids 2 and 4, as they were already invited, while a notification of a new invitation should be generated for user 5 as they have  been added to an existing event.
-
-Submitted JSON:
-
-```
-{
-    "to": ["2", "4", "5"],
-    "start": "2023-01-17T10:00:00",
-    "duration": "30.0",
-    "recurrence_type": "TWK",
-    "subject": "Maths tutor - changed",
-    "category": "EDU"
-}
-```
-
-**NOT YET IMPLEMENTED**
+<p align="center">
+    <img src="readme_media/testing/notifications1.png" width=800>
+</p>
 
 ## `events/` GET
 
@@ -852,6 +835,7 @@ When authenticated as user *chief1*, the above URL with the following JSON data 
 
 Submitted JSON:
 
+```
 {
     "to": ["3", "4", "5"],
     "start": "2023-01-20T10:00:00",
@@ -860,12 +844,18 @@ Submitted JSON:
     "subject": "Violin lesson - change",
     "category": "EDU"
 }
+```
+
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/event23.png" width=800>
+</p>
+
 
 ### Test 54B
 
-### **NOT YET IMPLEMENTED**
-
-When authenticated as user *chief1*, a request with the following JSON data (the same as in test 54) should result in the creation of three new notification objects in the database. A notification that changes have been made to an existing event should be created for user ids 3 and 4, as they were already invited. A notification of an invitation to an event should be created for user id 5, as they were not previously invited.
+When authenticated as user *chief1*, a request with the following JSON data (the same as in test 54) should result in the creation of three new notification objects in the database. A notification that changes have been made to an existing event should be created for user ids 3 and 4 (*family1a* and *family1b*), as they were already invited. A notification of an invitation to an event should be created for user id 5 (*family1c*), as they were not previously invited.
 
 Submitted JSON:
 
@@ -880,12 +870,10 @@ Submitted JSON:
 }
 ```
 
-**NOT YET IMPLEMENTED**
-
 **Result: PASS**
 
 <p align="center">
-    <img src="readme_media/testing/event23.png" width=800>
+    <img src="readme_media/testing/notifications2.png" width=800>
 </p>
 
 ### Test 55
@@ -1184,29 +1172,59 @@ Submitted JSON:
 
 When authenticated as user *family1a* (user id 3), all notifications for that user should be returned, and none for other users.
 
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/notifications3.png" width=800>
+</p>
+
 ### Test 77
 
 When authenticated as user *family2c* (user id 10), all notifications for that user should be returned, and none for other users.
+
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/notifications4.png" width=800>
+</p>
 
 ## `notifications/<id:int>/` DELETE
 
 ### Test 78
 
-Used URL `notifications/xxx`
+Used URL `notifications/97`
 
-When authenticated as user *family1b* (user id 4), the user should not be able to delete this notification, as it was not sent to them.
+When authenticated as user *family1b* (user id 4), the user should not be able to delete this notification, as it was sent to *family1a*. An HTTP 404 error should be returned, as this object should not be retrieved from the database for this user.
+
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/notifications5.png" width=800>
+</p>
 
 ### Test 79
 
-Used URL `notifications/xxx`
+Used URL `notifications/97`
 
 When not authenticated, the user should not be able to access this end point.
 
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/notifications6.png" width=800>
+</p>
+
 ### Test 80
 
-Used URL `notifications/xxx`
+Used URL `notifications/97`
 
-When authenticated as user *family1a* (user id 3), the notification should be successfully deleted, since it was sent to them.
+When authenticated as user *family1a* (user id 3), the notification should be successfully deleted with an HTTP 204 response code. Since the notification was sent to this user, they should have permission to delete it.
+
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/notifications7.png" width=800>
+</p>
 
 ## `contacts/` POST
 
