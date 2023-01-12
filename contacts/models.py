@@ -8,9 +8,9 @@ class Contact(models.Model):
         Tribe, on_delete=models.CASCADE,
         related_name='tribe'
     )
-    category = models.CharField(max_length=25)
-    title = models.CharField(max_length=25)
-    first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
-    phone = models.CharField(max_length=50)
+    category = models.CharField(max_length=25, null=True)
+    title = models.CharField(max_length=25, null=True)
+    first_name = models.CharField(max_length=50, null=True)
+    last_name = models.CharField(max_length=50, null=True)
+    phone = models.CharField(max_length=50, null=True)
     email = models.EmailField(null=True)
