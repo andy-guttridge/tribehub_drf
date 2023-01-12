@@ -10,6 +10,133 @@ Tests were performed using the Django Rest Framework HTML interface running on a
 
 **To add detail about performing the same tests on the deployed API via the React front-end**.
 
+- [TribeHub API Manual Testing](#tribehub-api-manual-testing)
+  * [Methodology](#methodology)
+  * [`/accounts/tribe` POST](#--accounts-tribe--post)
+    + [Test 1](#test-1)
+    + [Test 2](#test-2)
+    + [Test 3](#test-3)
+    + [Test 4](#test-4)
+    + [Test 5](#test-5)
+    + [Test 6](#test-6)
+  * [`/accounts/user/` POST](#--accounts-user---post)
+    + [Test 7](#test-7)
+    + [Test 8](#test-8)
+    + [Test 9](#test-9)
+    + [Test 10](#test-10)
+    + [Test 11](#test-11)
+  * [`/accounts/user/<id:int>` DELETE](#--accounts-user--id-int---delete)
+    + [Test 12](#test-12)
+    + [Test 13](#test-13)
+    + [Test 14](#test-14)
+    + [Test 15](#test-15)
+    + [Test 16](#test-16)
+  * [`/tribe` GET](#--tribe--get)
+    + [Test 17](#test-17)
+    + [Test 18](#test-18)
+    + [Test 19](#test-19)
+    + [Test 20](#test-20)
+    + [Test 21](#test-21)
+  * [`/profile/<id:int>` GET](#--profile--id-int---get)
+    + [Test 22](#test-22)
+    + [Test 23](#test-23)
+    + [Test 24](#test-24)
+    + [Test 25](#test-25)
+    + [Test 26](#test-26)
+  * [`/profile/<id:int>` PUT](#--profile--id-int---put)
+    + [Test 27](#test-27)
+    + [Test 28](#test-28)
+    + [Test 29](#test-29)
+    + [Test 30](#test-30)
+    + [Test 31](#test-31)
+  * [`/events/` POST](#--events---post)
+    + [Test 31](#test-31-1)
+    + [Test 32](#test-32)
+    + [Test 33](#test-33)
+    + [Test 34](#test-34)
+    + [Test 35](#test-35)
+    + [Test 36](#test-36)
+  * [`events/` GET](#-events---get)
+    + [Test 37](#test-37)
+    + [Test 38](#test-38)
+    + [Test 39](#test-39)
+    + [Test 40](#test-40)
+    + [Test 41](#test-41)
+    + [Test 42](#test-42)
+    + [Test 43](#test-43)
+    + [Test 44](#test-44)
+    + [Test 45](#test-45)
+    + [Test 46](#test-46)
+    + [Test 47](#test-47)
+    + [Test 48](#test-48)
+    + [Test 49](#test-49)
+    + [Test 50](#test-50)
+  * [`events/<id:int>/` GET](#-events--id-int----get)
+    + [Test 51](#test-51)
+    + [Test 52](#test-52)
+    + [Test 53](#test-53)
+  * [`events/<id:int>/` PUT](#-events--id-int----put)
+    + [Test 54](#test-54)
+    + [Test 54B](#test-54b)
+    + [Test 55](#test-55)
+    + [Test 56](#test-56)
+    + [Test 58](#test-58)
+    + [Test 59](#test-59)
+    + [Test 60](#test-60)
+  * [`events/<id:int>/` DELETE](#-events--id-int----delete)
+    + [Test 61](#test-61)
+    + [Test 62](#test-62)
+    + [Test 67](#test-67)
+    + [Test 68](#test-68)
+  * [`events/response/<id:int>` POST](#-events-response--id-int---post)
+    + [Test 69](#test-69)
+    + [Test 70](#test-70)
+    + [Test 71](#test-71)
+    + [Test 72](#test-72)
+    + [Test 73](#test-73)
+    + [Test 74](#test-74)
+    + [Test 75](#test-75)
+  * [`notifications/` GET](#-notifications---get)
+    + [Test 76](#test-76)
+    + [Test 77](#test-77)
+  * [`notifications/<id:int>/` DELETE](#-notifications--id-int----delete)
+    + [Test 78](#test-78)
+    + [Test 79](#test-79)
+    + [Test 80](#test-80)
+  * [`contacts/` POST](#-contacts---post)
+    + [Test 81](#test-81)
+    + [Test 82](#test-82)
+    + [Test 83](#test-83)
+    + [Test 83](#test-83-1)
+    + [Test 86](#test-86)
+  * [`contacts/` GET](#-contacts---get)
+    + [Test 87](#test-87)
+    + [Test 88](#test-88)
+    + [Test 89](#test-89)
+    + [Test 90](#test-90)
+    + [Test 91](#test-91)
+    + [Test 92](#test-92)
+    + [Test 93](#test-93)
+  * [`contacts/<id:int>/` GET](#-contacts--id-int----get)
+    + [Test 94](#test-94)
+    + [Test 95](#test-95)
+    + [Test 96](#test-96)
+    + [Test 97](#test-97)
+  * [`contacts/<id:int>/` PUT](#-contacts--id-int----put)
+    + [Test 97](#test-97-1)
+    + [Test 98](#test-98)
+    + [Test 99](#test-99)
+  * [`contacts/<id:int>/` DELETE](#-contacts--id-int----delete)
+    + [Test 100](#test-100)
+    + [Test 101](#test-101)
+    + [Test 102](#test-102)
+
+<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
+
+
+<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
+
+
 ## `/accounts/tribe` POST
 
 ### Test 1
@@ -370,7 +497,7 @@ When not authenticated, a GET request with the user id 9 (corresponding to user 
     <img src="readme_media/testing/profile5.png" width=800>
 </p>
 
-## `/profile/<id:int>`
+## `/profile/<id:int>` PUT
 ### Test 27
 When authenticated as user *chief2* (has family admin permission), a request made with the following JSON should result in the `display_name` field for user *family2b* being changed in the database to *family2b_test_change* and the image url being saved as `test_change`. Changes to other fields should not be saved, as they are read-only.
 
@@ -825,7 +952,7 @@ When authenticated as user *chief2*, the above URL should result in a HTTP 404 e
     <img src="readme_media/testing/event22.png" width=800>
 </p>
 
-## `events/<id:int>/`
+## `events/<id:int>/` PUT
 
 ### Test 54
 
@@ -1046,7 +1173,7 @@ When authenticated as user *chief1* (has tribe admin permissions),this URL shoul
     <img src="readme_media/testing/event32.png" width=800>
 </p>
 
-## `events/response/<id:int>`
+## `events/response/<id:int>` POST
 
 ### Test 69
 
