@@ -1230,27 +1230,106 @@ When authenticated as user *family1a* (user id 3), the notification should be su
 
 ### Test 81
 
-When authenticated as user *chief1* (user id 2), a POST request to this URL with the following JSON should result in the creation of a new contact, linked to this user's tribe.
+When authenticated as user *chief1* (user id 2), a POST request to this URL with the following JSON should result in the creation of a new contact, linked to this user's tribe. An HTTP 201 status code should be returned.
+
+Submitted JSON:
+
+```
+{
+    "category": "Doctor",
+    "title": "Dr",
+    "first_name": "Faiza",
+    "last_name": "Al-Ahmad",
+    "phone": "01202 545454",
+    "email": "ahmadf@blandfordsurgery.co.uk"
+}
+```
+
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/contacts1.png" width=800>
+</p>
+
 
 ### Test 82
 
-When authenticated as user *chief2* (user id 7), a POST request to this URL with the following JSON should result in the creation of a new contact, linked to this user's tribe.
+When authenticated as user *chief2* (user id 7), a POST request to this URL with the following JSON should result in the creation of a new contact, linked to this user's tribe. An HTTP 201 status code should be returned.
+
+Submitted JSON:
+
+```
+{
+    "category": "Dentist",
+    "title": "Dr",
+    "first_name": "Raymond",
+    "last_name": "Cartwright",
+    "phone": "01929 747747",
+    "email": "rcartwright@thepractice.co.uk"
+}
+```
+
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/contacts2.png" width=800>
+</p>
 
 ### Test 83
 
-When authenticated as user *family1a* (user id 3), a POST request to this URL with the following JSON should result in a HTTP 400 error, since this user does not have family admin permissions.
+When authenticated as user *family1a* (user id 3), a POST request to this URL with the following JSON should result in a HTTP 403 error, since this user does not have family admin permissions.
 
-### Test 84
+Submitted JSON:
 
-When authenticated as user *chief2* (user id 7), a POST request to this URL with the following JSON should result in a HTTP 404 error, since this object should not be returned from the database for this user, as it is linked to a different tribe than theirs.
+```
+{
+    "category": "Toy shop",
+    "title": "Mr",
+    "first_name": "R",
+    "last_name": "Briggs",
+    "phone": "01929 123456",
+    "email": "sales@awesometoys.co.uk"
+}
+```
 
-### Test 85
+**Result: PASS**
 
-When authenticated as user *chief2* (user id 7), a POST request to this URL with the following JSON should result in a HTTP 400 error with an appropriate error message for each field.
+<p align="center">
+    <img src="readme_media/testing/contacts3.png" width=800>
+</p>
+
+### Test 83
+
+When authenticated as user *chief2* (user id 7), a POST request to this URL with the following JSON (which includes values which exceed the maximum length for each field and an invalid email address) should result in an HTTP 400 error with an appropriate error message for each field.
+
+Submitted JSON:
+
+```
+{
+    "category": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "title": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "first_name": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "last_name": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "phone": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "email": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+}
+```
+
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/contacts4.png" width=800>
+</p>
 
 ### Test 86
 
-When not authenticated, a POST request to this URL with the following JSON should result in a HTTP 403 error.
+When not authenticated, the user should not be able to use the POST method for this end point. The Django Rest Framework API demonstrate this is the case, as an unauthenticated user cannot access this end point.
+
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/contacts5.png" width=800>
+</p>
 
 ## `contacts/` GET
 
@@ -1258,96 +1337,234 @@ When not authenticated, a POST request to this URL with the following JSON shoul
 
 When authenticated as user *chief1* (user id 2), a GET request to this URL should return all the contacts for this user's tribe, and none for other tribes.
 
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/contacts6.png" width=800>
+</p>
+
 ### Test 88
 
 When authenticated as user *family1b* (user id 4), a GET request to this URL should return all the contacts for this user's tribe (the same as for test 86), and none for other tribes.
+
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/contacts7.png" width=800>
+</p>
 
 ### Test 89
 
 When authenticated as user *chief2* (user id 7), a GET request to this URL should return all the contacts for this user's tribe, and none for other tribes.
 
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/contacts8.png" width=800>
+</p>
+
 ### Test 90
 
 When authenticated as user *family2c* (user id 10), a GET request to this URL should return all the contacts for this user's tribe (the same as for test 87), and none for other tribes.
+
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/contacts9.png" width=800>
+</p>
 
 ### Test 91
 
 When not authenticated, a GET request to this URL should return a HTTP 403 error.
 
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/contacts10.png" width=800>
+</p>
+
 ### Test 92
 
-Used URL `contacts/?search=xxx`
+Used URL `contacts/?search=dental`
 
-When authenticated as user *family1c*, this URL should return all contacts for this user's tribe where the search term xxx appears in any field.
+When authenticated as user *family1c*, this URL should return all contacts for this user's tribe where the search term `dental` appears in any field.
+
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/contacts11.png" width=800>
+</p>
 
 ### Test 93
 
-Used URL `contacts/?search=xxx`
+Used URL `contacts/?search=dr`
 
-When authenticated as user *chief2*, this URL should return all contacts for this user's tribe where the search term xxx appears in any field.
+When authenticated as user *chief2*, this URL should return all contacts for this user's tribe where the search term `dr` appears in any field.
+
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/contacts12.png" width=800>
+</p>
 
 ## `contacts/<id:int>/` GET
 
 ### Test 94
 
-Used URL `contacts/xx`
+Used URL `contacts/23`
 
-When authenticated as user *chief1* (user id 2), a GET request to this URL should return details of contact id xx.
+When authenticated as user *chief1* (user id 2), a GET request to this URL should return details of contact id 23.
+
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/contacts13.png" width=800>
+</p>
 
 ### Test 95
 
-Used URL `contacts/xx`
+Used URL `contacts/23`
 
-When authenticated as user *family1d* (user id 6), a GET request to this URL should return details of contact id xx.
+When authenticated as user *family1d* (user id 6), a GET request to this URL should return details of contact id 23.
+
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/contacts14.png" width=800>
+</p>
 
 ### Test 96
 
-Used URL `contacts/xx`
+Used URL `contacts/23`
 
 When authenticated as user *chief2* (user id 7), a GET request to this URL should return a HTTP 404 error, since this user is a member of a different tribe and no results should be returned from the database for them.
 
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/contacts15.png" width=800>
+</p>
+
 ### Test 97
 
-Used URL `contacts/xx`
+Used URL `contacts/23`
 
 When not authenticated, a GET request to this URL should return a HTTP 403 error.
+
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/contacts16.png" width=800>
+</p>
 
 ## `contacts/<id:int>/` PUT
 
 ### Test 97
 
-Used URL `contacts/xx`
+Used URL `contacts/23`
 
 When authenticated as user *chief1* (user id 2), a PUT request to this URL with the following JSON should result in the contact being updated with the relevant information for the `category`, `title`, `first_name`, `last_name`, `phone` and `email` fields, as this user has tribe admin status and the contact belongs to their tribe. The data in the id and tribe fields should not be changed.
 
+Submitted JSON:
+
+```
+{
+    "id": 24,
+    "tribe": {
+        "tribe_id": 3,
+        "tribe_name": "Tribe2"
+    },
+    "category": "Dentist - test change",
+    "title": "Dr - test change",
+    "first_name": "Bohdan - test change",
+    "last_name": "Nazarchuk - test change",
+    "phone": "01202 123987 - test change",
+    "email": "nazarchukb_test_change@minsterdental.co.uk"
+}
+```
+
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/contacts17.png" width=800>
+</p>
+
 ### Test 98
 
-Used URL `contacts/xx`
+Used URL `contacts/23`
 
 When authenticated as user *family1a* (user id 3), a PUT request to this URL with the following JSON should result in a HTTP 403 error, as this user does not have tribe admin status.
 
+Submitted JSON:
+
+```
+{
+    "id": 24,
+    "tribe": {
+        "tribe_id": 3,
+        "tribe_name": "Tribe2"
+    },
+    "category": "Dentist - test change",
+    "title": "Dr - test change",
+    "first_name": "Bohdan - test change",
+    "last_name": "Nazarchuk - test change",
+    "phone": "01202 123987 - test change",
+    "email": "nazarchukb_test_change@minsterdental.co.uk"
+}
+```
+
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/contacts18.png" width=800>
+</p>
+
 ### Test 99
 
-Used URL `contacts/xx`
+Used URL `contacts/23`
 
 When authenticated as user *chief2* (user id 7), a PUT request to this URL with the following JSON should result in a HTTP 404 error, as this user is a member of a different tribe and the object should not be returned from the database for them.
+
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/contacts19.png" width=800>
+</p>
 
 ## `contacts/<id:int>/` DELETE
 
 ### Test 100
 
-Used URL `contacts/xx`
+Used URL `contacts/25`
 
 When authenticated as user *family1a* (user id 3), a DELETE request to this URL should result in a HTTP 403 error, as this user does not have tribe admin status.
 
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/contacts20.png" width=800>
+</p>
+
 ### Test 101
 
-Used URL `contacts/xx`
+Used URL `contacts/25`
 
 When authenticated as user *chief2* (user id 7), a DELETE request to this URL should result in a HTTP 404 error, as this user is a member of a different tribe and this object should not be returned from the database for them.
+
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/contacts21.png" width=800>
+</p>
 
 ### Test 102
 
 Used URL `contacts/xx`
 
 When authenticated as user *chief1* (user id 2), a DELETE request to this URL should result in the object being detailed and a HTTP 204 status message.
+
+**Result: PASS**
+
+<p align="center">
+    <img src="readme_media/testing/contacts22.png" width=800>
+</p>
