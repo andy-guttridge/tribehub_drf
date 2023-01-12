@@ -12,10 +12,20 @@ from .serializers import ContactSerializer
 class ContactListCreate(generics.ListCreateAPIView):
     """
     List contacts for the user's tribe and create new
-    contact if user is tribe admin
+    contact if user is tribe admin. Can search on category,
+    title, first_name, last_name, phone, email.
     """
     permission_classes = [IsInTribeReadOnly | IsTribeAdmin, IsAuthenticated]
     serializer_class = ContactSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = [
+        'category',
+        'title',
+        'first_name',
+        'last_name',
+        'phone',
+        'email'
+    ]
 
     def get_queryset(self):
         """
