@@ -117,7 +117,7 @@ Submitted JSON:
     "username":"chief2",
     "password":"password1",
     "password2":"password1",
-    "tribename":"jitdsuecqrxzfehnrdiywskzxuuzfifputzgjgggupvidkcofsxtxqluaifh"
+    "tribename":"jitdsuecqrxzfehnrdiywskzxuuzfizgjgggupvidkcofsxtxqluaifh"
 }
 ```
 
@@ -370,9 +370,9 @@ When not authenticated, a GET request with the user id 9 (corresponding to user 
     <img src="readme_media/testing/profile5.png" width=800>
 </p>
 
-## `/profile/<id:int>` PUT
+## `/profile/<id:int>`
 ### Test 27
-When authenticated as user *chief2* (has family admin permission), a PUT request made with the following JSON should result in the `display_name` field for user *family2b* being changed in the database to *family2b_test_change* and the image url being saved as `test_change`. Changes to other fields should not be saved, as they are read-only.
+When authenticated as user *chief2* (has family admin permission), a request made with the following JSON should result in the `display_name` field for user *family2b* being changed in the database to *family2b_test_change* and the image url being saved as `test_change`. Changes to other fields should not be saved, as they are read-only.
 
 Submitted JSON:
 ```
@@ -392,7 +392,7 @@ Submitted JSON:
 </p>
 
 ### Test 28
-When authenticated as user *family2c* (does not have family admin permission -  but should be  able to change own profile), a PUT request made with the following JSON should result in the `display_name` field for user *family2c* being changed in the database to *family2c_test_change* and the image url being saved as `test_change`. Changes to other fields should not be saved, as they are read-only.
+When authenticated as user *family2c* (does not have family admin permission -  but should be  able to change own profile), a request made with the following JSON should result in the `display_name` field for user *family2c* being changed in the database to *family2c_test_change* and the image url being saved as `test_change`. Changes to other fields should not be saved, as they are read-only.
 
 Submitted JSON:
 ```
@@ -413,7 +413,7 @@ Submitted JSON:
 </p>
 
 ### Test 29
-When authenticated as user *family2c* (does not have family admin permission, and should not be able to change the profile of someone else in their tribe), a PUT request made with the following JSON (user id corresponding to user *family2b*) should result in an HTTP 403 forbidden error.
+When authenticated as user *family2c* (does not have family admin permission, and should not be able to change the profile of someone else in their tribe), a request made with the following JSON (user id corresponding to user *family2b*) should result in an HTTP 403 forbidden error.
 
 Submitted JSON:
 ```
@@ -433,7 +433,7 @@ Submitted JSON:
 </p>
 
 ### Test 30
-When authenticated as user *chief2* (has family admin permission, but should not be able to change the profile of someone in a different tribe), a PUT request made with the following JSON (user id corresponding to user *family1d*) should result in an HTTP 403 forbidden error.
+When authenticated as user *chief2* (has family admin permission, but should not be able to change the profile of someone in a different tribe), a request made with the following JSON (user id corresponding to user *family1d*) should result in an HTTP 403 forbidden error.
 
 Submitted JSON:
 ```
@@ -454,7 +454,7 @@ Submitted JSON:
 </p>
 
 ### Test 31
-When authenticated as user *family2b* (does not have family admin permission, and should not be able to change the profile of someone in a different tribe), a PUT request made with the following JSON (user id corresponding to user *family1d*) should result in an HTTP 403 forbidden error.
+When authenticated as user *family2b* (does not have family admin permission, and should not be able to change the profile of someone in a different tribe), a request made with the following JSON (user id corresponding to user *family1d*) should result in an HTTP 403 forbidden error.
 
 Submitted JSON:
 ```
@@ -579,7 +579,7 @@ Submitted JSON:
 
 ### **NOT YET IMPLEMENTED**
 
-When authenticated as user *chief1*, a request with the following JSON data should result in the creation of two new notification objects in the database, one for each invited user.
+When authenticated as user *chief1*, a request with the following JSON data should result in the creation of two new notification objects in the database, one for each invited user. These should be invitations to a new event.
 
 Submitted JSON:
 
@@ -589,7 +589,28 @@ Submitted JSON:
     "start": "2023-01-15T10:00:00",
     "duration": "30.0",
     "recurrence_type": "MON",
-    "subject": "Chess club",
+    "subject": "Maths tutor",
+    "category": "EDU"
+}
+```
+
+**NOT YET IMPLEMENTED**
+
+### Test 36
+
+### **NOT YET IMPLEMENTED**
+
+When authenticated as user *chief1*, a request with the following JSON data should result in the creation of three new notification objects in the database. A notification of a change to an existing event should be generated for user ids 2 and 4, as they were already invited, while a notification of a new invitation should be generated for user 5 as they have  been added to an existing event.
+
+Submitted JSON:
+
+```
+{
+    "to": ["2", "4", "5"],
+    "start": "2023-01-17T10:00:00",
+    "duration": "30.0",
+    "recurrence_type": "TWK",
+    "subject": "Maths tutor - changed",
     "category": "EDU"
 }
 ```
@@ -821,7 +842,7 @@ When authenticated as user *chief2*, the above URL should result in a HTTP 404 e
     <img src="readme_media/testing/event22.png" width=800>
 </p>
 
-## `events/<id:int>/` PUT
+## `events/<id:int>/`
 
 ### Test 54
 
@@ -832,13 +853,34 @@ When authenticated as user *chief1*, the above URL with the following JSON data 
 Submitted JSON:
 
 {
-    "to": ["3", "4"],
+    "to": ["3", "4", "5"],
     "start": "2023-01-20T10:00:00",
     "duration": "120.0",
     "recurrence_type": "TWK",
     "subject": "Violin lesson - change",
     "category": "EDU"
 }
+
+### Test 54B
+
+### **NOT YET IMPLEMENTED**
+
+When authenticated as user *chief1*, a request with the following JSON data (the same as in test 54) should result in the creation of three new notification objects in the database. A notification that changes have been made to an existing event should be created for user ids 3 and 4, as they were already invited. A notification of an invitation to an event should be created for user id 5, as they were not previously invited.
+
+Submitted JSON:
+
+```
+{
+    "to": ["3", "4", "5"],
+    "start": "2023-01-20T10:00:00",
+    "duration": "120.0",
+    "recurrence_type": "TWK",
+    "subject": "Violin lesson - change",
+    "category": "EDU"
+}
+```
+
+**NOT YET IMPLEMENTED**
 
 **Result: PASS**
 
@@ -1016,7 +1058,7 @@ When authenticated as user *chief1* (has tribe admin permissions),this URL shoul
     <img src="readme_media/testing/event32.png" width=800>
 </p>
 
-## `events/response/<id:int>` PUT
+## `events/response/<id:int>`
 
 ### Test 69
 
@@ -1034,7 +1076,7 @@ When unauthenticated, the above URL should result in a HTTP 403 error.
 
 Used URL `events/response/53`
 
-When authenticated as user *family1a* (user id 3), a PUT request with the following JSON should result in an HTTP 200 status with a success message and this user being added to the `accepted` field of the event. 
+When authenticated as user *family1a* (user id 3), a request with the following JSON should result in an HTTP 200 status with a success message and this user being added to the `accepted` field of the event. 
 
 Submitted JSON:
 
@@ -1053,7 +1095,7 @@ Submitted JSON:
 
 Used URL `events/response/53`
 
-When authenticated as user *family1a* (user id 3), a PUT request with the following JSON should result in a HTTP 200 status with a success message and this user being removed from the `accepted` field of the event.
+When authenticated as user *family1a* (user id 3), a request with the following JSON should result in a HTTP 200 status with a success message and this user being removed from the `accepted` field of the event.
 
 Submitted JSON:
 ```
@@ -1072,7 +1114,7 @@ Submitted JSON:
 
 Used URL `events/response/53`
 
-When authenticated as user *family1a* (user id 3), a PUT request with the following JSON should result in a HTTP 400 error, with an error message of 'Value must equal accept or decline'.
+When authenticated as user *family1a* (user id 3), a request with the following JSON should result in a HTTP 400 error, with an error message of 'Value must equal accept or decline'.
 
 Submitted JSON:
 ```
@@ -1089,7 +1131,7 @@ Submitted JSON:
 
 Used URL `events/response/53`
 
-When authenticated as user *family1a* (user id 3), a PUT request with the following JSON should result in a HTTP 400 error, with an error message of 'An event response is required'.
+When authenticated as user *family1a* (user id 3), a request with the following JSON should result in a HTTP 400 error, with an error message of 'An event response is required'.
 
 Submitted JSON:
 ```
@@ -1106,7 +1148,7 @@ Submitted JSON:
 
 Used URL `events/response/53`
 
-When authenticated as user *family1c* (user id 5), a PUT request with the following JSON should result in a HTTP 400 error, with an error message of 'Users who are not invited to this event cannot respond.'.
+When authenticated as user *family1c* (user id 5), a request with the following JSON should result in a HTTP 400 error, with an error message of 'Users who are not invited to this event cannot respond.'.
 
 Submitted JSON:
 ```
@@ -1123,7 +1165,7 @@ Submitted JSON:
 
 Used URL `events/response/53`
 
-When authenticated as user *family2a* (user id 8), a PUT request with the following JSON should result in a HTTP 400 error, with an error message of 'Users who are not invited to this event cannot respond.'.
+When authenticated as user *family2a* (user id 8), a request with the following JSON should result in a HTTP 400 error, with an error message of 'Users who are not invited to this event cannot respond.'.
 
 Submitted JSON:
 ```
@@ -1135,3 +1177,159 @@ Submitted JSON:
 <p align="center">
     <img src="readme_media/testing/event39.png" width=800>
 </p>
+
+## `notifications/` GET
+
+### Test 76
+
+When authenticated as user *family1a* (user id 3), all notifications for that user should be returned, and none for other users.
+
+### Test 77
+
+When authenticated as user *family2c* (user id 10), all notifications for that user should be returned, and none for other users.
+
+## `notifications/<id:int>/` DELETE
+
+### Test 78
+
+Used URL `notifications/xxx`
+
+When authenticated as user *family1b* (user id 4), the user should not be able to delete this notification, as it was not sent to them.
+
+### Test 79
+
+Used URL `notifications/xxx`
+
+When not authenticated, the user should not be able to access this end point.
+
+### Test 80
+
+Used URL `notifications/xxx`
+
+When authenticated as user *family1a* (user id 3), the notification should be successfully deleted, since it was sent to them.
+
+## `contacts/` POST
+
+### Test 81
+
+When authenticated as user *chief1* (user id 2), a POST request to this URL with the following JSON should result in the creation of a new contact, linked to this user's tribe.
+
+### Test 82
+
+When authenticated as user *chief2* (user id 7), a POST request to this URL with the following JSON should result in the creation of a new contact, linked to this user's tribe.
+
+### Test 83
+
+When authenticated as user *family1a* (user id 3), a POST request to this URL with the following JSON should result in a HTTP 400 error, since this user does not have family admin permissions.
+
+### Test 84
+
+When authenticated as user *chief2* (user id 7), a POST request to this URL with the following JSON should result in a HTTP 404 error, since this object should not be returned from the database for this user, as it is linked to a different tribe than theirs.
+
+### Test 85
+
+When authenticated as user *chief2* (user id 7), a POST request to this URL with the following JSON should result in a HTTP 400 error with an appropriate error message for each field.
+
+### Test 86
+
+When not authenticated, a POST request to this URL with the following JSON should result in a HTTP 403 error.
+
+## `contacts/` GET
+
+### Test 87
+
+When authenticated as user *chief1* (user id 2), a GET request to this URL should return all the contacts for this user's tribe, and none for other tribes.
+
+### Test 88
+
+When authenticated as user *family1b* (user id 4), a GET request to this URL should return all the contacts for this user's tribe (the same as for test 86), and none for other tribes.
+
+### Test 89
+
+When authenticated as user *chief2* (user id 7), a GET request to this URL should return all the contacts for this user's tribe, and none for other tribes.
+
+### Test 90
+
+When authenticated as user *family2c* (user id 10), a GET request to this URL should return all the contacts for this user's tribe (the same as for test 87), and none for other tribes.
+
+### Test 91
+
+When not authenticated, a GET request to this URL should return a HTTP 403 error.
+
+### Test 92
+
+Used URL `contacts/?search=xxx`
+
+When authenticated as user *family1c*, this URL should return all contacts for this user's tribe where the search term xxx appears in any field.
+
+### Test 93
+
+Used URL `contacts/?search=xxx`
+
+When authenticated as user *chief2*, this URL should return all contacts for this user's tribe where the search term xxx appears in any field.
+
+## `contacts/<id:int>/` GET
+
+### Test 94
+
+Used URL `contacts/xx`
+
+When authenticated as user *chief1* (user id 2), a GET request to this URL should return details of contact id xx.
+
+### Test 95
+
+Used URL `contacts/xx`
+
+When authenticated as user *family1d* (user id 6), a GET request to this URL should return details of contact id xx.
+
+### Test 96
+
+Used URL `contacts/xx`
+
+When authenticated as user *chief2* (user id 7), a GET request to this URL should return a HTTP 404 error, since this user is a member of a different tribe and no results should be returned from the database for them.
+
+### Test 97
+
+Used URL `contacts/xx`
+
+When not authenticated, a GET request to this URL should return a HTTP 403 error.
+
+## `contacts/<id:int>/` PUT
+
+### Test 97
+
+Used URL `contacts/xx`
+
+When authenticated as user *chief1* (user id 2), a PUT request to this URL with the following JSON should result in the contact being updated with the relevant information for the `category`, `title`, `first_name`, `last_name`, `phone` and `email` fields, as this user has tribe admin status and the contact belongs to their tribe. The data in the id and tribe fields should not be changed.
+
+### Test 98
+
+Used URL `contacts/xx`
+
+When authenticated as user *family1a* (user id 3), a PUT request to this URL with the following JSON should result in a HTTP 403 error, as this user does not have tribe admin status.
+
+### Test 99
+
+Used URL `contacts/xx`
+
+When authenticated as user *chief2* (user id 7), a PUT request to this URL with the following JSON should result in a HTTP 404 error, as this user is a member of a different tribe and the object should not be returned from the database for them.
+
+## `contacts/<id:int>/` DELETE
+
+### Test 100
+
+Used URL `contacts/xx`
+
+When authenticated as user *family1a* (user id 3), a DELETE request to this URL should result in a HTTP 403 error, as this user does not have tribe admin status.
+
+### Test 101
+
+Used URL `contacts/xx`
+
+When authenticated as user *chief2* (user id 7), a DELETE request to this URL should result in a HTTP 404 error, as this user is a member of a different tribe and this object should not be returned from the database for them.
+
+### Test 102
+
+Used URL `contacts/xx`
+
+When authenticated as user *chief1* (user id 2), a DELETE request to this URL should result in the object being detailed and a HTTP 204 status message.
