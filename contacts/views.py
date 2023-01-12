@@ -50,3 +50,26 @@ class ContactListCreate(generics.ListCreateAPIView):
             )
         else:
             raise PermissionDenied
+
+
+class ContactDetail(generics.RetrieveUpdateDestroyAPIView):
+
+    permission_classes = [IsInTribeReadOnly | IsTribeAdmin, IsAuthenticated]
+    serializer_class = ContactSerializer
+
+    def get_queryset(self):
+        """
+        Override get_queryset to limit results to
+        only contacts for this user's tribe
+        """
+        user = self.request.user
+        try:
+            contacts_queryset = Contact.objects.filter(
+                tribe=user.profile.tribe.pk
+            )
+        except Exception as e:
+            return Response(
+                str(e),
+                status=status.HTTP_404_NOT_FOUND
+            )
+        return contacts_queryset

@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 
 from .models import Contact
 
+
 class ContactSerializer(serializers.ModelSerializer):
     """
     Serializer for contacts
