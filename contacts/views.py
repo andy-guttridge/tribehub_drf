@@ -53,7 +53,12 @@ class ContactListCreate(generics.ListCreateAPIView):
 
 
 class ContactDetail(generics.RetrieveUpdateDestroyAPIView):
-
+    """
+    Retrieves contact detail, allows update with PUT request
+    and deletion via delete request. Users can only view contacts
+    associated with their tribe. Only the tribe admin can update or
+    delete contacts.
+    """
     permission_classes = [IsInTribeReadOnly | IsTribeAdmin, IsAuthenticated]
     serializer_class = ContactSerializer
 
