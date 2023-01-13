@@ -40,9 +40,10 @@ The Tribe model has only one field, which is the name of the tribe. This model i
 
 The Event model represents a calendar event. It has many to one relationships with the User model (the `user` field) and the Tribe model (the `tribe` field), in order to record who created the event and which tribe they belong to. There are two fields with many to many relationships with the User model - `to` and `accepted` - which record who has been invited to the event and who has accepted the invitation.
 
-The `recurrences` field is an instance of RecurrenceField, provided by the [django-recurrence](https://django-recurrence.readthedocs.io/en/latest/) library. This enables the calculation of recurring events based on a single original date and a set of rules (e.g. weekly, monthly etc). This field is not exposed externally by the API - rather, the `repeat`  field is exposed by the API to allow incoming requests for recurrences using a simple string (`WEK` for weekly, `TWK` for fortnightly, `MON` for monthly, `YEA` for yearly or `NON` for none). The corresponding recurrences rule is then applied by the Event model on save.
+The `recurrences` field is an instance of `RecurrenceField`, provided by the [django-recurrence](https://django-recurrence.readthedocs.io/en/latest/) utility. This enables the calculation of recurring events based on a single original datetime and a set of rules (e.g. weekly, monthly etc). This field is not exposed externally by the API - rather, the `recurrence_type`  field is exposed to allow incoming requests for recurrences using a simple string (`WEK` for weekly, `TWK` for fortnightly, `MON` for monthly, `YEA` for yearly or `NON` for none). The corresponding recurrences rule is then applied by the Event model on save.
 
-Recurring events are not saved in the database. When a GET request to the `events/` endpoint is made by an authenticated user, the `recurrences` field is used to programatically generate any recurrences of events which fall within the requested time range and these are added to the JSON response to the client without creating new objects in the database. 
+Recurring events are not saved in the database. When a GET request to the `events/` endpoint is made by an authenticated user, the `recurrences` field is used to programatically generate any recurrences of events which fall within the requested time range. These are then added to the JSON response to the client without creating new objects in the database. 
+These programatically generated recurrences are identifed in the JSON data with a value of `REC` for the `recurrence_type` field. Because the recurrences include the id of the original 'parent' event in the database, the client can always retrieve the original event from the API if required.
 
 The `start` field records the start date and time of the event using an unlocalised ISO8601 format datetime string, and the `duration` field records the the length of the event, which is serialized in the format `[DD] [HH:[MM:]]ss[.uuuuuu]`.
 
@@ -106,9 +107,10 @@ The Contact model represents an instance of important contact information for a 
 
 Table generated using https://www.tablesgenerator.com/markdown_tables/load
 
-
 ## Frameworks, libraries and dependencies
-**Need to provide rationale for choices**
+The TribeHub API is implemented in Python using [Django](https://www.djangoproject.com) and [Django Rest Framework](https://django-filter.readthedocs.io/en/stable/).
+
+The following additional utilities, apps and modules were also used.
 
 ### django-cloudinary-storage
 https://pypi.org/project/django-cloudinary-storage/
@@ -213,13 +215,15 @@ All files containing custom Python code were validated using the [Code Institute
 
 ### Resolved bugs
 
-- During testing, it became apparent that a user could not create a calendar event with no other members of the tribe invited (i.e. events only for themselves), because the `to` field on the `Event` model defaulted to not allowing null values. This was fixed by adding `null=True` and `blank=True` arguments to the model.
-- Testing also revealed that the programatically generated events returned as repeat occurences included the currently authenticated user rather than the user who created the event as the owner. This was fixed by changing two variables in `events/utils.py`.
-- Testing demonstrated that sending using an id for a non-existent event object for the `events/response/<id>` endpoint resulted in an uncaught exception. Try...except blocks were added to  the EventResponse class in `events/views.py` to ensure any references to non-existent events are handled gracefully alongside permission related errors, and that appropriate HTTP status codes are returned for each class of error.
+- During testing, it became apparent that a user could not create a calendar event with no other members of the tribe invited (i.e. events only for themselves), because the `to` field on the `Event` model defaulted to not allowing null values. This was fixed by adding `null=True` and `blank=True` arguments to the field.
+- Testing also revealed that the programatically generated event recurrences erroneously included the currently authenticated user as the 'owner' of the event, rather than the user who created them. This was fixed by changing two variables in `events/utils.py`.
+- Testing demonstrated that using an id for a non-existent event object for the `events/response/id` endpoint resulted in an uncaught exception. Try...except blocks were added to  the EventResponse class in `events/views.py` to ensure any references to non-existent events are handled gracefully alongside permission related errors, and that appropriate HTTP status codes are returned for each class of error.
 
 ### Unresolved bugs
 
-- The `perform_create` method of the `ListCreate` generic view is overriden in `contacts/views.py`. Django did not seem to respond correctly to custom permission classes when this method is overriden, meaning that unauthorised users (i.e. authenticated users without tribe admin status) were able create new contacts. It was verified that the relevant custom permission classes were being called and returning the correct values, and it remains uncertain whether this issue is due to a bug in Django Rest Framework or in this project. The issue was overcome by manually checking the status of the user, but given more time it would be good to look into this further and revert to correct use of permission classes if possible.
+- The `perform_create` method of the `ListCreate` generic view is overriden in `contacts/views.py`. Django does not seem to respond to custom permission classes when this method is overriden, meaning that unauthorised users (i.e. authenticated users without tribe admin status) were able to create new contacts. Print statements at various points in the code were used to verify that the relevant custom permission classes were being invoked and returning the correct values, and it remains uncertain whether this issue is due to a bug in Django Rest Framework or in this project. 
+
+The issue was overcome by manually checking the status of the user within the `perform_create` method, but given more time it would be desirable to look into this further and revert to correct use of permission classes here if possible.
 
 ## Deployment
 
@@ -239,9 +243,9 @@ All files containing custom Python code were validated using the [Code Institute
 
 In addition, the following documentation was extensively referenced throughout development:
 
-- Django documentation
-- Django Rest Framework documentation
-- django-filter documentation
-- django-recurrence documentation
-- Python datetime documentation
+- [Django documentation](https://www.djangoproject.com)
+- [Django Rest Framework documentation](https://www.django-rest-framework.org)
+- [django-filter documentation](https://django-filter.readthedocs.io/en/stable/)
+- [django-recurrence documentation](https://django-recurrence.readthedocs.io/en/latest/)
+- [Python datetime documentation](https://docs.python.org/3/library/datetime.html)
 
