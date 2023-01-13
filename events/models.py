@@ -28,14 +28,10 @@ class Event(models.Model):
     )
     recurrences = RecurrenceField(null=True, blank=True)
     subject = models.CharField(max_length=25)
-
     category = models.CharField(
         choices=EventCategories.choices,
         default='NON',
         max_length=3)
-
-    # How to properly define a field within an array field from
-    # https://stackoverflow.com/questions/41180829/arrayfield-missing-1-required-positional-argument
     accepted = models.ManyToManyField(User, related_name='event_accepted')
 
     def save(self, *args, **kwargs):
