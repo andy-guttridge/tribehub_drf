@@ -4,135 +4,140 @@
 
 A series of manual tests were devised for each endpoint. The test data set included a number of users grouped into families. Users with tribe administrative rights are called `chief1`, `chief2`, `chief3`, and each of these users is associated with a different tribe. Corresponding family members were created with numbers in the user names to signify which tribe they belong to, e.g. `family1a`, `family1b` are part of `chief1`'s tribe, `family2a`, `family2b` are part of `chief2`'s tribe, etc.
 
-Please note that object id numbers used in the test may vary in the screenshots and in the current state of the database, because some of the tests involved permanent deletion of objects, with similar objects subsequently recreated to continue testing.
+The intended functionality of the API and the front-end application is that all users, profiles, events and contacts should be associated with a specific tribe. Only users who are part of the same tribe should be able to access that tribe's calendar events and contacts.
+
+Only the tribe administrator should be able to create and edit contacts.
+
+All users should be able to create events, but should only be able to invite users from their own tribe, and events should only be viewable by members of the same tribe. Users should be able to edit events they created but not those created by other users, except the tribe admin who should be able to edit all events created by members of their tribe.
+
+Notifications are created programatically. Only the recipient of a notification should be able to delete it.
+
+Users should be able to edit their own profiles, but not those of other users, except for the tribe admin who should be able to edit profiles for all members of their tribe (but not those for members of other tribes). Users should be able to delete their own profiles and deactivate their accounts, but not those of other users, except for the tribe admin who should be able to close the accounts of other users who are part of their tribe.
+
+Please note that object id numbers used in the tests may vary in the screenshots and in the current state of the database, because some of the tests involved permanent deletion of objects, with similar objects subsequently recreated to continue testing.
 
 Tests were performed using the Django Rest Framework HTML interface running on a test server. Each endpoint has a heading below, with the corresponding tests and results.
 
-**To add detail about performing the same tests on the deployed API via the React front-end**.
+## Table of contents
 
-- [TribeHub API Manual Testing](#tribehub-api-manual-testing)
-  * [Methodology](#methodology)
-  * [`/accounts/tribe` POST](#--accounts-tribe--post)
-    + [Test 1](#test-1)
-    + [Test 2](#test-2)
-    + [Test 3](#test-3)
-    + [Test 4](#test-4)
-    + [Test 5](#test-5)
-    + [Test 6](#test-6)
-  * [`/accounts/user/` POST](#--accounts-user---post)
-    + [Test 7](#test-7)
-    + [Test 8](#test-8)
-    + [Test 9](#test-9)
-    + [Test 10](#test-10)
-    + [Test 11](#test-11)
-  * [`/accounts/user/<id:int>` DELETE](#--accounts-user--id-int---delete)
-    + [Test 12](#test-12)
-    + [Test 13](#test-13)
-    + [Test 14](#test-14)
-    + [Test 15](#test-15)
-    + [Test 16](#test-16)
-  * [`/tribe` GET](#--tribe--get)
-    + [Test 17](#test-17)
-    + [Test 18](#test-18)
-    + [Test 19](#test-19)
-    + [Test 20](#test-20)
-    + [Test 21](#test-21)
-  * [`/profile/<id:int>` GET](#--profile--id-int---get)
-    + [Test 22](#test-22)
-    + [Test 23](#test-23)
-    + [Test 24](#test-24)
-    + [Test 25](#test-25)
-    + [Test 26](#test-26)
-  * [`/profile/<id:int>` PUT](#--profile--id-int---put)
-    + [Test 27](#test-27)
-    + [Test 28](#test-28)
-    + [Test 29](#test-29)
-    + [Test 30](#test-30)
-    + [Test 31](#test-31)
-  * [`/events/` POST](#--events---post)
-    + [Test 31](#test-31-1)
-    + [Test 32](#test-32)
-    + [Test 33](#test-33)
-    + [Test 34](#test-34)
-    + [Test 35](#test-35)
-    + [Test 36](#test-36)
-  * [`events/` GET](#-events---get)
-    + [Test 37](#test-37)
-    + [Test 38](#test-38)
-    + [Test 39](#test-39)
-    + [Test 40](#test-40)
-    + [Test 41](#test-41)
-    + [Test 42](#test-42)
-    + [Test 43](#test-43)
-    + [Test 44](#test-44)
-    + [Test 45](#test-45)
-    + [Test 46](#test-46)
-    + [Test 47](#test-47)
-    + [Test 48](#test-48)
-    + [Test 49](#test-49)
-    + [Test 50](#test-50)
-  * [`events/<id:int>/` GET](#-events--id-int----get)
-    + [Test 51](#test-51)
-    + [Test 52](#test-52)
-    + [Test 53](#test-53)
-  * [`events/<id:int>/` PUT](#-events--id-int----put)
-    + [Test 54](#test-54)
-    + [Test 54B](#test-54b)
-    + [Test 55](#test-55)
-    + [Test 56](#test-56)
-    + [Test 58](#test-58)
-    + [Test 59](#test-59)
-    + [Test 60](#test-60)
-  * [`events/<id:int>/` DELETE](#-events--id-int----delete)
-    + [Test 61](#test-61)
-    + [Test 62](#test-62)
-    + [Test 67](#test-67)
-    + [Test 68](#test-68)
-  * [`events/response/<id:int>` POST](#-events-response--id-int---post)
-    + [Test 69](#test-69)
-    + [Test 70](#test-70)
-    + [Test 71](#test-71)
-    + [Test 72](#test-72)
-    + [Test 73](#test-73)
-    + [Test 74](#test-74)
-    + [Test 75](#test-75)
-  * [`notifications/` GET](#-notifications---get)
-    + [Test 76](#test-76)
-    + [Test 77](#test-77)
-  * [`notifications/<id:int>/` DELETE](#-notifications--id-int----delete)
-    + [Test 78](#test-78)
-    + [Test 79](#test-79)
-    + [Test 80](#test-80)
-  * [`contacts/` POST](#-contacts---post)
-    + [Test 81](#test-81)
-    + [Test 82](#test-82)
-    + [Test 83](#test-83)
-    + [Test 83](#test-83-1)
-    + [Test 86](#test-86)
-  * [`contacts/` GET](#-contacts---get)
-    + [Test 87](#test-87)
-    + [Test 88](#test-88)
-    + [Test 89](#test-89)
-    + [Test 90](#test-90)
-    + [Test 91](#test-91)
-    + [Test 92](#test-92)
-    + [Test 93](#test-93)
-  * [`contacts/<id:int>/` GET](#-contacts--id-int----get)
-    + [Test 94](#test-94)
-    + [Test 95](#test-95)
-    + [Test 96](#test-96)
-    + [Test 97](#test-97)
-  * [`contacts/<id:int>/` PUT](#-contacts--id-int----put)
-    + [Test 97](#test-97-1)
-    + [Test 98](#test-98)
-    + [Test 99](#test-99)
-  * [`contacts/<id:int>/` DELETE](#-contacts--id-int----delete)
-    + [Test 100](#test-100)
-    + [Test 101](#test-101)
-    + [Test 102](#test-102)
-
-<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
-
+- [`/accounts/tribe` POST](#--accounts-tribe--post)
+  * [Test 1](#test-1)
+  * [Test 2](#test-2)
+  * [Test 3](#test-3)
+  * [Test 4](#test-4)
+  * [Test 5](#test-5)
+  * [Test 6](#test-6)
+- [`/accounts/user/` POST](#--accounts-user---post)
+  * [Test 7](#test-7)
+  * [Test 8](#test-8)
+  * [Test 9](#test-9)
+  * [Test 10](#test-10)
+  * [Test 11](#test-11)
+- [`/accounts/user/<id:int>` DELETE](#--accounts-user--id-int---delete)
+  * [Test 12](#test-12)
+  * [Test 13](#test-13)
+  * [Test 14](#test-14)
+  * [Test 15](#test-15)
+  * [Test 16](#test-16)
+- [`/tribe` GET](#--tribe--get)
+  * [Test 17](#test-17)
+  * [Test 18](#test-18)
+  * [Test 19](#test-19)
+  * [Test 20](#test-20)
+  * [Test 21](#test-21)
+- [`/profile/<id:int>` GET](#--profile--id-int---get)
+  * [Test 22](#test-22)
+  * [Test 23](#test-23)
+  * [Test 24](#test-24)
+  * [Test 25](#test-25)
+  * [Test 26](#test-26)
+- [`/profile/<id:int>` PUT](#--profile--id-int---put)
+  * [Test 27](#test-27)
+  * [Test 28](#test-28)
+  * [Test 29](#test-29)
+  * [Test 30](#test-30)
+  * [Test 31](#test-31)
+- [`/events/` POST](#--events---post)
+  * [Test 31](#test-31-1)
+  * [Test 32](#test-32)
+  * [Test 33](#test-33)
+  * [Test 34](#test-34)
+  * [Test 35](#test-35)
+  * [Test 36](#test-36)
+- [`/events/` GET](#--events---get)
+  * [Test 37](#test-37)
+  * [Test 38](#test-38)
+  * [Test 39](#test-39)
+  * [Test 40](#test-40)
+  * [Test 41](#test-41)
+  * [Test 42](#test-42)
+  * [Test 43](#test-43)
+  * [Test 44](#test-44)
+  * [Test 45](#test-45)
+  * [Test 46](#test-46)
+  * [Test 47](#test-47)
+  * [Test 48](#test-48)
+  * [Test 49](#test-49)
+  * [Test 50](#test-50)
+- [`/events/<id:int>/` GET](#--events--id-int----get)
+  * [Test 51](#test-51)
+  * [Test 52](#test-52)
+  * [Test 53](#test-53)
+- [`/events/<id:int>/` PUT](#--events--id-int----put)
+  * [Test 54](#test-54)
+  * [Test 54B](#test-54b)
+  * [Test 55](#test-55)
+  * [Test 56](#test-56)
+  * [Test 58](#test-58)
+  * [Test 59](#test-59)
+  * [Test 60](#test-60)
+- [`/events/<id:int>/` DELETE](#--events--id-int----delete)
+  * [Test 61](#test-61)
+  * [Test 62](#test-62)
+  * [Test 67](#test-67)
+  * [Test 68](#test-68)
+- [`/events/response/<id:int>` POST](#--events-response--id-int---post)
+  * [Test 69](#test-69)
+  * [Test 70](#test-70)
+  * [Test 71](#test-71)
+  * [Test 72](#test-72)
+  * [Test 73](#test-73)
+  * [Test 74](#test-74)
+  * [Test 75](#test-75)
+- [`/notifications/` GET](#--notifications---get)
+  * [Test 76](#test-76)
+  * [Test 77](#test-77)
+- [`/notifications/<id:int>/` DELETE](#--notifications--id-int----delete)
+  * [Test 78](#test-78)
+  * [Test 79](#test-79)
+  * [Test 80](#test-80)
+- [`/contacts/` POST](#--contacts---post)
+  * [Test 81](#test-81)
+  * [Test 82](#test-82)
+  * [Test 83](#test-83)
+  * [Test 83](#test-83-1)
+  * [Test 86](#test-86)
+- [`/contacts/` GET](#--contacts---get)
+  * [Test 87](#test-87)
+  * [Test 88](#test-88)
+  * [Test 89](#test-89)
+  * [Test 90](#test-90)
+  * [Test 91](#test-91)
+  * [Test 92](#test-92)
+  * [Test 93](#test-93)
+- [`/contacts/<id:int>/` GET](#--contacts--id-int----get)
+  * [Test 94](#test-94)
+  * [Test 95](#test-95)
+  * [Test 96](#test-96)
+  * [Test 97](#test-97)
+- [`/contacts/<id:int>/` PUT](#--contacts--id-int----put)
+  * [Test 97](#test-97-1)
+  * [Test 98](#test-98)
+  * [Test 99](#test-99)
+- [`/contacts/<id:int>/` DELETE](#--contacts--id-int----delete)
+  * [Test 100](#test-100)
+  * [Test 101](#test-101)
+  * [Test 102](#test-102)
 
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
@@ -257,7 +262,7 @@ Submitted JSON:
 ## `/accounts/user/` POST
 
 ### Test 7
-When logged in as *chief1* (a user with family_admin status), submitted the following data via this endpoint should result in creation of a new user 'family1a', a new user profile linked to 'family1a' *without family_admin status* and linked to the same tribe as chief1.
+When logged in as *chief1* (a user with tribe admin status), submitting the following data via this endpoint should result in creation of a new user 'family1a', a new user profile linked to 'family1a' *without family_admin status* and linked to the same tribe as chief1.
 
 Submitted JSON:
 ```
@@ -274,7 +279,7 @@ Submitted JSON:
 </p>
 
 ### Test 8
-When logged in as *family1a* (a user without family_admin status), attempting to use this endpoint should result in an HTTP 403 Forbidden error.
+When logged in as *family1a* (a user without tribe admin status), attempting to use this endpoint should result in an HTTP 403 Forbidden error.
 
 Submitted JSON:
 ```
@@ -292,7 +297,7 @@ Submitted JSON:
 </p>
 
 ### Test 9
-When logged in as *chief1* (a user with family_admin status), submitting the following data via this endpoint should result in 400 error with detailed error message ('Usernames cannot exceed 150 characters')
+When logged in as *chief1* (a user with tribe admin status), submitting the following data via this endpoint should result in 400 error with detailed error message ('Usernames cannot exceed 150 characters')
 ```
 {
     "username":"wpjpluihyszpffsmgrfyouhjgqainqqqlwlffbafdxvdrjbqzokkmuhuyrbotjhmktvgnpbestastfkeutvltyagpbyuapkeuwqgkczbzzzzqzsffaexaojgvjsmcimbjsiyscvrkrgzdtzizdblvpvlvcwqrjlg",
@@ -308,7 +313,7 @@ When logged in as *chief1* (a user with family_admin status), submitting the fol
 </p>
 
 ### Test 10
-When logged in as *chief1* (a user with family_admin status), submitting the following data via this endpoint should result in 400 error with detailed error message ('A username is required').
+When logged in as *chief1* (a user with tribe admin status), submitting the following data via this endpoint should result in 400 error with detailed error message ('A username is required').
 ```
 {
     "username":"",
@@ -324,7 +329,7 @@ When logged in as *chief1* (a user with family_admin status), submitting the fol
 </p>
 
 ### Test 11
-When logged in as *chief1* (a user with family_admin status), submitting the following data via this endpoint should result in 400 error with detailed error message ('Both password fields must contain the same value.')
+When logged in as *chief1* (a user with tribe admin status), submitting the following data via this endpoint should result in 400 error with detailed error message ('Both password fields must contain the same value.')
 ```
 {
     "username":"family1",
@@ -342,7 +347,7 @@ When logged in as *chief1* (a user with family_admin status), submitting the fol
 ## `/accounts/user/<id:int>` DELETE
 ### Test 12
 
-Passing in the id of an existing user who is a member of the same tribe to this endpoint while logged in as the family admin user (*chief1*) should make the user account inactive and delete the user profile, returning a HTTP 200 code with a message of 'The user account has been successfully deleted.'
+Passing in the id of an existing user who is a member of the same tribe to this endpoint while logged in as the tribe admin user (*chief1*) should make the user account inactive and delete the user profile, returning a HTTP 200 code with a message of 'The user account has been successfully deleted.'
 
 **Result: PASS**
 
@@ -354,7 +359,7 @@ The user profile was seen to have been deleted and the user status set to inacti
 
 ### Test 13
 
-Passing in the id of an existing user who is NOT a member of the same tribe while logged in as the family admin user of a different tribe should return a HTTP 403 error with an error message of 'You are not allowed to perform this action'. A user id of 10 corresponding to user *family2c*  was used for this test, while logged in as *chief1* (has family admin status).
+Passing in the id of an existing user who is NOT a member of the same tribe while logged in as the tribe admin user of a different tribe should return a HTTP 403 error with an error message of 'You are not allowed to perform this action'. A user id of 10 corresponding to user *family2c*  was used for this test, while logged in as *chief1* (has tribe admin status).
 
 **Result: PASS**
 
@@ -365,7 +370,7 @@ Passing in the id of an existing user who is NOT a member of the same tribe whil
 
 ### Test 14
 
-Passing in the id of an existing user who is a member of the same tribe to this endpoint while logged in as a member of the same tribe who is NOT the family admin user should return a HTTP 403 error with an error message of 'You are not allowed to perform this action'. A user id of 10 corresponding to user *family2c*  was used for this test, while logged in as *family2d*.
+Passing in the id of an existing user who is a member of the same tribe to this endpoint while logged in as a member of the same tribe who is NOT the tribe admin user should return a HTTP 403 error with an error message of 'You are not allowed to perform this action'. A user id of 10 corresponding to user *family2c*  was used for this test, while logged in as *family2d*.
 
 **Result: PASS**
 
@@ -384,7 +389,7 @@ Passing in the user's own id while logged in should make the user account inacti
 
 ### Test 16
 
-Passing in the user's own id to this endpoint while logged in as a family admin user should make the user account inactive, delete the user profile, delete the tribe and all the user profiles associated with the tribe, and make all the user accounts associated with the tribe inactive. It should return a HTTP 200 code with a message of 'The user account has been successfully deleted.' 
+Passing in the user's own id to this endpoint while logged in as a tribe admin user should make the user account inactive, delete the user profile, delete the tribe and all the user profiles associated with the tribe, and make all the user accounts associated with the tribe inactive. It should return a HTTP 200 code with a message of 'The user account has been successfully deleted.' 
 This test was performed with a user id of 14 corresponding to user *chief3*, while also logged in as that user.
 
 **Result: PASS**
@@ -449,7 +454,7 @@ When authenticated as user *family1b*, the same JSON object and HTTP code 200 sh
 ## `/profile/<id:int>` GET
 ### Test 22
 
-When authenticated as user *chief2* (has family admin permission), a GET request with the user id 9 should return a JSON object containing `user`, `username`, `display_name`, `image`, `tribe` and `is_admin` values for user *family2b*, since *chief2* and *family2b* are in the same tribe.
+When authenticated as user *chief2* (has tribe admin permission), a GET request with the user id 9 should return a JSON object containing `user`, `username`, `display_name`, `image`, `tribe` and `is_admin` values for user *family2b*, since *chief2* and *family2b* are in the same tribe.
 
 **Result: PASS**
 
@@ -459,7 +464,7 @@ When authenticated as user *chief2* (has family admin permission), a GET request
 
 ### Test 23
 
-When authenticated as user *chief2* (has family admin permission), a GET request with the user id 3 (corresponding to user *family1a*) should return an HTTP 403 forbidden error, since *chief2* and *family1a* are in different tribes.
+When authenticated as user *chief2* (has tribe admin permission), a GET request with the user id 3 (corresponding to user *family1a*) should return an HTTP 403 forbidden error, since *chief2* and *family1a* are in different tribes.
 
 **Result: PASS**
 
@@ -469,7 +474,7 @@ When authenticated as user *chief2* (has family admin permission), a GET request
 
 ### Test 24
 
-When authenticated as user *family2a* (does not have family admin permission), a GET request with the user id 7 should return a JSON object containing `user`, `username`, `display_name`, `image`, `tribe` and `is_admin` values for user *chief2*, since *family2a* and *chief2* are in the same tribe.
+When authenticated as user *family2a* (does not have tribe admin permission), a GET request with the user id 7 should return a JSON object containing `user`, `username`, `display_name`, `image`, `tribe` and `is_admin` values for user *chief2*, since *family2a* and *chief2* are in the same tribe.
 
 **Result: PASS**
 
@@ -479,7 +484,7 @@ When authenticated as user *family2a* (does not have family admin permission), a
 
 ### Test 25
 
-When authenticated as user *family1a* (does not have family admin permission), a GET request with the user id 7 (corresponding to user *chief2*) should return an HTTP 403 forbidden error, since *chief2* and *family1a* are in different tribes.
+When authenticated as user *family1a* (does not have tribe admin permission), a GET request with the user id 7 (corresponding to user *chief2*) should return an HTTP 403 forbidden error, since *chief2* and *family1a* are in different tribes.
 
 **Result: PASS**
 
@@ -499,7 +504,7 @@ When not authenticated, a GET request with the user id 9 (corresponding to user 
 
 ## `/profile/<id:int>` PUT
 ### Test 27
-When authenticated as user *chief2* (has family admin permission), a request made with the following JSON should result in the `display_name` field for user *family2b* being changed in the database to *family2b_test_change* and the image url being saved as `test_change`. Changes to other fields should not be saved, as they are read-only.
+When authenticated as user *chief2* (has tribe admin permission), a request made with the following JSON should result in the `display_name` field for user *family2b* being changed in the database to *family2b_test_change* and the image url being saved as `test_change`. Changes to other fields should not be saved, as they are read-only.
 
 Submitted JSON:
 ```
@@ -519,7 +524,7 @@ Submitted JSON:
 </p>
 
 ### Test 28
-When authenticated as user *family2c* (does not have family admin permission -  but should be  able to change own profile), a request made with the following JSON should result in the `display_name` field for user *family2c* being changed in the database to *family2c_test_change* and the image url being saved as `test_change`. Changes to other fields should not be saved, as they are read-only.
+When authenticated as user *family2c* (does not have tribe admin permission -  but should be  able to change own profile), a request made with the following JSON should result in the `display_name` field for user *family2c* being changed in the database to *family2c_test_change* and the image url being saved as `test_change`. Changes to other fields should not be saved, as they are read-only.
 
 Submitted JSON:
 ```
@@ -540,7 +545,7 @@ Submitted JSON:
 </p>
 
 ### Test 29
-When authenticated as user *family2c* (does not have family admin permission, and should not be able to change the profile of someone else in their tribe), a request made with the following JSON (user id corresponding to user *family2b*) should result in an HTTP 403 forbidden error.
+When authenticated as user *family2c* (does not have tribe admin permission, and should not be able to change the profile of someone else in their tribe), a request made with the following JSON (user id corresponding to user *family2b*) should result in an HTTP 403 forbidden error.
 
 Submitted JSON:
 ```
@@ -560,7 +565,7 @@ Submitted JSON:
 </p>
 
 ### Test 30
-When authenticated as user *chief2* (has family admin permission, but should not be able to change the profile of someone in a different tribe), a request made with the following JSON (user id corresponding to user *family1d*) should result in an HTTP 403 forbidden error.
+When authenticated as user *chief2* (has tribe admin permission, but should not be able to change the profile of someone in a different tribe), a request made with the following JSON (user id corresponding to user *family1d*) should result in an HTTP 403 forbidden error.
 
 Submitted JSON:
 ```
@@ -581,7 +586,7 @@ Submitted JSON:
 </p>
 
 ### Test 31
-When authenticated as user *family2b* (does not have family admin permission, and should not be able to change the profile of someone in a different tribe), a request made with the following JSON (user id corresponding to user *family1d*) should result in an HTTP 403 forbidden error.
+When authenticated as user *family2b* (does not have tribe admin permission, and should not be able to change the profile of someone in a different tribe), a request made with the following JSON (user id corresponding to user *family1d*) should result in an HTTP 403 forbidden error.
 
 Submitted JSON:
 ```
@@ -615,7 +620,7 @@ When not authenticated, it should not be possible to access this endpoint via a 
 
 ### Test 32
 
-When authenticated as user *chief1* (has family admin permission), a POST request with the following JSON (invitation sent to id corresponding to user *family1a*) should result in the creation of a new event, with the event linked to *chief1's* user id (2) and tribe id (1).
+When authenticated as user *chief1* (has tribe admin permission), a POST request with the following JSON (invitation sent to id corresponding to user *family1a*) should result in the creation of a new event, with the event linked to *chief1's* user id (2) and tribe id (1).
 
 Submitted JSON:
 ```
@@ -637,7 +642,7 @@ Submitted JSON:
 
 ### Test 33
 
-When authenticated as user *family1a* (does not have family admin permission), a POST request with the following JSON (invitations sent to ids corresponding to users *chief1* and *family1b*) should result in the creation of a new event, with the event linked to *family1a's* user id (3),  and tribe id (1).
+When authenticated as user *family1a* (does not have tribe admin permission), a POST request with the following JSON (invitations sent to ids corresponding to users *chief1* and *family1b*) should result in the creation of a new event, with the event linked to *family1a's* user id (3),  and tribe id (1).
 
 Submitted JSON:
 ```
@@ -659,7 +664,7 @@ Submitted JSON:
 
 ### Test 34
 
-When authenticated as user *chief1* (has family admin permission), a POST request with the following JSON (invitation sent to id corresponding to user *family2a*) should result in a HTTP 400 error with the message 'Users who are not part of this tribe cannot be invited.'
+When authenticated as user *chief1* (has tribe admin permission), a POST request with the following JSON (invitation sent to id corresponding to user *family2a*) should result in a HTTP 400 error with the message 'Users who are not part of this tribe cannot be invited.'
 
 Submitted JSON:
 ```
@@ -681,7 +686,7 @@ Submitted JSON:
 
 ### Test 35
 
-When authenticated as user *chief1* (has family admin permission), a POST request with the following JSON containing invalid values for all fields (including `subject`, which cannot exceed 25 characters) should result in a HTTP 400 error with an informative error message for each field.
+When authenticated as user *chief1* (has tribe admin permission), a POST request with the following JSON containing invalid values for all fields (including `subject`, which cannot exceed 25 characters) should result in a HTTP 400 error with an informative error message for each field.
 
 Submitted JSON:
 
@@ -727,9 +732,9 @@ A new event was created using a POST request to this endpoint, and appropriate n
     <img src="readme_media/testing/notifications1.png" width=800>
 </p>
 
-## `events/` GET
+## `/events/` GET
 
-*Please note that the most useful combinations of search and filter parameters were tested, however every conceivable combination may not have been tested due to time constraints. Given sufficient time, further tests would be conducted to cover every combination.*
+*Please note that the most useful combinations of search and filter parameters were tested. Given sufficient time, further tests would be conducted to cover every combination.*
 
 ### Test 37
 
@@ -914,7 +919,7 @@ When authenticated as user *family1c*, the above URL should result in a HTTP 400
     <img src="readme_media/testing/event19.png" width=800>
 </p>
 
-## `events/<id:int>/` GET
+## `/events/<id:int>/` GET
 
 ### Test 51
 
@@ -944,7 +949,7 @@ When authenticated as user *family1b*, the above URL should return the 'Violin l
 
 Used URL `events/53`
 
-When authenticated as user *chief2*, the above URL should result in a HTTP 404 error, as this user is not a member of the same tribe as the user who created the event.
+When authenticated as user *chief2*, the above URL should result in a HTTP 404 error, as this user is not a member of the same tribe as the user who created the event and the data should not be retrieved from the database for them.
 
 **Result: PASS**
 
@@ -952,7 +957,7 @@ When authenticated as user *chief2*, the above URL should result in a HTTP 404 e
     <img src="readme_media/testing/event22.png" width=800>
 </p>
 
-## `events/<id:int>/` PUT
+## `/events/<id:int>/` PUT
 
 ### Test 54
 
@@ -1034,6 +1039,7 @@ When authenticated as user *family1a*, the above URL with the following JSON dat
 
 Submitted JSON:
 
+```
 {
     "to": ["3", "4"],
     "start": "2023-01-20T10:00:00",
@@ -1042,6 +1048,7 @@ Submitted JSON:
     "subject": "Violin lesson - test change",
     "category": "EDU"
 }
+```
 
 **Result: PASS**
 
@@ -1123,13 +1130,13 @@ Submitted JSON:
     <img src="readme_media/testing/event28.png" width=800>
 </p>
 
-## `events/<id:int>/` DELETE
+## `/events/<id:int>/` DELETE
 
 ### Test 61
 
 Used URL `events/54`
 
-When authenticated as user *chief2* (has tribe admin permissions), this URL should result in a HTTP 404 error, as this user is not part of the same tribe as *family1a* who created the event.
+When authenticated as user *chief2* (has tribe admin permissions), this URL should result in a HTTP 404 error, as this user is not part of the same tribe as *family1a* who created the event and the data should not be retrieved from the database.
 
 **Result: PASS**
 
@@ -1173,7 +1180,7 @@ When authenticated as user *chief1* (has tribe admin permissions),this URL shoul
     <img src="readme_media/testing/event32.png" width=800>
 </p>
 
-## `events/response/<id:int>` POST
+## `/events/response/<id:int>` POST
 
 ### Test 69
 
@@ -1280,7 +1287,7 @@ Submitted JSON:
 
 Used URL `events/response/53`
 
-When authenticated as user *family2a* (user id 8), a request with the following JSON should result in a HTTP 400 error, with an error message of 'Users who are not invited to this event cannot respond.'.
+When authenticated as user *family2a* (user id 8), a request with the following JSON should result in a HTTP 400 error, with an error message of 'Users who are not invited to this event cannot respond.'
 
 Submitted JSON:
 ```
@@ -1293,7 +1300,7 @@ Submitted JSON:
     <img src="readme_media/testing/event39.png" width=800>
 </p>
 
-## `notifications/` GET
+## `/notifications/` GET
 
 ### Test 76
 
@@ -1315,7 +1322,7 @@ When authenticated as user *family2c* (user id 10), all notifications for that u
     <img src="readme_media/testing/notifications4.png" width=800>
 </p>
 
-## `notifications/<id:int>/` DELETE
+## `/notifications/<id:int>/` DELETE
 
 ### Test 78
 
@@ -1353,7 +1360,7 @@ When authenticated as user *family1a* (user id 3), the notification should be su
     <img src="readme_media/testing/notifications7.png" width=800>
 </p>
 
-## `contacts/` POST
+## `/contacts/` POST
 
 ### Test 81
 
@@ -1404,7 +1411,7 @@ Submitted JSON:
 
 ### Test 83
 
-When authenticated as user *family1a* (user id 3), a POST request to this URL with the following JSON should result in a HTTP 403 error, since this user does not have family admin permissions.
+When authenticated as user *family1a* (user id 3), a POST request to this URL with the following JSON should result in a HTTP 403 error, since this user does not have tribe admin permissions.
 
 Submitted JSON:
 
@@ -1458,7 +1465,7 @@ When not authenticated, the user should not be able to use the POST method for t
     <img src="readme_media/testing/contacts5.png" width=800>
 </p>
 
-## `contacts/` GET
+## `/contacts/` GET
 
 ### Test 87
 
@@ -1512,7 +1519,7 @@ When not authenticated, a GET request to this URL should return a HTTP 403 error
 
 ### Test 92
 
-Used URL `contacts/?search=dental`
+Used URL `/contacts/?search=dental`
 
 When authenticated as user *family1c*, this URL should return all contacts for this user's tribe where the search term `dental` appears in any field.
 
@@ -1524,7 +1531,7 @@ When authenticated as user *family1c*, this URL should return all contacts for t
 
 ### Test 93
 
-Used URL `contacts/?search=dr`
+Used URL `/contacts/?search=dr`
 
 When authenticated as user *chief2*, this URL should return all contacts for this user's tribe where the search term `dr` appears in any field.
 
@@ -1534,7 +1541,7 @@ When authenticated as user *chief2*, this URL should return all contacts for thi
     <img src="readme_media/testing/contacts12.png" width=800>
 </p>
 
-## `contacts/<id:int>/` GET
+## `/contacts/<id:int>/` GET
 
 ### Test 94
 
@@ -1564,7 +1571,7 @@ When authenticated as user *family1d* (user id 6), a GET request to this URL sho
 
 Used URL `contacts/23`
 
-When authenticated as user *chief2* (user id 7), a GET request to this URL should return a HTTP 404 error, since this user is a member of a different tribe and no results should be returned from the database for them.
+When authenticated as user *chief2* (user id 7), a GET request to this URL should return a HTTP 404 error, since this user is a member of a different tribe and no results should be returned from the database.
 
 **Result: PASS**
 
@@ -1584,7 +1591,7 @@ When not authenticated, a GET request to this URL should return a HTTP 403 error
     <img src="readme_media/testing/contacts16.png" width=800>
 </p>
 
-## `contacts/<id:int>/` PUT
+## `/contacts/<id:int>/` PUT
 
 ### Test 97
 
@@ -1658,7 +1665,7 @@ When authenticated as user *chief2* (user id 7), a PUT request to this URL with 
     <img src="readme_media/testing/contacts19.png" width=800>
 </p>
 
-## `contacts/<id:int>/` DELETE
+## `/contacts/<id:int>/` DELETE
 
 ### Test 100
 
@@ -1688,7 +1695,7 @@ When authenticated as user *chief2* (user id 7), a DELETE request to this URL sh
 
 Used URL `contacts/xx`
 
-When authenticated as user *chief1* (user id 2), a DELETE request to this URL should result in the object being detailed and a HTTP 204 status message.
+When authenticated as user *chief1* (user id 2), a DELETE request to this URL should result in the object being deleted and a HTTP 204 status message.
 
 **Result: PASS**
 
