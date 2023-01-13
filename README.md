@@ -110,27 +110,56 @@ Table generated using https://www.tablesgenerator.com/markdown_tables/load
 ## Frameworks, libraries and dependencies
 **Need to provide rationale for choices**
 
-### Cloudinary Storage
+### django-cloudinary-storage
+https://pypi.org/project/django-cloudinary-storage/
 
-### dj-all-auth
+Enables cloudinary integration for storing user profile images in cloudinary.
+
+### dj-allauth
+https://django-allauth.readthedocs.io/en/latest/
+
+Used for user authentication. While not currently utilised, this package enables registration and authentication using a range of social media accounts. This may be implemented in a future update.
 
 ### dj-rest-auth
+https://dj-rest-auth.readthedocs.io/en/latest/introduction.html
+
+Provides REST API endpoints for login and logout. The user registration endpoints provided by dj-rest-auth are not utilised by the Tribehub frontend, as custom functionality was required and implemented by the Tribehub API.
 
 ### djangorestframework-simplejwt
+https://django-rest-framework-simplejwt.readthedocs.io/en/latest/
+
+Provides JSON web token authentication.
 
 ### dj-database-url
+https://pypi.org/project/dj-database-url/
+
+Creates an environment variable to configure the conntection to the database.
 
 ### psychopg2
+https://pypi.org/project/psycopg2/
+
+Database adapater to enable interaction between Python and the PostgreSQL database.
 
 ### python-dateutil
+https://pypi.org/project/python-dateutil/
 
-This is a pre-requisite for django-recurrence
+This module provides extenstions to the standard Python datetime module. It is a pre-requisite for django-recurrence library.
 
 ### django-recurrence
+https://django-recurrence.readthedocs.io/en/latest/
+
+This utility enables functionality for working with recurring dates in Django. It provides a `ReccurenceField` field type for storing recurring datetimes in the database.
+This is used by the TribeHub API to programatically generate recurrences of repeat events when calendar events are requested by the client, without having to store them in the database.
 
 ### django-filter
+https://django-filter.readthedocs.io/en/stable/
+
+django-filter is used to implement ISO datetime filtering functionality for the `events` GET endpoint. The client is able to request dates within a range using the `from_date` and `to_date` URL parameters. The API performs an additional check after filtering to 'catch' any repeat events within the requested range, but where the original event stored in the database occurred beforehand.
 
 ### django-cors-headers
+
+This Django app adds Cross-Origin-Resource Sharing (CORS) headers to responses, to enable the API to respond to requests from origins other than its own host.
+TribeHub is configured to allow requests from all origins, to facilitate future development of a native movile app using this API.
 
 ## Testing
 
