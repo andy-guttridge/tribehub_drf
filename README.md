@@ -2,7 +2,7 @@
 
 ## Project goals
 
-This project provides a Django Rest Framework backend for the [TribeHub React web app](https://github.com/andy-guttridge/tribehub_react). It has also been designed with a future native iOS app in mind.
+This project provides a Django Rest Framework API for the [TribeHub React web app](https://github.com/andy-guttridge/tribehub_react). It has also been designed with a future native iOS app in mind.
 
 TribeHub is intended to be a virtual equivalent to the typical wall planner a family might put up in a kitchen or other communal area. The primary goals of the web app are to:
 1) Provide busy families with a single, central hub around which to plan and organise busy lives and schedules. This should include calendar/event scheduling functionality similar to a family wall planner, enabling events to be scheduled for one or multiple family members, and viewed by all the family.
@@ -15,18 +15,18 @@ TribeHub is intended to be a virtual equivalent to the typical wall planner a fa
 
 Planning started by creating epics and user stories for the frontend application, based on the project goals. The user stories were used to inform wireframes mapping out the intended functionality and 'flow' through the app. See the [repo for the frontend React app](https://github.com/andy-guttridge/tribehub_react) for more details.
 
-The user stories requiring implementation to achieve a minimum viable produect (MVP) were then mapped to API endpoints required to support the desired functionality.
+The user stories requiring implementation to achieve a minimum viable product (MVP) were then mapped to API endpoints required to support the desired functionality.
 The user stories themselves are recorded [on this Google sheet](https://docs.google.com/spreadsheets/d/11wcDHeqr85VaHXdJjATod_WECRY03IRUlGgT_L_ikIw/edit#gid=0), with the required API endpoints mapped to user stories on [this sheet](https://docs.google.com/spreadsheets/d/11wcDHeqr85VaHXdJjATod_WECRY03IRUlGgT_L_ikIw/edit#gid=311853659).
 
 ### Data models
 
-Data model schema were drawn up in parallel with the API endpoints, using an entity relationship diagram.
+Data model schema were planned in parallel with the API endpoints, using an entity relationship diagram.
 
 Custom models implemented for Tribehub are:
 
 #### **Profile**
 
-Represents the user profile, using a one-to-one relationsip to the user model. A Profile instance is automatically created on user registration. The Profile model includes an `is_admin` boolean field, which is used to determine whether a given user has tribe admin privileges. Note that initial user registration creates a profile with tribe admin rights; this user can then create further user accounts for their family members which are added as members of the tribe, and these do not have admin rights.
+Represents the user profile, using a one-to-one relationsip to the user model. A Profile instance is automatically created on user registration. The Profile model includes an `is_admin` boolean field, which is used to determine whether a given user has tribe admin privileges. Note that initial user registration creates a profile with tribe admin rights; this user can then create further accounts for their family members which are added as members of the tribe, and these do not have admin rights.
 
 The Profile model has a many to one relationship with the Tribe model. This is used throught the API to associate users with their tribes.
 
@@ -36,13 +36,13 @@ Users can edit their own `display_name` and `image` fields.
 
 The Tribe model has only one field, which is the name of the tribe. This model is important however, as it is used throughout the API to associate individual users with the appropriate tribe - for example, members of the same tribe can invite each other to calendar events, see each others events in the tribe calendar and access the same key contacts list, but they cannot access these items for tribes to which they do not belong.
 
-### **Event**
+#### **Event**
 
 The Event model represents a calendar event. It has many to one relationships with the User model (the `user` field) and the Tribe model (the `tribe` field), in order to record who created the event and which tribe they belong to. There are two fields with many to many relationships with the User model - `to` and `accepted` - which record who has been invited to the event and who has accepted the invitation.
 
-The `recurrences` field is an instance of `RecurrenceField`, provided by the [django-recurrence](https://django-recurrence.readthedocs.io/en/latest/) utility. This enables the calculation of recurring events based on a single original datetime and a set of rules (e.g. weekly, monthly etc). This field is not exposed externally by the API - rather, the `recurrence_type`  field is exposed to allow incoming requests for recurrences using a simple string (`WEK` for weekly, `TWK` for fortnightly, `MON` for monthly, `YEA` for yearly or `NON` for none). The corresponding recurrences rule is then applied by the Event model on save.
+The `recurrences` field is an instance of `RecurrenceField`, provided by the [django-recurrence](https://django-recurrence.readthedocs.io/en/latest/) utility. This enables the calculation of recurring events based on a single original datetime and a set of rules (e.g. weekly, monthly etc). This field is not exposed externally by the API - rather, the `recurrence_type`  field is exposed to allow incoming requests for recurrences using a simple string (`WEK` for weekly, `TWK` for fortnightly, `MON` for monthly, `YEA` for yearly or `NON` for none). The corresponding recurrences rule is then applied by the Event model when an instance is saved to the database.
 
-Recurring events are not saved in the database. When a GET request to the `events/` endpoint is made by an authenticated user, the `recurrences` field is used to programatically generate any recurrences of events which fall within the requested time range. These are then added to the JSON response to the client without creating new objects in the database. 
+Recurrences are not saved as new events the database. When a GET request to the `events/` endpoint is made by an authenticated user, the `recurrences` field is used to programatically generate any recurrences of events which fall within the requested time range. These are then added to the JSON response to the client without creating new objects in the database. 
 These programatically generated recurrences are identifed in the JSON data with a value of `REC` for the `recurrence_type` field. Because the recurrences include the id of the original 'parent' event in the database, the client can always retrieve the original event from the API if required.
 
 The `start` field records the start date and time of the event using an unlocalised ISO8601 format datetime string, and the `duration` field records the the length of the event, which is serialized in the format `[DD] [HH:[MM:]]ss[.uuuuuu]`.
@@ -81,24 +81,24 @@ The Contact model represents an instance of important contact information for a 
 |---|---|---:|---|---:|---|
 |  |  |  |  |  |  |
 | **Custom user <br>account endpoints** |  |  |  |  |  |
-| /accounts/tribe | Handles creation of a new user account with 'tribe' admin permissions,<br>creates a new user profile and a new tribe attached to that user. | POST | Create | List | {<br>    "username":"string",<br>    "password":"string",<br>    "password2":"string",<br>    "tribename":"string"<br>} |
-| /accounts/user | Only tribe admins have permission for this endpoint.<br>Handles creation of a new user account without tribe admin permissions,<br> creates a new user profile and associates them with the same tribe as the<br>tribe admin who creates the account. | POST | Create | List | {<br>    "username":"string",<br>    "password":"string",<br>    "password2":"string"<br>} |
-| /accounts/user/ | Handles deletion of the specified user account and profile. If the action is performed <br>by the tribe admin, the tribe and all the user accounts associated with it are also<br>deleted. Action can only be performed by users on their own accounts, and by the tribe<br>admin for user accounts which are part of their tribe. | DELETE | Delete | Detail | N/A |
+| /accounts/tribe | Handles creation of a new user account with 'tribe' admin permissions, creates a new user profile and a new tribe attached to that user. | POST | Create | List | {<br>    "username":"string",<br>    "password":"string",<br>    "password2":"string",<br>    "tribename":"string"<br>} |
+| /accounts/user | Only tribe admins have permission for this endpoint.<br>Handles creation of a new user account without tribe admin permissions, creates a new user profile and associates them with the same tribe as the tribe admin who creates the account. | POST | Create | List | {<br>    "username":"string",<br>    "password":"string",<br>    "password2":"string"<br>} |
+| /accounts/user/ | Handles deletion of the specified user account and profile. If the action is performed by the tribe admin, the tribe and all the user accounts associated with it are also deleted. Action can only be performed by users on their own accounts, and by the tribe admin for user accounts which are part of their tribe. | DELETE | Delete | Detail | N/A |
 | **Tribe endpoints** |  |  |  |  |  |
 | /tribe | Lists all the members of the current authenticated user's tribe.<br>Can't be accessed by non-authenticated users.  | GET | Read | List | N/A |
 | **Profile endpoints** |  |  |  |  |  |
-| /profile/id | Retrieves profile details for the user id specified in the URL. Only members of the same <br>tribe as the requested profile can access this data. | GET | Read | Detail | N/A |
-| /profile/id | Updates existing user profiles. This action can only be performer by the user <br>who owns the profile, or the admin of that user's tribe. | PUT | Update | Detail | {<br>    "display_name": "string",<br>    "image": "string",<br>    "is_admin": bool<br>}<br><br>Plus image data |
+| /profile/id | Retrieves profile details for the user id specified in the URL. Only members of the same tribe as the requested profile can access this data. | GET | Read | Detail | N/A |
+| /profile/id | Updates existing user profiles. This action can only be performer by the user who owns the profile, or the admin of that user's tribe. | PUT | Update | Detail | {<br>    "display_name": "string",<br>    "image": "string",<br>    "is_admin": bool<br>}<br><br>Plus image data |
 | **Notification endpoints** |  |  |  |  |  |
 | /notifications | Lists all notifications for the authenticated user. | GET | Read | List | N/A |
 | /notifications/id | Deletes the specified notification.<br>This action can only be performed by the owner of the notification. | DELETE | Delete | Detail | N/A |
 | **Event endpoints** |  |  |  |  |  |
-| /events | Returns all the scheduled events for the tribe to which the authenticated user belongs.<br>If no dates are specified, the next two months events are returned.<br><br>This endpoint programatically generates repeat occurrences where a repeat type has been <br>specified for an event, i.e. repeats are not stored in the database. Repeat occurrences <br>are indicated with a 'recurrence_type' value of 'REC'.<br><br>The following URL parameters are optionally available with this end point:<br><br>from_date=YYYY-MM-DDThh:mm:ss - accepts an ISO8601 format date and returns all events for the tribe from the <br>specified date up until the specified to_date, or for the next two months if no to_date is <br>specified.<br><br>to_date=YYYY-MM-DDThh:mm:ss - accepts an ISO8601 format date and returns all events for the tribe from today <br>or from the specified from_date.<br><br>category=string - accepts a valid category code and returns corresponding events <br><br>to=int - returns events to which the specified user is invited. Users who are not part of the<br>same tribe cannot access this data.<br><br>search=string - returns events where the search term is found in the subject field. | GET | Read | List | N/A |
+| /events | Returns all the scheduled events for the tribe to which the authenticated user belongs.<br>If no dates are specified, the next two months events are returned.<br><br>This endpoint programatically generates repeat occurrences where a repeat type has been <br>specified for an event, i.e. repeats are not stored in the database. Repeat occurrences <br>are indicated with a 'recurrence_type' value of 'REC'.<br><br>The following URL parameters are optionally available with this end point:<br><br>from_date=YYYY-MM-DDThh:mm:ss - accepts an ISO8601 format date and returns all events for the tribe from the specified date up until the specified to_date, or for the next two months if no to_date is specified.<br><br>to_date=YYYY-MM-DDThh:mm:ss - accepts an ISO8601 format date and returns all events for the tribe from today <br>or from the specified from_date.<br><br>category=string - accepts a valid category code and returns corresponding events <br><br>to=int - returns events to which the specified user is invited. Users who are not part of the<br>same tribe cannot access this data.<br><br>search=string - returns events where the search term is found in the subject field. | GET | Read | List | N/A |
 | /events | Creates a new event for the tribe to which the user belongs.<br>Only users in the same tribe as the authenticated user can be invited.<br><br><br>Valid recurrence types are:<br>NON = None<br>WEK = Weekly<br>TWK = Two weekly<br>MON = Monthly<br>YEA = Yearly<br><br>Valid category strings are in events/event_values.py | POST | Create | List | {<br><br>    "to": [id, id...],<br>    "start": "YYYY-MM-DDThh:mm:ss",<br>    "duration": float,<br>    "recurrence_type": "String",<br>    "subject": "String",<br>    "category": "String"<br>} |
-| /events/id | Returns details of a single event. Data is restricted to users who are members of the tribe <br>with which the event associated. | GET | Read | List | N/A |
-| /events/id | Updates details of an existing event. This action is restricted to the user who created the <br>event and the tribe admin. | PUT | Update | Detail | {<br><br>    "to": [id, id...],<br>    "start": "YYYY-MM-DDThh:mm:ss",<br>    "duration": float,<br>    "recurrence_type": "String",<br>    "subject": "String",<br>    "category": "String"<br>} |
-| /events/id | Deletes the specified event. This action is restricted to the user who created the <br>event and the tribe admin. | DELETE | Delete | Detail | N/A |
-| /events/response/id | Records the authenticated user as having accepted or declined an invitation to <br>the specified event. Returns an error message if the user was not invited. | PUT | Update | Detail | {<br>    "event_response":"accept" OR "decline"<br>} |
+| /events/id | Returns details of a single event. Data is restricted to users who are members of the tribe with which the event associated. | GET | Read | List | N/A |
+| /events/id | Updates details of an existing event. This action is restricted to the user who created the event and the tribe admin. | PUT | Update | Detail | {<br><br>    "to": [id, id...],<br>    "start": "YYYY-MM-DDThh:mm:ss",<br>    "duration": float,<br>    "recurrence_type": "String",<br>    "subject": "String",<br>    "category": "String"<br>} |
+| /events/id | Deletes the specified event. This action is restricted to the user who created the event and the tribe admin. | DELETE | Delete | Detail | N/A |
+| /events/response/id | Records the authenticated user as having accepted or declined an invitation to the specified event. Returns an error message if the user was not invited. | PUT | Update | Detail | {<br>    "event_response":"accept" OR "decline"<br>} |
 | **Contact endpoints** |  |  |  |  |  |
 | /contacts | Returns all the contacts for the authenticated user's tribe.<br> Accepts a URL search parameter and returns results where a match is found in the category, title, first_name, last_name, phone or email fields.| GET | Read | List | N/A |
 | /contacts | Creates a new contact for the authenticated user's tribe. This action is restricted to tribe admins. | POST | Create | List | {<br>    "category": "String",<br>    "title": "String",<br>    "first_name": "String",<br>    "last_name": "String",<br>    "phone": "String",<br>    "email": "String"<br>} |
@@ -106,6 +106,14 @@ The Contact model represents an instance of important contact information for a 
 | /contacts/id | Delete the specified contact. This action is restricted to the admin of the tribe <br>to which the contact is associated. | DELETE | Delete | Detail | N/A |
 
 Table generated using https://www.tablesgenerator.com/markdown_tables/load
+
+<p align="center">
+    Link to a larger version of this table with sample output data: 
+</p>
+
+<p align="center">
+    <a href="endpoints.md" target="_rel">API endpoints table</a>
+</p>
 
 ## Frameworks, libraries and dependencies
 The TribeHub API is implemented in Python using [Django](https://www.djangoproject.com) and [Django Rest Framework](https://django-filter.readthedocs.io/en/stable/).
@@ -135,7 +143,7 @@ Provides JSON web token authentication.
 ### dj-database-url
 https://pypi.org/project/dj-database-url/
 
-Creates an environment variable to configure the conntection to the database.
+Creates an environment variable to configure the connection to the database.
 
 ### psychopg2
 https://pypi.org/project/psycopg2/
@@ -145,18 +153,18 @@ Database adapater to enable interaction between Python and the PostgreSQL databa
 ### python-dateutil
 https://pypi.org/project/python-dateutil/
 
-This module provides extenstions to the standard Python datetime module. It is a pre-requisite for django-recurrence library.
+This module provides extensions to the standard Python datetime module. It is a pre-requisite for django-recurrence library.
 
 ### django-recurrence
 https://django-recurrence.readthedocs.io/en/latest/
 
 This utility enables functionality for working with recurring dates in Django. It provides a `ReccurenceField` field type for storing recurring datetimes in the database.
-This is used by the TribeHub API to programatically generate recurrences of repeat events when calendar events are requested by the client, without having to store them in the database.
+This is used by the TribeHub API to programatically generate recurrences when calendar events are requested by the client, without having to store them in the database.
 
 ### django-filter
 https://django-filter.readthedocs.io/en/stable/
 
-django-filter is used to implement ISO datetime filtering functionality for the `events` GET endpoint. The client is able to request dates within a range using the `from_date` and `to_date` URL parameters. The API performs an additional check after filtering to 'catch' any repeat events within the requested range, but where the original event stored in the database occurred beforehand.
+django-filter is used to implement ISO datetime filtering functionality for the `events` GET endpoint. The client is able to request dates within a range using the `from_date` and `to_date` URL parameters. The API performs an additional check after filtering to 'catch' any repeat events within the requested range, where the original event stored in the database occurred beforehand.
 
 ### django-cors-headers
 
@@ -221,9 +229,9 @@ All files containing custom Python code were validated using the [Code Institute
 
 ### Unresolved bugs
 
-- The `perform_create` method of the `ListCreate` generic view is overriden in `contacts/views.py`. Django does not seem to respond to custom permission classes when this method is overriden, meaning that unauthorised users (i.e. authenticated users without tribe admin status) were able to create new contacts. Print statements at various points in the code were used to verify that the relevant custom permission classes were being invoked and returning the correct values, and it remains uncertain whether this issue is due to a bug in Django Rest Framework or in this project. 
+- The `perform_create` method of the `ListCreate` generic view is overriden in `contacts/views.py`. Django does not seem to respond to custom permission classes in this circumstance, meaning that unauthorised users (i.e. authenticated users without tribe admin status) were able to create new contacts. Print statements at various points in the code were used to verify that the relevant custom permission classes were being invoked and returning the correct values, and it remains uncertain whether this issue is due to a bug in Django Rest Framework or in this project. 
 
-The issue was overcome by manually checking the status of the user within the `perform_create` method, but given more time it would be desirable to look into this further and revert to correct use of permission classes here if possible.
+    The issue was overcome by manually checking the status of the user within the `perform_create` method, but given more time it would be desirable to look into this further and revert to correct use of permission classes here if possible.
 
 ## Deployment
 
@@ -260,23 +268,22 @@ To duplicate deployment to Heroku, follow these steps:
 - Select 'GitHub' and confirm you wish to deploy using GitHub. You may be asked to enter your GitHub password.
 - Find the 'Connect to GitHub' section and use the search box to locate your repo.
 - Select 'Connect' when found.
-- Optionally choose the main branch under 'Automatic Deploys' and select 'Enable Automatic Deploys' if you wish your deployed site to be automatically redeployed every time you push changes to GitHub.
+- Optionally choose the main branch under 'Automatic Deploys' and select 'Enable Automatic Deploys' if you wish your deployed API to be automatically redeployed every time you push changes to GitHub.
 - Find the 'Manual Deploy' section, choose 'main' as the branch to deploy and select 'Deploy Branch'.
-- Your site will shortly be deployed and you will be given a link to the deployed site when the process is complete.
+- Your API will shortly be deployed and you will be given a link to the deployed site when the process is complete.
 
 ## Credits
 
-- How to fully define a field within an array field from [Stack Overflow](https://stackoverflow.com/questions/41180829/arrayfield-missing-1-required-positional-argument)
-- Technique to limit the size of image uploads to cloudinary adapted from this [Cloudinary](https://support.cloudinary.com/hc/en-us/community/posts/360009752479-How-to-resize-before-uploading-pictures-in-Django) support article
-- Replacement for deprecated `django.conf.urls.url()` implemented as per this [StackOverflow article](https://stackoverflow.com/questions/70319606/importerror-cannot-import-name-url-from-django-conf-urls-after-upgrading-to)
-- Approach to creating a string representation of a many to many field in the Django admin panel from https://stackoverflow.com/questions/18108521/many-to-many-in-list-display-django
-- Technique to create a custom filter for date ranges using django-filters adapted from this [StackOverflow article](https://stackoverflow.com/questions/37183943/django-how-to-filter-by-date-with-django-rest-framework)
-- How to access URL arguments as kwargs in generic APIViews from this [StackOverflow article](https://stackoverflow.com/questions/51042871/how-to-access-url-kwargs-in-generic-api-views-listcreateapiview-to-be-more-spec)
+- The technique to limit the size of image uploads to cloudinary is adapted from this [Cloudinary](https://support.cloudinary.com/hc/en-us/community/posts/360009752479-How-to-resize-before-uploading-pictures-in-Django) support article
+- A replacement for the deprecated `django.conf.urls.url()` was implemented as per this [StackOverflow article](https://stackoverflow.com/questions/70319606/importerror-cannot-import-name-url-from-django-conf-urls-after-upgrading-to)
+- The approach to creating a string representation of a many to many field in the Django admin panel is adapted from https://stackoverflow.com/questions/18108521/many-to-many-in-list-display-django
+- The technique to create a custom filter for date ranges using django-filters is adapted from this [StackOverflow article](https://stackoverflow.com/questions/37183943/django-how-to-filter-by-date-with-django-rest-framework)
+- How to access URL arguments as kwargs in generic APIViews is from this [StackOverflow article](https://stackoverflow.com/questions/51042871/how-to-access-url-kwargs-in-generic-api-views-listcreateapiview-to-be-more-spec)
 - How to filter on many-to-many fields is from this [StackOverflow article](https://stackoverflow.com/questions/4507893/django-filter-many-to-many-with-contains)
-- Technique to use Python pattern matching as case statements from this [StackOverflow article](https://stackoverflow.com/questions/11479816/what-is-the-python-equivalent-for-a-case-switch-statement)
-- Technique to override model `save()` method to programatically set the value of fields based on the value of other fields from this [StackOverflow article]:(https://stackoverflow.com/questions/11479816/what-is-the-python-equivalent-for-a-case-switch-statement)
-- Approach to obtaining the current user context within a model serializer from [Stackoverflow](https://stackoverflow.com/questions/30203652/how-to-get-request-user-in-django-rest-framework-serializer)
-- Technique to use different serializers depending on HTTP request type within the same generic class view from [Stackoverflow](https://stackoverflow.com/questions/22616973/django-rest-framework-use-different-serializers-in-the-same-modelviewset)
+- The technique to use Python pattern matching as case statements is from this [StackOverflow article](https://stackoverflow.com/questions/11479816/what-is-the-python-equivalent-for-a-case-switch-statement)
+- The technique to override the `save()` method of a model to programatically set the value of fields based on the value of other fields is adapted from this [StackOverflow article]:(https://stackoverflow.com/questions/22157437/model-field-based-on-other-fields)
+- The approach to obtaining the current user context within a model serializer is from [Stackoverflow](https://stackoverflow.com/questions/30203652/how-to-get-request-user-in-django-rest-framework-serializer)
+- The technique for using different serializers depending on the HTTP request type within the same generic class view is from [Stackoverflow](https://stackoverflow.com/questions/22616973/django-rest-framework-use-different-serializers-in-the-same-modelviewset)
 
 In addition, the following documentation was extensively referenced throughout development:
 
