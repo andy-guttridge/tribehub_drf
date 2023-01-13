@@ -31,10 +31,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = 'DEV' in os.environ
 
 ALLOWED_HOSTS = [
-    os.environ.get('ALLOWED_HOST'),
-    os.environ.get('ALLOWED_HOST_2'),
-    os.environ.get('ALLOWED_HOST_3'),
-    'tribehub-drf.herokuapp.com',
+    os.environ.get('ALLOWED_HOST')
 ]
 
 CLOUDINARY_STORAGE = {
