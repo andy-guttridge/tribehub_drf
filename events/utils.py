@@ -6,7 +6,7 @@ from notifications.models import Notification
 from .serializers import UserSerializer
 
 
-def make_events(request, event, from_date, to_date):
+def make_events(event, from_date, to_date):
     """
     Programatically creates a list of events from the recurrences of an event
     in the database, within the range of from_date to to_date. Defaults to

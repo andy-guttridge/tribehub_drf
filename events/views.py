@@ -102,7 +102,7 @@ class EventList(generics.ListCreateAPIView):
         # Find recurrences within specified date range for all events and
         # append to response data.
         for event in events:
-            recurrence_events = make_events(request, event, from_date, to_date)
+            recurrence_events = make_events(event, from_date, to_date)
             response.data['results'].extend(recurrence_events)
             response.data['count'] = (
                 response.data['count'] + len(recurrence_events)
