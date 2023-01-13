@@ -99,7 +99,7 @@ The Contact model represents an instance of important contact information for a 
 | /events/id | Deletes the specified event. This action is restricted to the user who created the <br>event and the tribe admin. | DELETE | Delete | Detail | N/A |
 | /events/response/id | Records the authenticated user as having accepted or declined an invitation to <br>the specified event. Returns an error message if the user was not invited. | PUT | Update | Detail | {<br>    "event_response":"accept" OR "decline"<br>} |
 | **Contact endpoints** |  |  |  |  |  |
-| /contacts | Returns all the contacts for the authenticated user's tribe. | GET | Read | List | N/A |
+| /contacts | Returns all the contacts for the authenticated user's tribe.<br> Accepts a URL search parameter and returns results where a match is found in the category, title, first_name, last_name, phone or email fields.| GET | Read | List | N/A |
 | /contacts | Creates a new contact for the authenticated user's tribe. This action is restricted to tribe admins. | POST | Create | List | {<br>    "category": "String",<br>    "title": "String",<br>    "first_name": "String",<br>    "last_name": "String",<br>    "phone": "String",<br>    "email": "String"<br>} |
 | /contacts/id | Updates details of an existing contact for the user's tribe.<br>This action is restricted to tribe admins. | PUT | Update | Detail | {<br>    "category": "String",<br>    "title": "String",<br>    "first_name": "String",<br>    "last_name": "String",<br>    "phone": "String",<br>    "email": "String"<br>} |
 | /contacts/id | Delete the specified contact. This action is restricted to the admin of the tribe <br>to which the contact is associated. | DELETE | Delete | Detail | N/A |
@@ -136,9 +136,51 @@ This is a pre-requisite for django-recurrence
 
 ### Manual testing
 
-**TO BE COMPLETED**
+A series of manual tests were carried out for each end point. Please see the separate [testing.md](/testing.md) document for details.
 
 ### Python validation
+
+All files containing custom Python code were validated using the [Code Institute Python Linter](https://pep8ci.herokuapp.com/):
+
+- `contacts/admin.py`: no errors found
+- `contacts/models.py`: no errors found
+- `contacts/serializers.py`: no errors found
+- `contacts/urls.py`: no errors found
+- `contacts/views.py`: no errors found
+
+- `events/admin.py`: no errors found
+- `events/event_values.py`: no errors found
+- `events/filters.py`: no errors found
+- `events/models.py`: no errors found
+- `events/serializers.py`: no errors found
+- `events/urls.py`: no errors found
+- `events/utils.py`: no errors found
+- `events/views.py`: no errors found
+
+- `notifications/admin.py`: no errors found
+- `notifications/models.py`: no errors found
+- `notifications/notification_values.py`: no errors found
+- `notifications/serializers.py`: no errors found
+- `notifications/urls.py`: no errors found
+- `notifications/views.py`:no errors found
+
+- `profiles/admin.py`: no errors found
+- `profiles/models.py`: no errors found
+- `profiles/serializers.py`: no errors found
+- `profiles/urls.py`: no errors found
+- `profiles/views.py`: no errors found  
+
+- `tribehub_drf/permissions.py`: no errors found
+- `tribehub_drf/serializers.py`: no errors found
+- `tribehub_drf/settings.py`: no errors found
+- `tribehub_drf/urls.py`: no errors found  
+- `tribehub_drf/views.py`: no errors found
+
+- `tribes/admin.py`: no errors found
+- `tribes/models.py`: no errors found
+- `tribes/serializers.py`: no errors found
+- `tribes/urls.py`: no errors found
+- `tribes/views.py`: no errors found
 
 ### Resolved bugs
 
