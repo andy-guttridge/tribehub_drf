@@ -227,8 +227,6 @@ The issue was overcome by manually checking the status of the user within the `p
 
 ## Deployment
 
-### Deployment to Heroku
-
 The TribeHub API is deployed to Heroku, using an ElephantSQL Postgres database.
 To duplicate deployment to Heroku, follow these steps:
 
