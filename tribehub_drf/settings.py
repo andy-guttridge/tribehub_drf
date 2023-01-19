@@ -70,7 +70,7 @@ JWT_AUTH_SECURE = True
 # Name access token
 JWT_AUTH_COOKIE = 'my-app-auth'
 # Name refresh token
-JWT_AUTH_REFRESH_COOKIE = 'my-refresh token'
+JWT_AUTH_REFRESH_COOKIE = 'my-refresh-token'
 JWT_AUTH_SAMESITE = 'None'
 
 # Specify custom user details serializer
