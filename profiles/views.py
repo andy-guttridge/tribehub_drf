@@ -170,7 +170,7 @@ class DeleteUser(APIView):
             # Delete requested profile and return success code.
             profile_to_del.delete()
             return Response(
-                {'deleted': 'The user account has been successfully deleted.'},
+                {'detail': 'The user account has been successfully deleted.'},
                 status=status.HTTP_200_OK
             )
 

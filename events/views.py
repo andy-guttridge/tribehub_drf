@@ -271,7 +271,7 @@ class EventResponse(APIView):
                 try:
                     event.accepted.add(user)
                     return Response(
-                        {'success': 'The invitation has been accepted.'},
+                        {'detail': 'The invitation has been accepted.'},
                         status=status.HTTP_200_OK
                     )
                 except Exception as e:
@@ -283,7 +283,7 @@ class EventResponse(APIView):
                 try:
                     event.accepted.remove(user)
                     return Response(
-                        {'success': 'The invitation has been declined.'},
+                        {'detail': 'The invitation has been declined.'},
                         status=status.HTTP_200_OK
                     )
                 except Exception as e:
