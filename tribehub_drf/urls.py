@@ -16,13 +16,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include, re_path
 from django.views.i18n import JavaScriptCatalog
-from .views import root_route, UsersList
+from .views import root_route, logout_route, UsersList
 
 urlpatterns = [
     path('', root_route),
     path('users/', UsersList.as_view()),
     path('admin/', admin.site.urls),
     path('api-auth', include('rest_framework.urls')),
+    path('dj-rest-auth/', logout_route),
     path('dj-rest-auth/', include('dj_rest_auth.urls')),
     path('', include('profiles.urls')),
     path('', include('tribes.urls')),
