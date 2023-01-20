@@ -5,6 +5,8 @@ from rest_framework.views import APIView
 from rest_framework import generics
 from django.contrib.auth.models import User
 from django.http import Http404
+from django.db import IntegrityError
+
 from tribehub_drf.permissions import (
     IsTribeAdmin,
     IsThisTribeAdminOrOwner,
@@ -31,10 +33,19 @@ class TribeAccount(APIView):
         # tribe and profile objects. Try to save and either return success code
         # or errors.
         if serializer.is_valid():
-            user = User.objects.create_user(
-                username=serializer.validated_data.get('username'),
-                password=serializer.validated_data.get('password')
-            )
+            try:
+                user = User.objects.create_user(
+                    username=serializer.validated_data.get('username'),
+                    password=serializer.validated_data.get('password')
+                )
+            except IntegrityError:
+                return Response(
+                        {
+                            'username': 'This username is already in use.'
+                            ' Please choose another.'
+                        },
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
             tribe = Tribe.objects.create(
                 name=serializer.validated_data.get('tribename')
             )
@@ -81,10 +92,19 @@ class UserAccount(APIView):
 
         serializer = NewUserSerializer(data=request.data)
         if serializer.is_valid():
-            user = User.objects.create_user(
-                    username=serializer.validated_data.get('username'),
-                    password=serializer.validated_data.get('password')
-                )
+            try:
+                user = User.objects.create_user(
+                        username=serializer.validated_data.get('username'),
+                        password=serializer.validated_data.get('password')
+                    )
+            except IntegrityError:
+                return Response(
+                        {
+                            'username': 'This username is already in use.'
+                            ' Please choose another.'
+                        },
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
             profile = Profile.objects.create(
                     user=user,
                     display_name=serializer.validated_data.get('username'),
