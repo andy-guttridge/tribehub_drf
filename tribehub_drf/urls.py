@@ -23,7 +23,7 @@ urlpatterns = [
     path('users/', UsersList.as_view()),
     path('admin/', admin.site.urls),
     path('api-auth', include('rest_framework.urls')),
-    path('dj-rest-auth/', logout_route),
+    path('dj-rest-auth/logout/', logout_route),
     path('dj-rest-auth/', include('dj_rest_auth.urls')),
     path('', include('profiles.urls')),
     path('', include('tribes.urls')),
