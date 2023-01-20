@@ -16,6 +16,7 @@ def root_route(request):
         "message": "This is the Django Rest Framework API for TribeHub.",
     })
 
+
 @api_view(['POST'])
 # Fix for Django Rest Framework logout bug from Code Institute
 # DRF walkthrough
