@@ -9,10 +9,12 @@ class CurrentUserSerializer(UserDetailsSerializer):
     profile_image = serializers.ReadOnlyField(source='profile.image.url')
     display_name = serializers.ReadOnlyField(source='profile.display_name')
     is_admin = serializers.ReadOnlyField(source='profile.is_admin')
+    tribe_name = serializers.ReadOnlyField(source='profile.tribe.name')
 
     class Meta(UserDetailsSerializer.Meta):
         fields = UserDetailsSerializer.Meta.fields + (
             'profile_image',
             'display_name',
             'is_admin',
+            'tribe_name',
         )
