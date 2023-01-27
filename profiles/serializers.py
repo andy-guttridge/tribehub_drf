@@ -113,7 +113,7 @@ class ProfileSerializer(serializers.ModelSerializer):
     username = serializers.ReadOnlyField(source='user.username')
     tribe = serializers.ReadOnlyField(source='tribe.pk')
     is_admin = serializers.ReadOnlyField()
-    image = serializers.ReadOnlyField(source='image.url')
+    # image = serializers.ReadOnlyField(source='image.url')
 
     class Meta:
         model = Profile
