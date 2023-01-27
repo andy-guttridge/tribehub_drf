@@ -114,11 +114,6 @@ class ProfileSerializer(serializers.ModelSerializer):
     tribe = serializers.ReadOnlyField(source='tribe.pk')
     is_admin = serializers.ReadOnlyField()
 
-    def to_representation(self, instance):
-        representation = super().to_representation(instance)
-        representation.pop(self.image.url)
-        return representation
-
     class Meta:
         model = Profile
         fields = [
