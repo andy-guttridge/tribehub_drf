@@ -24,8 +24,7 @@ class TribeSerializer(serializers.ModelSerializer):
         for profile in queryset:
             user_dict = {
                 'user_id': profile.user.id,
-                'display_name': profile.display_name,
-                'profile_image': profile.image.url,
+                'display_name': profile.display_name
             }
             users.append(user_dict)
         return users
