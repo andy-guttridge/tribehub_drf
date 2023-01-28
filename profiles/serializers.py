@@ -114,6 +114,18 @@ class ProfileSerializer(serializers.ModelSerializer):
     tribe = serializers.ReadOnlyField(source='tribe.pk')
     is_admin = serializers.ReadOnlyField()
 
+    # Technique to override to_representation to make a change to the
+    # outgoing JSON is from
+    # https://testdriven.io/tips/ed79fa08-6834-4827-b00d-2609205129e0/
+    def to_representation(self, instance):
+        """
+        Override to_representation to return the url of the image in the
+        serialized JSON.
+        """
+        representation = super().to_representation(instance)
+        representation['image'] = instance.image.url
+        return representation
+
     class Meta:
         model = Profile
         fields = [
