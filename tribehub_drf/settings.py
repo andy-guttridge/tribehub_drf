@@ -179,6 +179,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+OLD_PASSWORD_FIELD_ENABLED = True
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
