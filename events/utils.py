@@ -3,7 +3,7 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
 from notifications.models import Notification
-from .serializers import UserSerializer
+from .serializers import UserSerializer, DurationSerializer
 
 
 def make_events(event, from_date, to_date):
@@ -38,6 +38,10 @@ def make_events(event, from_date, to_date):
         to_user_serializer = UserSerializer(event_to_users, many=True)
         to_users = to_user_serializer.data
 
+        # Use special serializer to format duration field correctly
+        duration_serializer = DurationSerializer(event)
+        duration = duration_serializer.data['duration']
+
         # Create event for each recurrence and append to list
         for recurrence in recurrences:
             recurrence_event = {
@@ -53,7 +57,7 @@ def make_events(event, from_date, to_date):
                 },
                 'to': to_users,
                 'start': datetime.isoformat(recurrence),
-                'duration': event.duration,
+                'duration': duration,
                 'recurrence_type': 'REC',
                 'recurrences': None,
                 'subject': event.subject,

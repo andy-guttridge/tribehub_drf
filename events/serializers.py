@@ -29,6 +29,20 @@ class UserSerializer(serializers.ModelSerializer):
         ]
 
 
+class DurationSerializer(serializers.ModelSerializer):
+    """
+    Format the duration field correctly for programmatically generated
+    recurrences
+    """
+    duration = serializers.DurationField(read_only=True)
+
+    class Meta:
+        model = Event
+        fields = [
+            'duration',
+        ]
+
+
 class EventSerializer(serializers.ModelSerializer):
     """
     Serializer for deserializing existing events.
