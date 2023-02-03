@@ -12,15 +12,20 @@ class UserSerializer(serializers.ModelSerializer):
     """
     user_id = serializers.ReadOnlyField(source='id')
     display_name = serializers.SerializerMethodField()
+    image = serializers.SerializerMethodField()
 
     def get_display_name(self, obj):
         return obj.profile.display_name
+
+    def get_image(self, obj):
+        return obj.profile.image.url
 
     class Meta:
         model = User
         fields = [
             'user_id',
-            'display_name'
+            'display_name',
+            'image',
         ]
 
 
