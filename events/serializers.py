@@ -43,7 +43,8 @@ class EventSerializer(serializers.ModelSerializer):
         return (
             {
                 'user_id': obj.user.id,
-                'display_name': obj.user.profile.display_name
+                'display_name': obj.user.profile.display_name,
+                'image': obj.user.profile.image.url,
             }
         )
 
