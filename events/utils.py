@@ -38,6 +38,16 @@ def make_events(event, from_date, to_date):
         to_user_serializer = UserSerializer(event_to_users, many=True)
         to_users = to_user_serializer.data
 
+        # Find which useres have accepted the invitation and use
+        # ToUserSerializer to convert to serialized user instances
+        event_accepted_users = list(
+            User.objects.filter(event_accepted=event).all()
+        )
+        accepted_user_serializer = UserSerializer(
+            event_accepted_users, many=True
+        )
+        accepted_users = accepted_user_serializer.data
+
         # Use special serializer to format duration field correctly
         duration_serializer = DurationSerializer(event)
         duration = duration_serializer.data['duration']
@@ -61,7 +71,8 @@ def make_events(event, from_date, to_date):
                 'recurrence_type': 'REC',
                 'recurrences': None,
                 'subject': event.subject,
-                'category': event.category
+                'category': event.category,
+                'accepted': accepted_users,
             }
             recurrence_events.append(recurrence_event)
 
