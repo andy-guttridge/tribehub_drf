@@ -44,7 +44,8 @@ def make_events(event, from_date, to_date):
                 'id': event.id,
                 'user': {
                     'user_id': event.user.id,
-                    'display_name': event.user.profile.display_name
+                    'display_name': event.user.profile.display_name,
+                    'image': event.user.profile.image.url
                 },
                 'tribe': {
                     'tribe_id': event.tribe.id,
