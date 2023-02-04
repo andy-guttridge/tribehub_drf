@@ -65,6 +65,8 @@ class Event(models.Model):
         # store a value of None
         if rule is not None:
             pattern = recurrence.Recurrence(
+                dtstart=self.start,
+                dtend=None,
                 rrules=[rule, ],
                 )
             self.recurrences = pattern
