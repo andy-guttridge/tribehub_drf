@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+import datetime
 from recurrence.fields import RecurrenceField
 import recurrence
 
@@ -65,7 +66,7 @@ class Event(models.Model):
         # store a value of None
         if rule is not None:
             pattern = recurrence.Recurrence(
-                dtstart=self.start,
+                dtstart=self.start + datetime.timedelta(days=1),
                 dtend=None,
                 rrules=[rule, ],
                 )
