@@ -14,6 +14,7 @@ from tribehub_drf.permissions import (
 )
 from tribes.models import Tribe
 from profiles.models import Profile
+from events.models import Event
 from .serializers import (
     NewTribeSerializer,
     NewUserSerializer,
@@ -186,6 +187,21 @@ class DeleteUser(APIView):
                         status=status.HTTP_500_INTERNAL_SERVER_ERROR
                     )
                 profile.tribe.delete()
+
+            # Find any events the user created, is invited to or has
+            # accepted an invitation to. Delete events created by the user,
+            # and remove their invites and acceptances.
+            events_owned = Event.objects.filter(user=user_to_del).all()
+            events_invited = Event.objects.filter(to=user_to_del).all()
+            events_accepted = Event.objects.filter(accepted=user_to_del).all()
+            if events_owned:
+                events_owned.delete()
+            if events_invited:
+                for event in events_invited:
+                    event.to.remove(user_to_del)
+            if events_accepted:
+                for event in events_accepted:
+                    event.accepted.remove(user_to_del)
 
             # Delete requested profile and return success code.
             profile_to_del.delete()
