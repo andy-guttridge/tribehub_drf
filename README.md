@@ -227,12 +227,15 @@ All files containing custom Python code were validated using the [Code Institute
 - Testing also revealed that the programatically generated event recurrences erroneously included the currently authenticated user as the 'owner' of the event, rather than the user who created them. This was fixed by changing two variables in `events/utils.py`.
 - Testing demonstrated that using an id for a non-existent event object for the `events/response/id` endpoint resulted in an uncaught exception. Try...except blocks were added to  the EventResponse class in `events/views.py` to ensure any references to non-existent events are handled gracefully alongside permission related errors, and that appropriate HTTP status codes are returned for each class of error.
 - When first implementing user sign-in from the React front-end, submission of the POST form data to `dj-rest-auth/login/` was causing an HTTP 405 'method not allowed' error. This was tracked down to a space in the string for the value of `JWT-REFRESH-TOKEN` in `settings.py`. In order to work out what exactly was causing the bug, the settings of the React app were temporarily changed to make requests to `localhost` instead of the deployed API, enabling the API to run in debug mode and to make live changes to the code and see their effect on the frontend without having to rebuild the deployed API. Once the bug was fixed, the changes were pushed to GitHub and the API redeployed.
+- Although programatically generated event recurrences appeared to be created correctly when testing via the Django Rest Framework admin interface, once they could be visualised on a calendar in the React frontend a number of issues with recurrences became apparent, including duplicated events on the same day and incorrect recurrence dates. These bugs were caused by incorrect use of the django-recurrence app used to generate the recurrences; the documentation for  django-recurrence is somewhat sparse, so some trial and error experimentation and inspection of the django-recurrence source code to identify relevant kwargs to try was required. The bugs were mostly fixed, with one exception (see below). 
 
 ### Unresolved bugs
 
 - The `perform_create` method of the `ListCreate` generic view is overriden in `contacts/views.py`. Django does not seem to respond to custom permission classes in this circumstance, meaning that unauthorised users (i.e. authenticated users without tribe admin status) were able to create new contacts. Print statements at various points in the code were used to verify that the relevant custom permission classes were being invoked and returning the correct values, and it remains uncertain whether this issue is due to a bug in Django Rest Framework or in this project. 
 
     The issue was overcome by manually checking the status of the user within the `perform_create` method, but given more time it would be desirable to look into this further and revert to correct use of permission classes here if possible.
+
+- The behaviour of monthly recurrences when the original date is at the end of the month proved difficult to refine due to the varying number of days in a month. Current behaviour is that recurrences where the orginal event day is in the range `29 - 31` are generated using an offset from the end of the month. For example, monthly recurrences for an event with a date of 30 January 2023 would fall on the 30th of the month for months with 31 days, but the 29th of the month for months with 30 days. This is not quite the desired behaviour, and would be subject to further refinement given more time.
 
 ## Deployment
 
@@ -295,4 +298,5 @@ In addition, the following documentation was extensively referenced throughout d
 - [django-filter documentation](https://django-filter.readthedocs.io/en/stable/)
 - [django-recurrence documentation](https://django-recurrence.readthedocs.io/en/latest/)
 - [Python datetime documentation](https://docs.python.org/3/library/datetime.html)
+- [dateutil documentation](https://dateutil.readthedocs.io/en/stable/index.html)
 
