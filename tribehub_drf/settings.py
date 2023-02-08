@@ -117,6 +117,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']
+
 # Allow all CORS origins so that this API can be used with native mobile apps
 CORS_ORIGIN_ALLOW_ALL = True
 

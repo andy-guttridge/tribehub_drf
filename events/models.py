@@ -96,7 +96,6 @@ class Event(models.Model):
             case _:
                 pattern = None
 
-        # If there is a rule, use it to create recurrence pattern, otherwise
-        # store a value of None
+        # Save the appropriate pattern as a recurrences instance
         self.recurrences = pattern
         super(Event, self).save(*args, **kwargs)
