@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 import datetime
+from dateutil.relativedelta import relativedelta
 from recurrence.fields import RecurrenceField
 import recurrence
 
@@ -51,26 +52,51 @@ class Event(models.Model):
         match self.recurrence_type:
             case 'DAI':
                 rule = recurrence.Rule(recurrence.DAILY)
+                pattern = recurrence.Recurrence(
+                    dtstart=self.start + datetime.timedelta(days=1),
+                    dtend=None,
+                    rrules=[rule, ],
+                )
             case 'WEK':
                 rule = recurrence.Rule(recurrence.WEEKLY)
+                pattern = recurrence.Recurrence(
+                    dtstart=self.start + datetime.timedelta(weeks=1),
+                    dtend=None,
+                    rrules=[rule, ],
+                )
             case 'TWK':
                 rule = recurrence.Rule(recurrence.WEEKLY, interval=2)
+                pattern = recurrence.Recurrence(
+                    dtstart=self.start + datetime.timedelta(weeks=2),
+                    dtend=None,
+                    rrules=[rule, ],
+                )
             case 'MON':
-                rule = recurrence.Rule(recurrence.MONTHLY)
+                # If the day in the month is above 28, we create a rule for
+                # monthly occurences with a negative offset of the number of
+                # days from the end of the month
+                if self.start.day in range(29, 32):
+                    monthday = self.start.day - 32
+                    rule = recurrence.Rule(bymonthday=monthday, freq=1)
+                else:
+                    rule = (recurrence.Rule(recurrence.MONTHLY))
+                pattern = recurrence.Recurrence(
+                    dtstart=self.start + relativedelta(months=1),
+                    dtend=None,
+                    include_dtstart=False,
+                    rrules=[rule, ]
+                )
             case 'YEA':
                 rule = recurrence.Rule(recurrence.YEARLY)
+                pattern = recurrence.Recurrence(
+                    dtstart=self.start + datetime.timedelta(days=365),
+                    dtend=None,
+                    rrules=[rule, ],
+                )
             case _:
-                rule = None
+                pattern = None
 
         # If there is a rule, use it to create recurrence pattern, otherwise
         # store a value of None
-        if rule is not None:
-            pattern = recurrence.Recurrence(
-                dtstart=self.start + datetime.timedelta(days=1),
-                dtend=None,
-                rrules=[rule, ],
-                )
-            self.recurrences = pattern
-        else:
-            self.recurrences = None
+        self.recurrences = pattern
         super(Event, self).save(*args, **kwargs)
