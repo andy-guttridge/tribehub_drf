@@ -93,7 +93,6 @@ class NewOrUpdateEventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         fields = [
-            'to',
             'start',
             'duration',
             'recurrence_type',

@@ -115,23 +115,31 @@ class EventList(generics.ListCreateAPIView):
         Also check if users invited to the event are part of the same tribe,
         and raise validation error if not.
         """
-        # Iterate through user ids received in POST request, and check each
-        # one is a member of the event creator's tribe and raise validation
-        # error if we find someone who is not in the tribe.
-        for to_user_str in self.request.data.get('to'):
-            try:
-                to_user = User.objects.filter(id=int(to_user_str)).first()
-            except TypeError as e:
-                raise HttpResponseBadRequest
-            if to_user.profile.tribe != self.request.user.profile.tribe:
-                raise serializers.ValidationError(
-                    {
-                        'to': 'Users who are not part of this tribe cannot '
-                        'be invited.'
-                    }
-                )
+        # Retrieve users invited to the event
+        to_users_list = self.request.data.getlist('to[]')
+        if to_users_list != ['']:
+
+            # Iterate through user ids received in POST request, and check each
+            # one is a member of the event creator's tribe and raise validation
+            # error if we find someone who is not in the tribe.
+            for to_user_str in to_users_list:
+                try:
+                    to_user = User.objects.filter(id=int(to_user_str)).first()
+                except TypeError as e:
+                    raise HttpResponseBadRequest
+                if to_user.profile.tribe != self.request.user.profile.tribe:
+                    raise serializers.ValidationError(
+                        {
+                            'to': 'Users who are not part of this '
+                            'tribe cannot be invited.'
+                        }
+                    )
+        else:
+            # Serializer needs an empty list if noone is invited
+            to_users_list = []
         # Create the event
         event = serializer.save(
+            to=to_users_list,
             user=self.request.user,
             tribe=self.request.user.profile.tribe
         )
@@ -188,28 +196,33 @@ class EventDetail(generics.RetrieveUpdateDestroyAPIView):
         # new_users will contain ids of any users who have just been
         # invited to this existing event.
         new_users = []
-        # Check all users invited are part of the event creator's tribe
-        for to_user_str in self.request.data.get('to'):
-            try:
-                to_user = User.objects.filter(id=int(to_user_str)).first()
-            except TypeError as e:
-                raise HttpResponseBadRequest
-            if to_user.profile.tribe != self.request.user.profile.tribe:
-                raise serializers.ValidationError(
-                    {
-                        'to': 'Users who are not part of this tribe cannot '
-                        'be invited.'
-                    }
-                )
-            # If user was not already invited to this event,
-            # add them to new_users list
-            if to_user not in list(
-                User.objects.filter(event=self.get_object().id).all()
-            ):
-                new_users.append(to_user)
+
+        # Retrieve users invited to the event
+        to_users_list = self.request.data.getlist('to[]')
+
+        if to_users_list != ['']:
+            # Check all users invited are part of the event creator's tribe
+            for to_user_str in to_users_list:
+                try:
+                    to_user = User.objects.filter(id=int(to_user_str)).first()
+                except TypeError as e:
+                    raise HttpResponseBadRequest
+                if to_user.profile.tribe != self.request.user.profile.tribe:
+                    raise serializers.ValidationError(
+                        {
+                            'to': 'Users who are not part of this '
+                            'tribe cannot be invited.'
+                        }
+                    )
+                # If user was not already invited to this event,
+                # add them to new_users list
+                if to_user not in list(
+                    User.objects.filter(event=self.get_object().id).all()
+                ):
+                    new_users.append(to_user)
 
         # Create event and create notifications for all invited users
-        event = serializer.save()
+        event = serializer.save(to=to_users_list)
         try:
             make_event_notifications(
                 event,
