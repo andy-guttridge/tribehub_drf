@@ -24,11 +24,13 @@ class EventCategories(models.TextChoices):
     family calendar.
     '''
     NONE = 'NON', _('None')
+    CELEBRATION = 'CEL', _('Celebration')
     CLUB = 'CLU', _('Club')
     EDUCATION = 'EDU', _('Education')
     MEDICAL = 'MED', _('Medical')
     MUSIC = 'MUS', _('Music')
     OTHER = 'OTH', _('Other')
+    OUTING = 'OUT', _('Outing')
     SHOP = 'SHO', _('Shopping')
     SPORT = 'SPO', _('Sport')
     VAC = 'VAC', _('Vacation')
