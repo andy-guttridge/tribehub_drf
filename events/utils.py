@@ -92,11 +92,11 @@ def make_event_notifications(event, is_new_event=True, new_users=None):
     # appropriate message.
     for to_user in event.to.all():
         if is_new_event or to_user in new_users:
-            message = f'Invitation from {event.user.profile.display_name}.'
+            message = f'Invitation from {event.user.profile.display_name}'
         else:
             message = (
                 f'{event.user.profile.display_name} '
-                'has made a change to this event.'
+                'has made a change to this event'
             )
         notification = Notification.objects.create(
             user=to_user,
