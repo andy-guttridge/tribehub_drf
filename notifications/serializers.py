@@ -1,6 +1,4 @@
 from rest_framework import serializers
-from django.utils.dateformat import format
-from django.conf import settings
 
 from .models import Notification
 from events.serializers import EventSerializer
