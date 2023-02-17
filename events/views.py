@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 from django.http import HttpResponseBadRequest
 from django_filters.rest_framework import DjangoFilterBackend
 from django.db import DatabaseError
+from django.db.models import Q
 from tribehub_drf.permissions import (
     IsThisTribeAdminOrOwner,
     IsInTribeReadOnly,
@@ -87,10 +88,10 @@ class EventList(generics.ListCreateAPIView):
             events = events.filter(subject__icontains=subject_search)
         to = request.query_params.get('to')
         if to is not None and to.isdigit():
-            events = events.filter(to__in=[to])
+            events = events.filter(Q(user=to) | Q(to__in=[to]))
         category_filter = request.query_params.get('category')
         if category_filter is not None:
-            events = events.filter(category=category_filter)
+            events = events.filter(category=category_filter).all()
 
         # Get from_date and to_date kwargs from URL arguments so these
         # can be used to limit any recurrences.
