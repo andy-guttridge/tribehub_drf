@@ -9,6 +9,7 @@ class ContactAdmin(admin.ModelAdmin):
     """
     list_display = (
         'tribe',
+        'company',
         'category',
         'title',
         'first_name',
