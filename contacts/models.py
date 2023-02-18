@@ -9,6 +9,7 @@ class Contact(models.Model):
         related_name='tribe'
     )
     category = models.CharField(max_length=25, null=True, blank=True)
+    company = models.CharField(max_length=25, null=True, blank=True)
     title = models.CharField(max_length=25, null=True, blank=True)
     first_name = models.CharField(max_length=50, null=True, blank=True)
     last_name = models.CharField(max_length=50, null=True, blank=True)

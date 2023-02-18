@@ -27,6 +27,7 @@ class ContactSerializer(serializers.ModelSerializer):
             'id',
             'tribe',
             'category',
+            'company',
             'title',
             'first_name',
             'last_name',
