@@ -72,12 +72,28 @@ class Event(models.Model):
                     rrules=[rule, ],
                 )
             case 'MON':
-                # If the day in the month is above 28, we create a rule for
-                # monthly occurences with a negative offset of the number of
-                # days from the end of the month
-                if self.start.day in range(29, 32):
-                    monthday = self.start.day - 32
-                    rule = recurrence.Rule(bymonthday=monthday, freq=1)
+                # Create rules with fallback days for monthly recurrences with
+                # dates >28, to account for differing month lengths. Code
+                # adapted from
+                # https://stackoverflow.com/questions/35757778/rrule-for-repeating-monthly-on-the-31st-or-closest-day
+                if self.start.day == 31:
+                    rule = recurrence.Rule(
+                        recurrence.MONTHLY,
+                        bymonthday=[28, 29, 30, 31],
+                        bysetpos=-1
+                    )
+                elif self.start.day == 30:
+                    rule = recurrence.Rule(
+                        recurrence.MONTHLY,
+                        bymonthday=[28, 29, 30],
+                        bysetpos=-1
+                    )
+                elif self.start.day == 29:
+                    rule = recurrence.Rule(
+                        recurrence.MONTHLY,
+                        bymonthday=[28, 29],
+                        bysetpos=-1
+                    )
                 else:
                     rule = (recurrence.Rule(recurrence.MONTHLY))
                 pattern = recurrence.Recurrence(
