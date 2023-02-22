@@ -28,7 +28,7 @@ class Event(models.Model):
         max_length=3
     )
     recurrences = RecurrenceField(null=True, blank=True)
-    subject = models.CharField(max_length=25)
+    subject = models.CharField(max_length=100)
     category = models.CharField(
         choices=EventCategories.choices,
         default='NON',
