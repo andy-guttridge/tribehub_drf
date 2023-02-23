@@ -37,7 +37,6 @@ class EventList(generics.ListCreateAPIView):
         filters.SearchFilter
     ]
     filterset_class = EventFilter
-    filterset_fields = ['start']
     search_fields = ['subject']
 
     def get_queryset(self):
@@ -88,7 +87,10 @@ class EventList(generics.ListCreateAPIView):
             events = events.filter(subject__icontains=subject_search)
         to = request.query_params.get('to')
         if to is not None and to.isdigit():
-            events = events.filter(Q(user=to) | Q(to__in=[to]))
+            events = events.filter(to__in=[to])
+        userVal = request.query_params.get('user')
+        if userVal is not None and userVal.isdigit():
+            events = events.filter(user=userVal)
         category_filter = request.query_params.get('category')
         if category_filter is not None:
             events = events.filter(category=category_filter).all()
