@@ -46,7 +46,8 @@ class EventList(generics.ListCreateAPIView):
         """
         user = self.request.user
         try:
-            events_queryset = Event.objects.filter(tribe=user.profile.tribe.pk)
+            events_queryset = Event.objects.filter(
+                tribe=user.profile.tribe.pk).order_by('start')
         except Exception as e:
             return Response(
                 str(e),
@@ -94,6 +95,7 @@ class EventList(generics.ListCreateAPIView):
         category_filter = request.query_params.get('category')
         if category_filter is not None:
             events = events.filter(category=category_filter).all()
+        events = events.order_by('start')
 
         # Get from_date and to_date kwargs from URL arguments so these
         # can be used to limit any recurrences.
@@ -102,14 +104,19 @@ class EventList(generics.ListCreateAPIView):
         from_date = request.query_params.get('from_date')
         to_date = request.query_params.get('to_date')
 
-        # Find recurrences within specified date range for all events and
-        # append to response data.
+        # Find recurrences within specified date range for all events,
+        # create JSON for these, and append to response data.
         for event in events:
             recurrence_events = make_events(event, from_date, to_date)
             response.data['results'].extend(recurrence_events)
             response.data['count'] = (
                 response.data['count'] + len(recurrence_events)
             )
+
+        # Sort events by start date before returning them
+        response.data['results'] = sorted(
+            response.data['results'], key=lambda d: d['start']
+        )
         return response
 
     def perform_create(self, serializer):
