@@ -114,6 +114,8 @@ class EventList(generics.ListCreateAPIView):
             )
 
         # Sort events by start date before returning them
+        # Technique to sort a list by dictionary key is from
+        # https://stackoverflow.com/questions/72899/how-do-i-sort-a-list-of-dictionaries-by-a-value-of-the-dictionary
         response.data['results'] = sorted(
             response.data['results'], key=lambda d: d['start']
         )

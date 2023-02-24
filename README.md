@@ -292,6 +292,7 @@ To duplicate deployment to Heroku, follow these steps:
 - The fix for the Django Rest Framework bug that prevents user's cookies from being cleared on logout is from the Code Institute Django Rest Framework walkthrough project
 - The technique for overriding the `to_representation` metehod of a serializer to make a change to the outgoing JSON data used in `profiles/serializers.py` is from [testdriven.io](https://testdriven.io/tips/ed79fa08-6834-4827-b00d-2609205129e0/)
 - The code to correctly deal with monthly recurrences of events on days greater than 28th of the month is adapted from [this StackOverflow question](https://stackoverflow.com/questions/35757778/rrule-for-repeating-monthly-on-the-31st-or-closest-day)(although the question is for JavaScript the same rule can be applied in Python).
+- The technqiue to sort a list by a dictionary key used to sort events data by start date is from [this StackOverflow question](https://stackoverflow.com/questions/72899/how-do-i-sort-a-list-of-dictionaries-by-a-value-of-the-dictionary)
 
 In addition, the following documentation was extensively referenced throughout development:
 
