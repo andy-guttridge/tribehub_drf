@@ -31,6 +31,7 @@ class EventCategories(models.TextChoices):
     MUSIC = 'MUS', _('Music')
     OTHER = 'OTH', _('Other')
     OUTING = 'OUT', _('Outing')
+    PETS = 'PET', _('Pets')
     SHOP = 'SHO', _('Shopping')
     SPORT = 'SPO', _('Sport')
     VAC = 'VAC', _('Vacation')
