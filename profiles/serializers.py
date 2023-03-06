@@ -123,6 +123,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         serialized JSON.
         """
         representation = super().to_representation(instance)
+        instance.image.url_options.update({'secure': True})
         representation['image'] = instance.image.url
         return representation
 

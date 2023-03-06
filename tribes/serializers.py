@@ -22,6 +22,9 @@ class TribeSerializer(serializers.ModelSerializer):
         queryset = Profile.objects.filter(tribe=obj).all()
         users = []
         for profile in queryset:
+            # Fix for cloudinary not serving images securely is from
+            # https://stackoverflow.com/questions/48508750/how-to-force-https-in-a-django-project-using-cloudinary
+            profile.image.url_options.update({'secure': True})
             user_dict = {
                 'user_id': profile.user.id,
                 'display_name': profile.display_name,
