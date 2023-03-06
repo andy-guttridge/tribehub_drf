@@ -35,7 +35,8 @@ ALLOWED_HOSTS = [
 ]
 
 CLOUDINARY_STORAGE = {
-    'CLOUDINARY_URL': os.environ.get('CLOUDINARY_URL')
+    'CLOUDINARY_URL': os.environ.get('CLOUDINARY_URL'),
+    'SECURE': True,
 }
 
 MEDIA_URL = '/media/'
