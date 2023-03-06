@@ -79,7 +79,7 @@ def make_events(event, from_date, to_date):
     return recurrence_events
 
 
-def make_event_notifications(event, is_new_event=True, new_users=None):
+def make_event_notifications(event, user, is_new_event=True, new_users=None):
     """
     Creates notifications for events. New events and users added to an existing
     event receive an invitation message, users already invited receive a
@@ -92,10 +92,10 @@ def make_event_notifications(event, is_new_event=True, new_users=None):
     # appropriate message.
     for to_user in event.to.all():
         if is_new_event or to_user in new_users:
-            message = f'Invitation from {event.user.profile.display_name}'
+            message = f'Invitation from {user.profile.display_name}'
         else:
             message = (
-                f'{event.user.profile.display_name} '
+                f'{user.profile.display_name} '
                 'has made a change to this event'
             )
         notification = Notification.objects.create(

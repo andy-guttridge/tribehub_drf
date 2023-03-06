@@ -157,7 +157,7 @@ class EventList(generics.ListCreateAPIView):
         )
         # Create notifications for each user invited
         try:
-            make_event_notifications(event)
+            make_event_notifications(event, user=self.request.user)
         except Exception as e:
             raise DatabaseError(
                 'An error occurred creating an event notification'
@@ -238,6 +238,7 @@ class EventDetail(generics.RetrieveUpdateDestroyAPIView):
         try:
             make_event_notifications(
                 event,
+                user=self.request.user,
                 is_new_event=False,
                 new_users=new_users
             )
