@@ -54,6 +54,7 @@ def make_events(event, from_date, to_date):
 
         # Create event for each recurrence and append to list
         for recurrence in recurrences:
+            event.user.profile.image.url_options.update({'secure': True})
             recurrence_event = {
                 'id': event.id,
                 'user': {
