@@ -59,7 +59,7 @@ class EventSerializer(serializers.ModelSerializer):
     def get_user(self, obj):
         # Fix for cloudinary not serving images securely is from
         # https://stackoverflow.com/questions/48508750/how-to-force-https-in-a-django-project-using-cloudinary
-        obj.profile.image.url_options.update({'secure': True})
+        obj.user.profile.image.url_options.update({'secure': True})
         return (
             {
                 'user_id': obj.user.id,
