@@ -20,6 +20,7 @@ class ContactListCreate(generics.ListCreateAPIView):
     filter_backends = [filters.SearchFilter]
     search_fields = [
         'category',
+        'company',
         'title',
         'first_name',
         'last_name',
