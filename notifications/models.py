@@ -12,7 +12,7 @@ class Notification(models.Model):
         related_name='notification'
     )
     date_created = models.DateTimeField(auto_now=True)
-    subject = models.CharField(max_length=25)
+    subject = models.CharField(max_length=100)
     message = models.CharField(max_length=200)
     type = models.CharField(
         choices=NotificationTypes.choices,
