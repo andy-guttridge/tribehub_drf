@@ -1,7 +1,6 @@
 # TribeHub
 
 ## Project goals
-
 This project provides a Django Rest Framework API for the [TribeHub React web app](https://github.com/andy-guttridge/tribehub_react). It has also been designed with a future native iOS app in mind.
 
 TribeHub is intended to be a virtual equivalent to the typical wall planner a family might put up in a kitchen or other communal area. The primary goals of the web app are to:
@@ -10,22 +9,52 @@ TribeHub is intended to be a virtual equivalent to the typical wall planner a fa
 3) Offer a minimal set of impactful features chosen in order to deliver a useful app within an achievable development timeframe, while laying a solid foundation for additional features in the future.
 
 ## Table of contents
+- [TribeHub](#tribehub)
+  * [Project goals](#project-goals)
+  * [Table of contents](#table-of-contents)
+  * [Planning](#planning)
+    + [Data models](#data-models)
+      - [**Profile**](#--profile--)
+      - [**Tribe**](#--tribe--)
+      - [**Event**](#--event--)
+    + [**Notification**](#--notification--)
+    + [**Contact**](#--contact--)
+  * [API endpoints](#api-endpoints)
+  * [Frameworks, libraries and dependencies](#frameworks--libraries-and-dependencies)
+    + [django-cloudinary-storage](#django-cloudinary-storage)
+    + [dj-allauth](#dj-allauth)
+    + [dj-rest-auth](#dj-rest-auth)
+    + [djangorestframework-simplejwt](#djangorestframework-simplejwt)
+    + [dj-database-url](#dj-database-url)
+    + [psychopg2](#psychopg2)
+    + [python-dateutil](#python-dateutil)
+    + [django-recurrence](#django-recurrence)
+    + [django-filter](#django-filter)
+    + [django-cors-headers](#django-cors-headers)
+  * [Testing](#testing)
+    + [Manual testing](#manual-testing)
+    + [Python validation](#python-validation)
+    + [Resolved bugs](#resolved-bugs)
+      - [Bugs found while testing the API in isolation](#bugs-found-while-testing-the-api-in-isolation)
+      - [Bugs found while testing the React front-end](#bugs-found-while-testing-the-react-front-end)
+    + [Unresolved bugs](#unresolved-bugs)
+  * [Deployment](#deployment)
+  * [Credits](#credits)
+
+<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
 ## Planning
-
 Planning started by creating epics and user stories for the frontend application, based on the project goals. The user stories were used to inform wireframes mapping out the intended functionality and 'flow' through the app. See the [repo for the frontend React app](https://github.com/andy-guttridge/tribehub_react) for more details.
 
 The user stories requiring implementation to achieve a minimum viable product (MVP) were then mapped to API endpoints required to support the desired functionality.
 The user stories themselves are recorded [on this Google sheet](https://docs.google.com/spreadsheets/d/11wcDHeqr85VaHXdJjATod_WECRY03IRUlGgT_L_ikIw/edit#gid=0), with the required API endpoints mapped to user stories on [this sheet](https://docs.google.com/spreadsheets/d/11wcDHeqr85VaHXdJjATod_WECRY03IRUlGgT_L_ikIw/edit#gid=311853659).
 
 ### Data models
-
 Data model schema were planned in parallel with the API endpoints, using an entity relationship diagram.
 
 Custom models implemented for Tribehub are:
 
 #### **Profile**
-
 Represents the user profile, using a one-to-one relationsip to the user model. A Profile instance is automatically created on user registration. The Profile model includes an `is_admin` boolean field, which is used to determine whether a given user has tribe admin privileges. Note that initial user registration creates a profile with tribe admin rights; this user can then create further accounts for their family members which are added as members of the tribe, and these do not have admin rights.
 
 The Profile model has a many to one relationship with the Tribe model. This is used throught the API to associate users with their tribes.
@@ -33,11 +62,9 @@ The Profile model has a many to one relationship with the Tribe model. This is u
 Users can edit their own `display_name` and `image` fields.
 
 #### **Tribe**
-
 The Tribe model has only one field, which is the name of the tribe. This model is important however, as it is used throughout the API to associate individual users with the appropriate tribe - for example, members of the same tribe can invite each other to calendar events, see each others events in the tribe calendar and access the same key contacts list, but they cannot access these items for tribes to which they do not belong.
 
 #### **Event**
-
 The Event model represents a calendar event. It has many to one relationships with the User model (the `user` field) and the Tribe model (the `tribe` field), in order to record who created the event and which tribe they belong to. There are two fields with many to many relationships with the User model - `to` and `accepted` - which record who has been invited to the event and who has accepted the invitation.
 
 The `recurrences` field is an instance of `RecurrenceField`, provided by the [django-recurrence](https://django-recurrence.readthedocs.io/en/latest/) utility. This enables the calculation of recurring events based on a single original datetime and a set of rules (e.g. weekly, monthly etc). This field is not exposed externally by the API - rather, the `recurrence_type`  field is exposed to allow incoming requests for recurrences using a simple string (`WEK` for weekly, `TWK` for fortnightly, `MON` for monthly, `YEA` for yearly or `NON` for none). The corresponding recurrences rule is then applied by the Event model when an instance is saved to the database.
@@ -52,7 +79,6 @@ The `start` field records the start date and time of the event using an unlocali
 Any member of a tribe can create a new event. They can only invite members of their own tribe. Users can only retrieve details of events for their own tribe. The user who created an event and the tribe admin can delete events.
 
 ### **Notification**
-
 The Notification model represents user notifications. Currently these are implemented for invitations and changes to calendar events, however further notification types could be implemented in the future to compliment additional features.
 
 Notifications are created programatically when a new event is created or details of an existing event changed - there is no API endpoint to directly create a new notification.
@@ -61,7 +87,6 @@ Notifications have a many to one relationship with the User model to record who 
 Users can only access and delete their own notifications.
 
 ### **Contact**
-
 The Contact model represents an instance of important contact information for a tribe (e.g. doctor, dentist etc). Contacts can only be created, edited or deleted by the tribe admin user. Users can retrieve details of contacts for their own tribe, and cannot access contacts for other tribes.
 
 <p align="center">
@@ -167,7 +192,6 @@ https://django-filter.readthedocs.io/en/stable/
 django-filter is used to implement ISO datetime filtering functionality for the `events` GET endpoint. The client is able to request dates within a range using the `from_date` and `to_date` URL parameters. The API performs an additional check after filtering to 'catch' any repeat events within the requested range, where the original event stored in the database occurred beforehand.
 
 ### django-cors-headers
-
 This Django app adds Cross-Origin-Resource Sharing (CORS) headers to responses, to enable the API to respond to requests from origins other than its own host.
 TribeHub is configured to allow requests from all origins, to facilitate future development of a native movile app using this API.
 
@@ -175,11 +199,24 @@ TribeHub is configured to allow requests from all origins, to facilitate future 
 
 ### Manual testing
 
-A series of manual tests were carried out for each end point. Please see the separate [testing.md](/testing.md) document for details.
+A series of manual tests were carried out for each end point using the Django Rest Framework HTML interface running on the local server and using the deployed database. Please see the separate [testing.md](/testing.md) document for details.
+
+All the features of the deployed API were tested as part of testing/acceptance criteria for each of the React frontend user stories. These tests are documented in the [read-me](https://github.com/andy-guttridge/tribehub_react) for that project.
+
+Testing on the frontend revealed a number of bugs which had not been detected while testing the API in isolation, and led to the implementation of several additional features for consumption by the React app. The bugs are detailed in the bugs section below, and the following additional features were added as a result of front-end testing:
+
+- The `display_name` and `is_admin` fields from the Profile model were added to the serializer for the User model, as the React app requires easy access to these for (among other things) the welcome message in the header and to determine whether the user should be permitted access to certain features.
+- Users' profile image URLs were added to the user data returned by the `tribe/` endpoint, to make it easier for the front-end to access profile images for an entire tribe.
+- The profile image of the user who created a calendar event was added to the JSON generated by the `events` endpoints, to enable the React app to easily display an Avatar for the user who created a calendar event.
+- Programatically generated event recurrences did not include details of users who had accepted invitations, meaning the React app could only display this data for the original event. The UserSerializer already utilised for the original events saved in the database was then also used to serialize the user data for the recurrences.
+- An event field containing full details of the event to which a notification relates was added to the notifications serializer, otherwise the React app would have to request data for each event separately from the `events/<id:int>` endpoint.
+- A `user` URL parameter was added to enable searching for events based on who created the event.
+- A `company` field was added to the Contacts model.
 
 ### Python validation
 
-All files containing custom Python code were validated using the [Code Institute Python Linter](https://pep8ci.herokuapp.com/):
+Code errors and style issues were detected using the Pylance linter in VSCode, and immediately fixed throughout development.
+All files containing custom Python code were then validated using the [Code Institute Python Linter](https://pep8ci.herokuapp.com/):
 
 - `contacts/admin.py`: no errors found
 - `contacts/models.py`: no errors found
@@ -223,23 +260,27 @@ All files containing custom Python code were validated using the [Code Institute
 
 ### Resolved bugs
 
-- During testing, it became apparent that a user could not create a calendar event with no other members of the tribe invited (i.e. events only for themselves), because the `to` field on the `Event` model defaulted to not allowing null values. This was fixed by adding `null=True` and `blank=True` arguments to the field.
+#### Bugs found while testing the API in isolation
+- During testing, it became apparent that a user was unable to create a calendar event with no other members of the tribe invited (i.e. events only for themselves), because the `to` field on the `Event` model defaulted to not allowing null values. This was fixed by adding `null=True` and `blank=True` arguments to the field.
 - Testing also revealed that the programatically generated event recurrences erroneously included the currently authenticated user as the 'owner' of the event, rather than the user who created them. This was fixed by changing two variables in `events/utils.py`.
 - Testing demonstrated that using an id for a non-existent event object for the `events/response/id` endpoint resulted in an uncaught exception. Try...except blocks were added to  the EventResponse class in `events/views.py` to ensure any references to non-existent events are handled gracefully alongside permission related errors, and that appropriate HTTP status codes are returned for each class of error.
+
+#### Bugs found while testing the React front-end
 - When first implementing user sign-in from the React front-end, submission of the POST form data to `dj-rest-auth/login/` was causing an HTTP 405 'method not allowed' error. This was tracked down to a space in the string for the value of `JWT-REFRESH-TOKEN` in `settings.py`. In order to work out what exactly was causing the bug, the settings of the React app were temporarily changed to make requests to `localhost` instead of the deployed API, enabling the API to run in debug mode and to make live changes to the code and see their effect on the frontend without having to rebuild the deployed API. Once the bug was fixed, the changes were pushed to GitHub and the API redeployed.
+- A bug was found causing incorrect profile image URLs to be served in the JSON data. This was fixed by overrdiding the `to_representation` method of the Profile and Tribe serializers so that the URL property of each CloudinaryField is used to generate the image URLs.
 - Although programatically generated event recurrences appeared to be created correctly when testing via the Django Rest Framework admin interface, once they could be visualised on a calendar in the React frontend a number of issues with recurrences became apparent, including duplicated events on the same day and incorrect recurrence dates. These bugs were caused by incorrect use of the django-recurrence app used to generate the recurrences; the documentation for  django-recurrence is somewhat sparse, so some trial and error experimentation and inspection of the django-recurrence source code to identify relevant kwargs to try was required. The bugs were mostly fixed, with one exception (see below).
 - During development of the frontend React application, it was found that requests for calendar events were causing an internal server error after a user was deleted. This was found to be because the user's profile had been deleted, but there were still references to it in some calendar events (e.g. if the user whose account was deleted was invited to an event and/or recorded as having accepted the invitation). This was addressed by performing 'clean-up' actions to remove references to deleted user accounts during the account deletion process.
+- The behaviour of monthly recurrences when the original date is at the end of the month proved difficult to refine due to the varying number of days in a month. Initially, recurrences where the orginal event day is in the range `29 - 31` were generated using an offset from the end of the month. For example, monthly recurrences for an event with a date of 30 January 2023 would fall on the 30th of the month for months with 31 days, but the 29th of the month for months with 30 days. [Further research](https://stackoverflow.com/questions/35757778/rrule-for-repeating-monthly-on-the-31st-or-closest-day) eventually led to a better approach which ensures recurring monthly events at the end of the month are appropriately generated for all varying month lengths.
+- Frontend testing exposed an issue with duration field data for programatically generated recurrences of calendar events being formatted incorrectly, causing errors in the React app. This was rectified by using a ModelSerializer to format the data for that specific field of the recurrences.
+- A browser console error in the React app revealed that Cloudinary images were being served insecurely via http. After unnsuccessfully trying some changes to the Cloudinary configuration in `settings.py` and conducting some further research, it appeared that this might be a bug affecting some other part of the software stack, possibly the django-cloudinary-storage app. A fix was found on [Stack Overflow](https://stackoverflow.com/questions/48508750/how-to-force-https-in-a-django-project-using-cloudinary), requiring the `url_options` dictionary for every reference to an image instance to be individually set to `{'secure': True}`.
+- Frontend testing demonstrated that the `company` field of the Contacts model was being omitted from search results. This was a simple fix, as the field had been added to the model later in development, and omitted from the `search_fields` parameter for the filter backends.  
 
 ### Unresolved bugs
-
 - The `perform_create` method of the `ListCreate` generic view is overriden in `contacts/views.py`. Django does not seem to respond to custom permission classes in this circumstance, meaning that unauthorised users (i.e. authenticated users without tribe admin status) were able to create new contacts. Print statements at various points in the code were used to verify that the relevant custom permission classes were being invoked and returning the correct values, and it remains uncertain whether this issue is due to a bug in Django Rest Framework or in this project. 
 
     The issue was overcome by manually checking the status of the user within the `perform_create` method, but given more time it would be desirable to look into this further and revert to correct use of permission classes here if possible.
 
-- The behaviour of monthly recurrences when the original date is at the end of the month proved difficult to refine due to the varying number of days in a month. Current behaviour is that recurrences where the orginal event day is in the range `29 - 31` are generated using an offset from the end of the month. For example, monthly recurrences for an event with a date of 30 January 2023 would fall on the 30th of the month for months with 31 days, but the 29th of the month for months with 30 days. This is not quite the desired behaviour, and would be subject to further refinement given more time.
-
 ## Deployment
-
 The TribeHub API is deployed to Heroku, using an ElephantSQL Postgres database.
 To duplicate deployment to Heroku, follow these steps:
 
@@ -278,7 +319,6 @@ To duplicate deployment to Heroku, follow these steps:
 - Your API will shortly be deployed and you will be given a link to the deployed site when the process is complete.
 
 ## Credits
-
 - The technique to limit the size of image uploads to cloudinary is adapted from this [Cloudinary](https://support.cloudinary.com/hc/en-us/community/posts/360009752479-How-to-resize-before-uploading-pictures-in-Django) support article
 - A replacement for the deprecated `django.conf.urls.url()` was implemented as per this [StackOverflow article](https://stackoverflow.com/questions/70319606/importerror-cannot-import-name-url-from-django-conf-urls-after-upgrading-to)
 - The approach to creating a string representation of a many to many field in the Django admin panel is adapted from https://stackoverflow.com/questions/18108521/many-to-many-in-list-display-django
