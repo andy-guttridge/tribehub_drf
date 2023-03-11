@@ -37,7 +37,7 @@ class ContactListCreate(generics.ListCreateAPIView):
         try:
             contacts_queryset = Contact.objects.filter(
                 tribe=user.profile.tribe.pk
-            )
+            ).order_by('category')
         except Exception as e:
             return Response(
                 str(e),
@@ -82,7 +82,7 @@ class ContactDetail(generics.RetrieveUpdateDestroyAPIView):
         try:
             contacts_queryset = Contact.objects.filter(
                 tribe=user.profile.tribe.pk
-            )
+            ).order_by('category')
         except Exception as e:
             return Response(
                 str(e),

@@ -19,7 +19,9 @@ class TribeSerializer(serializers.ModelSerializer):
         and returns a list of dictionaries containing user_id and
         display_name key/value pairs for each user.
         """
-        queryset = Profile.objects.filter(tribe=obj).all()
+        queryset = Profile.objects.filter(
+            tribe=obj
+        ).all().order_by('display_name')
         users = []
         for profile in queryset:
             # Fix for cloudinary not serving images securely is from

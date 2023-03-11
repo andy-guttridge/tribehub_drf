@@ -20,7 +20,9 @@ class NotificationsList(generics.ListAPIView):
         the current user's
         """
         user = self.request.user
-        notifications_queryset = Notification.objects.filter(user=user)
+        notifications_queryset = Notification.objects.filter(
+            user=user
+        ).order_by('date_created')
         return notifications_queryset
 
 
