@@ -311,7 +311,7 @@ To duplicate deployment to Heroku, follow these steps:
     - `SECRET_KEY`: *your secret key*
     - `ALLOWED_HOST`: *the url of your Heroku app (but without the `https://` prefix)*
 - Select the 'Deploy' tab at the top.
-- Select 'GitHub' and confirm you wish to deploy using GitHub. You may be asked to enter your GitHub password.
+- Select 'GitHub' from the deployment options and confirm you wish to deploy using GitHub. You may be asked to enter your GitHub password.
 - Find the 'Connect to GitHub' section and use the search box to locate your repo.
 - Select 'Connect' when found.
 - Optionally choose the main branch under 'Automatic Deploys' and select 'Enable Automatic Deploys' if you wish your deployed API to be automatically redeployed every time you push changes to GitHub.
