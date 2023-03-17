@@ -92,6 +92,7 @@ def make_event_notifications(event, user, is_new_event=True, new_users=None):
     # has been newly added to the invitation, and create notification with
     # appropriate message.
     for to_user in event.to.all():
+        print("User who made the change: ", user.profile.display_name)
         if is_new_event or to_user in new_users:
             message = f'Invitation from {user.profile.display_name}'
         else:
@@ -99,13 +100,17 @@ def make_event_notifications(event, user, is_new_event=True, new_users=None):
                 f'{user.profile.display_name} '
                 'has made a change to this event'
             )
-        notification = Notification.objects.create(
-            user=to_user,
-            subject=event.subject,
-            message=message,
-            type='INV',
-            event=event
-        )
+        # Only create notifications for users who did not request the change
+        if to_user.id != user.pk:
+            notification = Notification.objects.create(
+                user=to_user,
+                subject=event.subject,
+                message=message,
+                type='INV',
+                event=event
+            )
+        else:
+            notification = None
 
-        if notification:
+        if notification is not None:
             notification.save()
