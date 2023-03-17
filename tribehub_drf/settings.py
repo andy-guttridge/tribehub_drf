@@ -151,7 +151,6 @@ DATABASES = {
         'default': dj_database_url.parse(os.environ.get("DATABASE_URL"))
     }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
@@ -194,7 +193,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = False
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
