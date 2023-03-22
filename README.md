@@ -33,6 +33,7 @@ TribeHub is intended to be a virtual equivalent to the typical wall planner a fa
     + [django-cors-headers](#django-cors-headers)
   * [Testing](#testing)
     + [Manual testing](#manual-testing)
+    + [Automated tests](#automated-tests)
     + [Python validation](#python-validation)
     + [Resolved bugs](#resolved-bugs)
       - [Bugs found while testing the API in isolation](#bugs-found-while-testing-the-api-in-isolation)
@@ -215,6 +216,21 @@ Testing on the frontend revealed a number of bugs which had not been detected wh
 - A `user` URL parameter was added to enable searching for events based on who created the event.
 - A `company` field was added to the Contacts model.
 
+### Automated tests
+
+Nine unit tests were written for the `contacts` endpoint. These are in `contacts/tests.py`, and all passed:
+
+- Test that the tribe administrator can list contacts for their tribe.
+- Test that a tribe member with no admin status in the same tribe can list contacts.
+- Test that an unauthenticated user cannot list contacts.
+- Test that a tribe administrator can create a new contact for their tribe.
+- Test that a tribe member without admin status cannot create a new contact.
+- Test that an unauthenticated user cannot create a new contact.
+- Test that a tribe administrator can delete a contact.
+- Test that a tribe member without admin status cannot delete a contact.
+- Test than an unauthenticated user cannot delete a contact.
+
+
 ### Python validation
 
 Code errors and style issues were detected using the Pylance linter in VSCode, and immediately fixed throughout development.
@@ -222,6 +238,7 @@ All files containing custom Python code were then validated using the [Code Inst
 
 - `contacts/admin.py`: no errors found
 - `contacts/models.py`: no errors found
+- `contacts/tests.py`: no errors found
 - `contacts/serializers.py`: no errors found
 - `contacts/urls.py`: no errors found
 - `contacts/views.py`: no errors found
