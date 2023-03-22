@@ -192,6 +192,8 @@ https://django-filter.readthedocs.io/en/stable/
 django-filter is used to implement ISO datetime filtering functionality for the `events` GET endpoint. The client is able to request dates within a range using the `from_date` and `to_date` URL parameters. The API performs an additional check after filtering to 'catch' any repeat events within the requested range, where the original event stored in the database occurred beforehand.
 
 ### django-cors-headers
+https://pypi.org/project/django-cors-headers/
+
 This Django app adds Cross-Origin-Resource Sharing (CORS) headers to responses, to enable the API to respond to requests from origins other than its own host.
 TribeHub is configured to allow requests from all origins, to facilitate future development of a native movile app using this API.
 
